@@ -1,0 +1,247 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 16 16:14:09 2023
+
+@author: leermdv
+"""
+
+from SISIM_R import * 
+import pandas as pd
+import glob 
+import statistics
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+import scipy.stats
+from tqdm import tqdm
+
+class boringen():
+    def __init__(self, folder):
+        self.get_boringen(folder)
+        self.selection = None
+    def get_boringen(self,folder):
+        csv_files = glob.glob(folder + "/*.txt")
+        self.boreholes = {}
+        metadata = []
+        for file in tqdm(csv_files, 'Read borehole files..'):
+            name = file.split('\\')[-1].split('.')[0]
+            #metadata
+            md = pd.read_csv(file,sep = ': \t', nrows=26, engine='python',)
+            metadata.append(md)
+            #boreholes
+            bh = pd.read_csv(file, skiprows = range(0,27), sep = '\t', index_col = False, engine='python')
+            bh['Bovenkant laag (m beneden maaiveld)'] = bh['Bovenkant laag (m beneden maaiveld)'].round()
+            bh['Onderkant laag (m beneden maaiveld)'] = bh['Onderkant laag (m beneden maaiveld)'].round()
+            result = []
+            for ix, row in bh.iterrows():
+                top = row['Bovenkant laag (m beneden maaiveld)']
+                bot = row['Onderkant laag (m beneden maaiveld)']
+                for range_ in range(int(top), int(bot) + 1):
+                    row['z'] = -range_ + round(float(md.loc['Maaiveldhoogte (meter t.o.v. NAP)'].values[0]))
+                    row['x'] = int(md.loc['X-coordinaat (m)'].values[0])
+                    row['y'] = int(md.loc['Y-coordinaat (m)'].values[0])
+                    row['quality'] = md.loc['Kwaliteitcode beschrijving lithologie', 'ALGEMENE GEGEVENS BORING']
+                    row['boringnr'] = ix
+                    result.append(row.copy())
+                    
+            self.boreholes[name] = pd.DataFrame(result)
+        self.metadata = pd.concat(metadata, axis = 1)
+        self.metadata.columns = self.metadata.iloc[0]
+
+    def add_layers(self, layermodel):
+        self.layermodel = layermodel
+        for boringnr, df in tqdm(self.boreholes.items(), 'adding layers..'):
+            cell = self.layermodel.sel(x = df['x'].values[0], method = 'nearest').sel(y = df['y'].values[0], method = 'nearest')
+            dummy = []
+            for idx, row in df.iterrows():
+                layer = cell.layer.where((cell.top >= row['z']) & (cell.botm <= row['z']), drop = True,).layer.values
+                if len(layer) == 0:
+                    layer = None
+                else:
+                    layer = layer[0]
+                row['layer'] = layer
+                dummy.append(row.copy())
+            self.boreholes[boringnr] = pd.DataFrame(dummy)
+
+    def select_layer(self, layer):
+        self.selection = self.boreholes
+        for boringnr, df in self.boreholes.items():
+            df = df[df['layer'] == layer]
+            self.selection[boringnr] = df
+    
+    def listify(self):        
+        if self.selection != None:
+            self.list = pd.concat(self.selection.values())
+        else:
+            self.list = pd.concat(self.boreholes.values())
+        self.list.reset_index(inplace = True)
+        lith = []
+        for index, row in self.list.iterrows():
+            if row.Hoofdgrondsoort == 'klei':
+                if row['Bijmenging silt'] in ['zwak siltig', 'matig siltig','---']:
+                    if row['Bijmenging zand'] != '---':
+                        lith.append('kz')
+                    else:
+                        lith.append('k')
+                else:
+                    lith.append('kz')
+            elif row.Hoofdgrondsoort == 'zand':
+                if row['Bijmenging klei'] != '---':
+                    lith.append('kz')
+                else:
+                    if row.Zandmediaanklasse in ['uiterst grof (O)','grove  categorie (O)','zeer grof (O)','uiterst grof', 'zeer grof']:
+                        lith.append('zg')
+                    elif row.Zandmediaanklasse in ['matig grof (O)','matig fijn (O)','matig grof', 'zandmediaan onduidelijk', '---']:
+                        lith.append('zm')
+                    else:
+                        lith.append('zf')
+            elif row.Hoofdgrondsoort == 'leem':
+                lith.append('kz')
+            elif row.Hoofdgrondsoort == 'veen':
+                lith.append('v')
+            elif row.Hoofdgrondsoort == 'grind':
+                lith.append('zg')
+        self.list['Lithoclass'] = lith
+        return self.list
+    
+    def indicators(self, g1):
+        self.group = g1
+        self.list['i (no weight)'] = np.where(self.list.Lithoclass.isin(g1),1,0)
+        indicator = []
+        for index, row in self.list.iterrows():
+            
+            if row.quality == 'A':
+                if row.Lithoclass in g1:
+                    indicator.append(1)
+                else:
+                    indicator.append(0)
+            if row.quality == 'B':
+                if row.Lithoclass in g1:
+                    indicator.append(0.9)
+                else:
+                    indicator.append(0.1)
+            if row.quality == 'C':
+                if row.Lithoclass in g1:
+                    indicator.append(0.8)
+                else:
+                    indicator.append(0.2)
+            if row.quality == 'D':
+                if row.Lithoclass in g1:
+                    indicator.append(0.7)
+                else:
+                    indicator.append(0.3)
+            if row.quality == 'E':
+                if row.Lithoclass in g1:
+                    indicator.append(0.6)
+                else:
+                    indicator.append(0.4)
+        self.list['i']  = indicator
+        return self.list
+    
+    def plot_lith_dist(self):
+        fig, ax = plt.subplots()
+        fig.set_dpi = 300
+        # sns.histplot(self.list, x = 'Hoofdgrondsoort',ax = ax)
+        sns.histplot(self.list, x = 'Lithoclass',ax = ax)
+        ax.set_title('Local lithoclass distribution')
+        
+    def plot_K_weighted(self, Kcore):
+        rn = []
+        lth = []
+        rng = np.random.default_rng()
+        for col in self.list.Lithoclass.unique():
+            count = self.list.Lithoclass[self.list.Lithoclass == col].count()
+            sel = Kcore.dist[Kcore.dist['LTH_klass_toegekend'] == col]['logk']
+            draw = rng.normal(sel.mean(), sel.std(), count)
+            for x in draw:
+                rn.append(x)
+                lth.append(col)
+        self.Kweighted = pd.DataFrame({'Lithoclass' : lth, 'K':rn})
+        fig,ax = plt.subplots()
+        fig.set_dpi(300)
+        ax.set_title('Local K distribution')
+        
+        sns.histplot(rn, ax =ax, stat = 'density')
+        x0,x1 = ax.get_xlim()
+        x_pdf = np.linspace(x0,x1,100)
+        
+        self.mu1, self.std1 = scipy.stats.norm.fit(self.Kweighted[self.Kweighted['Lithoclass'].isin(self.group)]['K'])
+        y_pdf1 = scipy.stats.norm.pdf(x_pdf, self.mu1, self.std1)
+        ax.plot(x_pdf, y_pdf1, c = 'r')
+        self.mu2, self.std2 = scipy.stats.norm.fit(self.Kweighted[self.Kweighted['Lithoclass'].isin(self.group) == False]['K'])
+        y_pdf2 = scipy.stats.norm.pdf(x_pdf, self.mu2, self.std2)
+        ax.plot(x_pdf, y_pdf2, c = 'green')
+        return rn
+    def add_k(self, res):
+        rng = np.random.default_rng()
+        K1 = rng.normal(self.mu1,self.std1, len(res))
+        K2 = rng.normal(self.mu2,self.std2, len(res))
+        Kfield = res[['x','y','z']]
+        for x in range(len(res.columns)-3):
+            Kfield.loc[:,f"K_{x+1}"] = np.where(res[f'sim{x+1}'] == 1, K1,K2)
+            np.random.shuffle(K1)
+            np.random.shuffle(K2)
+        return Kfield
+    
+    
+
+    
+class KDist():
+    def __init__(self,folder, layer):
+        stratls = [char for char in layer if char.isupper()]
+        self.strat = "".join(stratls)
+        self.full = pd.read_csv(folder)
+        self.layer = layer
+        self.dist = self.full[self.full['Strat'] == self.strat] 
+        self.dist['logk'] = np.log10(self.dist['K (m/d 10C)'])
+    def gm(self):
+        return self.dist.logk.mean()
+    def hm(self):
+        return statistics.harmonic_mean(self.dist['K (m/d 10C)'])
+    def am(self):
+        return self.dist['K (m/d 10C)'].mean()
+    def plot_dist(self):
+
+        fp = sns.FacetGrid(self.dist, col = 'LTH_klass_toegekend', col_wrap = 3, col_order = ['v','k','kz','zf','zm','zg'],
+                           xlim = (-7,2))
+        fp.map_dataframe(sns.histplot, 'logk',binwidth=0.5,  stat = 'density',)
+        fp.map_dataframe(annotate)
+        fp.set_titles(col_template = '{col_name}')
+
+        fp.figure.set_dpi(300)
+        fp.figure.suptitle('Core K distribution')
+        for ax in fp.axes.ravel():
+            var = ax.get_title()
+            data = self.dist[self.dist.LTH_klass_toegekend.eq(var)]
+            mu, std = scipy.stats.norm.fit(data['logk'])
+            x0,x1 = ax.get_xlim()
+            x_pdf = np.linspace(x0,x1,100)
+            y_pdf = scipy.stats.norm.pdf(x_pdf, mu, std)
+            ax.plot(x_pdf, y_pdf, c = 'r')
+
+        
+    
+def annotate(data, **kws):
+    n = len(data)
+    ax = plt.gca()
+    ax.text(.1, .9, f"N = {n}", transform=ax.transAxes, bbox = dict(facecolor = 'white', edgecolor ='black'))     
+    
+
+    
+    
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
