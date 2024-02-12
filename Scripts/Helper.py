@@ -139,7 +139,7 @@ def make_gdf(ExWells,ObsWells):
     WellGdf = gpd.GeoDataFrame(pd.concat([ExWellGdf,ObsWellGdf]))
     return WellGdf
 
-def layermodel(extent, NLzuid,cachedir, cachename, nlzuidpad = r"\\Tsn.tno.nl\data\projects\060\5\52146\Werkdocumenten\03_grondwaterdynamiek\03_testlocatieZeeland\PhDopschaling\Brabantwater\netcdfs\\NLZuidmodel.nc"):
+def layermodel(extent, NLzuid,nlzuidpad = r"\\Tsn.tno.nl\data\projects\060\5\52146\Werkdocumenten\03_grondwaterdynamiek\03_testlocatieZeeland\PhDopschaling\Brabantwater\netcdfs\\NLZuidmodel.nc"):
     if NLzuid: 
         layer_model_full = xr.open_dataset(nlzuidpad)
         layer_model_sel = layer_model_full.sel(x = slice(extent[0], extent[1]), y = slice(extent[3], extent[2]))
@@ -150,7 +150,7 @@ def layermodel(extent, NLzuid,cachedir, cachename, nlzuidpad = r"\\Tsn.tno.nl\da
         layer_model.attrs['extent'] = extent
         # layer_model.transpose('layer', 'y', 'x')
     else:
-        layer_model = nlmod.read.regis.get_combined_layer_models(extent,use_geotop=False, cachedir=cachedir, cachename=cachename)
+        layer_model = nlmod.read.regis.get_combined_layer_models(extent,use_geotop=False)
     return layer_model
 
 def refiner(ds, refineranges, WellGdf):
@@ -232,7 +232,7 @@ def ghb(ds, gwf,cachedir, NLzuid, GHBrange =1000, lhmpath = '..\\Data\\lhm.nc', 
     #Get bigger REGIS extent
     GHBextent = [ds.extent[0] - GHBrange-200,ds.extent[1] + GHBrange+200,  ds.extent[2] - GHBrange-200,ds.extent[3] + GHBrange +200 ]
     CellExt = [ds.x.min().values,ds.x.max().values, ds.y.min().values, ds.y.max().values]
-    layer_model = layermodel(GHBextent,NLzuid,cachedir,"Extended_layer_ds" )
+    layer_model = layermodel(GHBextent,NLzuid)
     #load LHM data
     
     LHM = get_LHM_heads2(lhmpath, ds)
@@ -287,9 +287,9 @@ def gethead2(cell, LHM, ext, GHBrange):
             break
         else:
             lay = 8
-    dy = LHM[f'head_mean_l{lay}'].diff('y').mean()
-    dx = LHM[f'head_mean_l{lay}'].diff('x').mean()
-    mean = LHM[f'head_mean_l{lay}'].mean()
+    dy = LHM[f'head_mean_l{lay}'].diff('y').mean().values
+    dx = LHM[f'head_mean_l{lay}'].diff('x').mean().values
+    mean = LHM[f'head_mean_l{lay}'].mean().values
     if cell.x.values == ext[0]:
         head  = dx * ((ext[1] - ext[0])/2+GHBrange)/250 + mean - dy * (cell.y.values - ymid)/250 
     elif cell.x == ext[1]:

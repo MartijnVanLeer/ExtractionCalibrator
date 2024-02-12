@@ -14,39 +14,48 @@ import Helper
 import os
 import numpy as np
 
+#%%
+def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule":
+    import snakemake as sm
+    workflow = sm.Workflow(snakefile="snakefile")
+    workflow.include(path)
+    return workflow.get_rule(rule)
+
+if "snakemake" not in globals():
+    snakemake = read_snakemake_rule('snakefile','forward_model_ss')
 #%%Settings (model)
-Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
-modelname ='biervoor2018'
+Name = snakemake.params.Name #puttenveld Budel, Schijf, Vlijmen
+modelname =snakemake.params.modelname
 
-Range = 4000 #m Distance from grid border to centre of wells 3200
-GHBrange = 3200 
-delr = delc = 800
-refineranges = {200:4}
+Range = snakemake.params.Range #m Distance from grid border to centre of wells 3200
+GHBrange = snakemake.params.GHBrange
+delr = delc = snakemake.params.delr
+refineranges = snakemake.params.refineranges
 
-steady_state = True
+steady_state = snakemake.params.steady_state
 
 warmup = False if steady_state else True
 use_geotop = False
 NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
 use_knmi = True
-
+cachedir = None
 
 modelname = modelname +  '_ss' if steady_state else modelname + '_t'
     
-startdate = '2014-12-31 00:00:00' #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
-enddate = '2018-06-01 00:00:00' #laatste '2023-12-30 22:00:00'
+startdate = snakemake.params.startdate #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
+enddate = snakemake.params.enddate #laatste '2023-12-30 22:00:00'
 
 #%% Loading data
 
 
 print('Loading files..')
 #Wells
-ExWells = pd.read_csv(f'..\\Data\\dawaco\\winputten_WG_{Name}.csv')
-ObsWells = pd.read_csv(f'..\\Data\\dawaco\\waarnemingsputten_WG_{Name}.csv')
-Discharge_original = pd.read_csv(f'..\\Data\\pidata\\pidata_WG_{Name}.csv')
-ObsHeads = pd.read_csv(f'..\\Data\\dawaco\\stijghoogtereeksen_WG_{Name}.csv')
-lhmpath = '..\\Data\\lhm.nc'
+ExWells = pd.read_csv(os.path.join('..','Data','dawaco',f'winputten_WG_{Name}.csv'))
+ObsWells = pd.read_csv(os.path.join('..','Data','dawaco',f'waarnemingsputten_WG_{Name}.csv'))
+Discharge_original = pd.read_csv(os.path.join('..','Data','pidata',f'pidata_WG_{Name}.csv'))
+ObsHeads = pd.read_csv(os.path.join('..','Data','dawaco',f'stijghoogtereeksen_WG_{Name}.csv'))
+lhmpath = os.path.join('..','Data','lhm.nc')
 
 
 Discharge = Helper.FixTS_Discharge(Discharge_original, startdate, enddate)
@@ -54,9 +63,9 @@ ObsHeads = Helper.FixTS_Obs(ObsHeads, startdate, enddate,ObsWells, Name)
 
 
 if warmup:
-    ExWells_warmup = pd.read_csv(f'..\\Data\\Langjarig\\gwo_data_{Name}_wells.csv', sep = ';')
+    ExWells_warmup = pd.read_csv(os.path.join('..','Data','Langjarig',f'gwo_data_{Name}_wells.csv'), sep = ';')
     ExWellsAll = Helper.Add_warmup_wells(ExWells,ExWells_warmup)
-    Discharge_warmup = pd.read_csv(f'..\\Data\\Langjarig\\gwo_data_{Name}_debieten.csv', sep = ';')
+    Discharge_warmup = pd.read_csv(os.path.join('..','Data','Langjarig',f'gwo_data_{Name}_debieten.csv'), sep = ';')
     Discharge_warmup_fixed = Helper.FixTS_Discharge_warmup(Discharge_warmup, startdate)
     
     Discharge = pd.concat([Discharge, Discharge_warmup_fixed])
@@ -65,38 +74,29 @@ if warmup:
     ExWellsAll = ExWellsAll[ExWellsAll.putcode.isin(list(set(ExWells.putcode).intersection(Discharge.columns)))]
 else:
     ExWellsAll = ExWells
-    
-ExWellsAll, Discharge = Helper.add_refresco(ExWellsAll,Discharge)
-ExWellsAll, Discharge = Helper.add_bier(ExWellsAll,Discharge)
-# ExWellsAll, _ = Helper.add_refresco(ExWellsAll, Discharge)
+
+if Name == 'Budel':    
+    ExWellsAll, Discharge = Helper.add_refresco(ExWellsAll,Discharge)
+    ExWellsAll, Discharge = Helper.add_bier(ExWellsAll,Discharge)
+
 WellGdf = Helper.make_gdf(ExWells,ObsWells)    
     
     
     
-model_ws = f"..\\Results\\{modelname}"
+model_ws = os.path.join('..', 'Results', f"{modelname}")
 
 if not os.path.isdir(model_ws):
     os.mkdir(model_ws)
 
 
-
-if not nlmod.util.check_presence_mfbinaries():
-    nlmod.util.download_mfbinaries()
-# figdir, cachedir = nlmod.util.get_model_dirs(model_ws)
-cachedir=None
-
-
 #%% Read source data
 #To redownload uncomment this
-
-# nlmod.cache.clear_cache(cachedir)
-# for f in os.listdir(cachedir):
-#     os.remove(os.path.join(cachedir, f))
 
 #Regis 
 print('Loading REGIS..')
 extent = Helper.GetExtent(ExWells, Range)
-layer_model = Helper.layermodel(extent, NLzuid,cachedir, "layer_ds")
+layer_model = Helper.layermodel(extent, NLzuid,)
+layer_model.to_netcdf(os.path.join(model_ws, 'layer_model.nc'))
 # print(f'spreidingslengte:{Helper.Spreidingslengte(extent, "PZWAz4","WAk1", layer_model)}') 
 #%% Grid functions
 print('Making grid..')
@@ -115,12 +115,12 @@ print('Loading KNMI..')
 
 if use_knmi and not steady_state:
         ds = nlmod.time.set_ds_time(ds, start =1, time= Discharge.index, steady_start=True)
-        knmi_ds = nlmod.read.knmi.get_recharge(ds, cachedir=ds.cachedir, cachename="recharge", most_common_station=True)
+        knmi_ds = nlmod.read.knmi.get_recharge(ds, cachedir=None, cachename="recharge", most_common_station=True)
         knmi_ds['recharge'].loc['time' == 'startdate'] = knmi_ds.recharge.mean(dim = 'time')
         ds.update(knmi_ds)
 elif use_knmi and steady_state:        
         ds = nlmod.time.set_ds_time(ds, start =Discharge.index[0], time=  Discharge.index[-1], steady=steady_state,steady_start=True)
-        knmi_ds = nlmod.read.knmi.get_recharge(ds, cachedir=cachedir, cachename='recharge')
+        knmi_ds = nlmod.read.knmi.get_recharge(ds, cachedir=None, cachename='recharge')
         ds.update(knmi_ds)
 elif not use_knmi and not steady_state:
         ds = nlmod.time.set_ds_time(ds, start =1, time= Discharge.index, steady_start=True)
@@ -215,17 +215,17 @@ if not steady_state:
 #%%
 # plot head in extraction layer
 
-if not steady_state:   
-    Helper.PlotPumpedHeads(ds,gwf,400, tstep = '2019-05-25 00:00:00')
-else:
-    Helper.PlotPumpedHeads(ds,gwf,0, tstep = '2015-01-01')
+# if not steady_state:   
+#     Helper.PlotPumpedHeads(ds,gwf,400, tstep = '2019-05-25 00:00:00')
+# else:
+#     Helper.PlotPumpedHeads(ds,gwf,0, tstep = '2015-01-01')
 #%%
-import Helper
-Helper.plot_mean_res(ObsHeads,ModHeads, ObsWells, steady_state, depth = 350, tail = 365*1)
+# import Helper
+# Helper.plot_mean_res(ObsHeads,ModHeads, ObsWells, steady_state, depth = 350, tail = 365*1)
 
 #%%
-import Helper
-Helper.plot_map(ds, gwf, 'ghb_head', 'KIz5')
+# import Helper
+# Helper.plot_map(ds, gwf, 'ghb_head', 'KIz5')
 
 
 

@@ -8,15 +8,16 @@ import Heterogeniteit as h
 import xarray as xr
 import SISIM_R
 from timeit import default_timer as timer
-import os
+from os.path import join
 from tqdm import tqdm
 
-
-start = timer()
-folder = 'Vlijmen'
-borefolder = '..\Data\Boringen Vlijmen\Boormonsterprofiel_Geologisch booronderzoek\\'
-ncpath = f"..\Results\{folder}\cache\layer_ds.nc"
-Kpath = r"C:\Users\leermdv\OneDrive - TNO\Documents\Python Scripts\RF-Kv\Data\AllDB.csv"
+Location = 'Vlijmen'
+modelname = 'Budel400'
+TI = False
+borefolder = join("..",'Data',f'Boringen {Location}',r'Boormonsterprofiel_Geologisch booronderzoek')
+ncpath =join('..','Results',modelname,'cache', 'layer_ds.nc')
+TIpath = join("..",'Data','AllDB.csv')
+RegCat = join('..', 'Data','REGIS_catalogus_export18122015.xlsx' )
 
 Layer = 'WAk2'
 
@@ -32,16 +33,17 @@ cond = boringen.indicators(g1 = ['v', 'k', 'kz'])
 #plot hoofdgrondsoort 
 boringen.plot_lith_dist()
 
-Kcore = h.KDist(Kpath, Layer)
-Kcore.plot_dist()
+if TI:
+    Kcore = h.KDist(TIpath, Layer)
+    Kcore.plot_dist()
+else:
+    Kcore = h.Kreg(RegCat, Layer)
 
 rn = boringen.plot_K_weighted(Kcore)
 #Trek K uit Kcore en voeg toe aan boringlijst
 # cond.add_k(Kcore)
 
-print(f'{round(timer() - start,1)} s elapsed to prepare data')
-
-boringen.list.to_csv(f'../Results/{folder}/boreholeindicators.csv')
+boringen.list.to_csv(f'../Results/{Location}/boreholeindicators.csv')
 
 #%%
 
@@ -75,7 +77,7 @@ for xcorlen in tqdm(xcorlens, position = 1):
             print(f'{round(timer() - start,1)} s for conditional simulation')
             
             Kfields = boringen.add_k(res)
-            if not os.path.isdir(f'../Results/{folder}/KfieldsQC'):
-                os.mkdir(f'../Results/{folder}/KfieldsQC')
-            res.to_csv(f'../Results/{folder}/KfieldsQC/Ind_x{xcorlen}_z{zcorlen}_f{frac}_n{ens_no}')
-            Kfields.to_csv(f'../Results/{folder}/KfieldsQC/K_x{xcorlen}_z{zcorlen}_f{frac}_n{ens_no}')
+            if not os.path.isdir(f'../Results/{Location}/KfieldsQC'):
+                os.mkdir(f'../Results/{Location}/KfieldsQC')
+            res.to_csv(f'../Results/{Location}/KfieldsQC/Ind_x{xcorlen}_z{zcorlen}_f{frac}_n{ens_no}')
+            Kfields.to_csv(f'../Results/{Location}/KfieldsQC/K_x{xcorlen}_z{zcorlen}_f{frac}_n{ens_no}')

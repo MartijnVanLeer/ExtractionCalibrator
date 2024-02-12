@@ -1,3 +1,6 @@
 /Results
 /Data
 /datalevelering_tno_20230417
+/scripts/__pycache__
+/scripts/.snakemake
+/scripts/%LOCALAPPDATA%

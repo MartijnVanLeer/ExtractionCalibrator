@@ -11,12 +11,17 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 #Setting
 
-# Location = 'Vlijmen'
-# model_name = 'Vlijmen_ss'
-# SensLayers = ['WAk2', 'PZWAz3', 'PZWAz4']
+def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule":
+    import snakemake as sm
+    workflow = sm.Workflow(snakefile="snakefile")
+    workflow.include(path)
+    return workflow.get_rule(rule)
 
-Location = 'Budel'
-model_name = 'voor2018'
+if "snakemake" not in globals():
+    snakemake = read_snakemake_rule('snakefile','calibration_t')
+
+Location = snakemake.params.Name
+model_name = snakemake.params.modelname
 
 BestParams = pd.read_csv((f'..//Data/Preprocessed//BestParams_SS_{model_name}.csv'))
 BestK = BestParams[BestParams['Unnamed: 0'].str[-1] != 'b']
@@ -26,7 +31,7 @@ ObsWells = pd.read_csv(f'..//Data/Preprocessed//ObsForCalibration_{model_name}_S
 ObsHeads = pd.read_csv(f'..//Data/Preprocessed//ObsHeads_SS_{model_name}.csv', index_col = 'Time')
 ObsHeads.index =  pd.DatetimeIndex(ObsHeads.index)
 
-CorLayers = {'KIz4' : 'KIz5'}
+CorLayers = snakemake.params.CorLayers
 SensLayers = idx.SensLayers.values
 
 
@@ -90,6 +95,11 @@ for x in range(len(result.x)):
     
 residuals, df, ObsHeads = OptimisationFuncs.run_best_result_transient(best_params_t,sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto)
 
+
+df.to_csv(os.path.join('..','Data','Preprocessed',f'ModHead_{model_name}.csv'))
+ObsHeads.to_csv(os.path.join('..','Data','Preprocessed',f'ObsHead_{model_name}.csv'))
+best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Value'])
+best_paramdf.to_csv(os.path.join('..','Data','Preprocessed',f'BestParams_t_{model_name}.csv'))
 #%%plot 
 for lay in [16,18,20,21]:
     dfsel = df[ObsWells[ObsWells['Layno'] == lay].putcode]
@@ -105,6 +115,7 @@ for lay in [16,18,20,21]:
         ax.legend()
         
     fig.suptitle(lay)
+    fig.save_
     plt.tight_layout()
     plt.show()
 

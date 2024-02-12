@@ -17,20 +17,23 @@ import nlmod
 import seaborn as sns
 #Setting
 
-# Location = 'Vlijmen'
-# model_name = 'Vlijmen_ss'
-# SensLayers = ['WAk2', 'PZWAz3', 'PZWAz4']
+def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule":
+    import snakemake as sm
+    workflow = sm.Workflow(snakefile="snakefile")
+    workflow.include(path)
+    return workflow.get_rule(rule)
 
-Location = 'Budel'
-model_name = 'biervoor2018'
-SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
-# SensLayers = ['KIk2','KIz3','KIk3']
-CorLayers = {}
-CorLayers = {'KIz4' : 'KIz5'}
-ghbCal = 'SensLayers' # 'obs', 'Single', None
-KCal = True
-Weighted = False
-BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] # alleen begin'B57E0082_7','B57E0147_4'
+if "snakemake" not in globals():
+    snakemake = read_snakemake_rule('snakefile','calibration_ss')
+
+Location = snakemake.params.Name
+model_name = snakemake.params.modelname
+SensLayers = snakemake.params.SensLayers
+CorLayers = snakemake.params.CorLayers
+ghbCal = snakemake.params.ghbCal # 'obs', 'Single', None
+KCal = snakemake.params.KCal
+Weighted = snakemake.params.Weighted
+BadWells =snakemake.params.BadWells # alleen begin'B57E0082_7','B57E0147_4'
 
 
 #%% Load model and dataset
@@ -86,7 +89,7 @@ Best = ObsWells[ObsWells['Sensitivity'] > 0.01]
 Best = Best[~Best.putcode.isin(BadWells)]
 if Weighted: 
     Best = Best.drop_duplicates(subset = ['Sensitivity'])
-Best.to_csv(os.path.join(f'..//Data/Preprocessed//ObsForCalibration_{Location}.csv'))
+Best.to_csv(os.path.join('..','Data','Preprocessed',f'ObsForCalibration_{Location}.csv'))
 ObsWells.to_csv(os.path.join(destFolder,'ObsWellsSens.csv'))
 
 #%%Calibrate ss
@@ -147,8 +150,8 @@ ax.axline([min(ObsWells.ObsHeadsSS), min(ObsWells.ObsHeadsSS)],[max(ObsWells.Obs
 
 #%%
 best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Value'])
-ObsWells.to_csv(os.path.join(f'..//Data/Preprocessed//ObsForCalibration_{model_name}_SS.csv'))
-best_paramdf.to_csv(f'..//Data/Preprocessed//BestParams_SS_{model_name}.csv')
-idx.to_csv(f'..//Data/Preprocessed//idx_SS_{model_name}.csv')
-ObsHeads.to_csv(f'..//Data/Preprocessed//ObsHeads_SS_{model_name}.csv')
+ObsWells.to_csv(os.path.join('..','Data','Preprocessed',f'ObsForCalibration_{model_name}_SS.csv'))
+best_paramdf.to_csv(os.path.join('..','Data','Preprocessed',f'BestParams_SS_{model_name}.csv'))
+idx.to_csv(os.path.join('..','Data','Preprocessed',f'idx_SS_{model_name}.csv'))
+ObsHeads.to_csv(os.path.join('..','Data','Preprocessed',f'ObsHeads_SS_{model_name}.csv'))
 

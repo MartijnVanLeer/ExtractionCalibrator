@@ -221,7 +221,7 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
     residuals = sum(residuals**2)
-    # sleep(0.5)
+    sleep(0.5)
     return residuals 
 
 def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal,KCal):

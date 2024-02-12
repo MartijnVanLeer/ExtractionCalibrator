@@ -14,6 +14,7 @@ import numpy as np
 import seaborn as sns
 import scipy.stats
 from tqdm import tqdm
+import io
 
 class boringen():
     def __init__(self, folder):
@@ -26,10 +27,15 @@ class boringen():
         for file in tqdm(csv_files, 'Read borehole files..'):
             name = file.split('\\')[-1].split('.')[0]
             #metadata
-            md = pd.read_csv(file,sep = ': \t', nrows=26, engine='python',)
+            with open(file) as f:
+                text = f.read()
+            sections = text.split('LITHOLOGIE LAGEN')
+            mdtext = io.StringIO(sections[0])
+            md = pd.read_csv(mdtext,sep = ': \t', engine='python',)
             metadata.append(md)
             #boreholes
-            bh = pd.read_csv(file, skiprows = range(0,27), sep = '\t', index_col = False, engine='python')
+            bhtext = io.StringIO(sections[1].split('LITHOLOGIE SUBLAGEN')[0])
+            bh = pd.read_csv(bhtext, sep = '\t', skiprows = [0], index_col = False, engine='python')
             bh['Bovenkant laag (m beneden maaiveld)'] = bh['Bovenkant laag (m beneden maaiveld)'].round()
             bh['Onderkant laag (m beneden maaiveld)'] = bh['Onderkant laag (m beneden maaiveld)'].round()
             result = []
@@ -188,6 +194,7 @@ class boringen():
     
 class KDist():
     def __init__(self,folder, layer):
+        self.type = 'TI'
         stratls = [char for char in layer if char.isupper()]
         self.strat = "".join(stratls)
         self.full = pd.read_csv(folder)
@@ -219,7 +226,19 @@ class KDist():
             y_pdf = scipy.stats.norm.pdf(x_pdf, mu, std)
             ax.plot(x_pdf, y_pdf, c = 'r')
 
-        
+class Kreg():
+    def __init__(self,folder, layer):
+        self.type = 'REG'
+        stratls = [char for char in layer if char.isupper()]
+        self.strat = "".join(stratls)
+        self.full = pd.read_excel(folder, sheet_name = 'REGIS_catalogus')
+        self.layer = layer
+        dist = self.full[self.full['UNIT_CD'] == self.strat]
+        self.dist = dist[dist['HYD_VERSION'] == 'v02r2']
+        self.dist = self.dist[['LITHO_CLASS_CD','MIN_KV','MEAN_KV','MAX_KV']]
+
+        for col in ['MIN_KV','MEAN_KV','MAX_KV']:
+            self.dist[col] = np.log10(self.dist.col)
     
 def annotate(data, **kws):
     n = len(data)
