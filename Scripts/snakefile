@@ -1,15 +1,15 @@
 import os
 #Settings steady state
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
-modelname ='rescheck'
+modelname ='grof'
 
 Range = 4800 #m Distance from grid border to centre of wells 3200
 GHBrange = 200 
 delr = 800
-refineranges = {2000:1,1000:2,200:4}
+refineranges = {500:4}
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
-enddate = '2023-12-30 22:00:00'#'2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
-drainC = 10
+enddate = '2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
+drainC = 1
 
 #Settings calibration
 SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
@@ -79,8 +79,8 @@ rule calibration_ss:
         Weighted = Weighted,
         BadWells = BadWells,
     output:
-       os.path.join('..\\Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
-       os.path.join('..\\Results',f'{modelname}',f'BestParams_SS_{modelname}.csv')
+       os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
+       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv')
     script:
        'Sensitivity.py'
 
