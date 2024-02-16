@@ -9,8 +9,8 @@ delr = 400
 refineranges = {300:4}
 steady_state = False
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
-enddate = '2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
-
+enddate = '2023-12-30 22:00:00'#'2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
+drainC = 10
 
 #Settings calibration
 SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
@@ -43,6 +43,7 @@ rule forward_model_ss:
         steady_state = True,
         startdate = startdate,
         enddate = enddate
+        drainC = drainC
     script:
        'ForwardModelGen.py'
        
@@ -61,6 +62,7 @@ rule forward_model_t:
         steady_state = False,
         startdate = startdate,
         enddate = enddate,
+        drainC = drainC 
     script:
        'ForwardModelGen.py'
 
