@@ -24,8 +24,8 @@ simlayer = 'KIk2'
 
 rule all: 
     input:
-        os.path.join('..\\Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..\\Results',f'{modelname}',f'ModHead_{modelname}.csv')
+        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv')
 
 rule forward_model_ss:
     input:
@@ -87,15 +87,15 @@ rule calibration_ss:
 rule calibration_t:
     input:
        'Calibration.py',
-       os.path.join('..\\Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
+       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
        os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds')
     params:
         Name = Name,
         modelname = modelname,
         CorLayers = CorLayers,
     output:
-        os.path.join('..\\Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..\\Results',f'{modelname}',f'ModHead_{modelname}.csv')
+        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv')
     script:
        'Calibration.py'
        
