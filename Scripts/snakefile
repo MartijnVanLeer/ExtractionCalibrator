@@ -1,13 +1,12 @@
 import os
 #Settings steady state
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
-modelname ='NoDrain'
+modelname ='rescheck'
 
-Range = 4000 #m Distance from grid border to centre of wells 3200
-GHBrange = 2000 
-delr = 400
-refineranges = {300:4}
-steady_state = False
+Range = 4800 #m Distance from grid border to centre of wells 3200
+GHBrange = 200 
+delr = 800
+refineranges = {2000:1,1000:2,200:4}
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
 enddate = '2023-12-30 22:00:00'#'2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
 drainC = 10
@@ -18,7 +17,7 @@ CorLayers = {'KIz4' : 'KIz5'}
 ghbCal = 'SensLayers' # 'obs', 'Single', None
 KCal = True
 Weighted = False
-BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
+BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1','B57E0081_4','B57E0081_3'] #Budel
 
 #Settings conditional simulation
 simlayer = 'KIk2'
