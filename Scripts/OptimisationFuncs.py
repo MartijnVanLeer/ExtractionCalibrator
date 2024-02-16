@@ -62,14 +62,14 @@ def copyOriginalFolder(modelName, orgFolder ,destFolder , mfsimPrefix):
         copyfile(orgFolder+ package,destFolder+ package)
         
 def readObs(Location,gwf,ds):
-    ObsWells = pd.read_csv(f'..\\Data\\dawaco\\waarnemingsputten_WG_{Location}.csv')
+    ObsWells = pd.read_csv(os.path.join('..','Data','dawaco',f'waarnemingsputten_WG_{Location}.csv'))
     ObsWells['putcode'] = ObsWells['putcode'].astype(str) + '_' +ObsWells['filter_nummer'].astype(str)
     ObsWells['putcode'] = ObsWells.putcode.str.rstrip('.0')   
     ObsWells = add_cellid(ObsWells,gwf,ds)
     return ObsWells
 
 def GetObs(model_name, Location, idx,ds):
-    ObsWells = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
+    ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
     ObsHeads = pd.read_csv(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Location}.csv'), index_col= 'Time')
     ObsWells = ObsWells[ObsWells['Layno'].isin(idx.idx)]
     columns = list(set(ObsWells.putcode).intersection(ObsHeads.columns))

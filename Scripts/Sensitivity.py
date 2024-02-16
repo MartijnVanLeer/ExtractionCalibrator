@@ -38,7 +38,7 @@ BadWells =snakemake.params.BadWells # alleen begin'B57E0082_7','B57E0147_4'
 
 #%% Load model and dataset
 # Make new folder where files are edited 
-orgFolder = os.path.join('..\\Results',f'{model_name}', f'{model_name}_ss\\')
+orgFolder = os.path.join('..\\Results',f'{model_name}', f'{model_name}_ss')
 destFolder = os.path.join(orgFolder, 'Fitter', '')
 OptimisationFuncs.copyOriginalFolder(model_name + '_ss', orgFolder ,destFolder , 'Fitter\\' )
 
