@@ -59,7 +59,7 @@ def copyOriginalFolder(modelName, orgFolder ,destFolder , mfsimPrefix):
     if os.path.exists(os.path.join(orgFolder,f'{modelName}.rch_ts')):
         packageFiles.append(f'{modelName}.rch_ts')
     for package in packageFiles:
-        copyfile(orgFolder+ package,destFolder+ package)
+        copyfile(os.path.join(orgFolder,package),os.path.join(destFolder, package))
         
 def readObs(Location,gwf,ds):
     ObsWells = pd.read_csv(os.path.join('..','Data','dawaco',f'waarnemingsputten_WG_{Location}.csv'))
