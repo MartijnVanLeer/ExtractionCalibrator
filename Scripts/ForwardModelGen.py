@@ -189,7 +189,7 @@ ds.update(nlmod.grid.mask_model_edge(ds))
 ghb = Helper.ghb(ds, gwf,cachedir,NLzuid, GHBrange, lhmpath = lhmpath, delr = delr)
 Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
 #Create drain packakge
-drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=10, elev = 'top')
+# drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=1, elev = 'top')
 
 # riv = Helper.riv(ds,gwf)
 
