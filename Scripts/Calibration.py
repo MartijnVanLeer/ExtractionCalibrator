@@ -26,9 +26,9 @@ model_name = snakemake.params.modelname
 BestParams = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
 BestK = BestParams[BestParams['Unnamed: 0'].str[-1] != 'b']
 BestGhb = BestParams[BestParams['Unnamed: 0'].str[-1] == 'b']
-idx = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
-ObsWells = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
-ObsHeads = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'), index_col = 'Time')
+idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
+ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
+ObsHeads = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'), index_col = 'Time')
 ObsHeads.index =  pd.DatetimeIndex(ObsHeads.index)
 
 CorLayers = snakemake.params.CorLayers
