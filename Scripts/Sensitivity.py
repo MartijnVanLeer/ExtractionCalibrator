@@ -89,7 +89,7 @@ Best = ObsWells[ObsWells['Sensitivity'] > 0.01]
 Best = Best[~Best.putcode.isin(BadWells)]
 if Weighted: 
     Best = Best.drop_duplicates(subset = ['Sensitivity'])
-Best.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
+Best.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
 ObsWells.to_csv(os.path.join(destFolder,'ObsWellsSens.csv'))
 
 #%%Calibrate ss
