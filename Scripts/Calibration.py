@@ -23,12 +23,12 @@ if "snakemake" not in globals():
 Location = snakemake.params.Name
 model_name = snakemake.params.modelname
 
-BestParams = pd.read_csv((f'..//Data/Preprocessed//BestParams_SS_{model_name}.csv'))
+BestParams = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
 BestK = BestParams[BestParams['Unnamed: 0'].str[-1] != 'b']
 BestGhb = BestParams[BestParams['Unnamed: 0'].str[-1] == 'b']
-idx = pd.read_csv(f'..//Data/Preprocessed//idx_SS_{model_name}.csv')
-ObsWells = pd.read_csv(f'..//Data/Preprocessed//ObsForCalibration_{model_name}_SS.csv')
-ObsHeads = pd.read_csv(f'..//Data/Preprocessed//ObsHeads_SS_{model_name}.csv', index_col = 'Time')
+idx = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
+ObsWells = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
+ObsHeads = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'), index_col = 'Time')
 ObsHeads.index =  pd.DatetimeIndex(ObsHeads.index)
 
 CorLayers = snakemake.params.CorLayers
@@ -40,8 +40,8 @@ SensLayers = idx.SensLayers.values
 
 #%% Load model and dataset
 # Make new folder where files are edited 
-orgFolder = os.path.join('..\\Results', f'{model_name}_t\\')
-destFolder = os.path.join(orgFolder, 'Fitter\\')
+orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','')
+destFolder = os.path.join(orgFolder, 'Fitter','')
 OptimisationFuncs.copyOriginalFolder(model_name + '_t', orgFolder ,destFolder , 'Fitter\\' )
 
 #Load model and obs
@@ -73,7 +73,7 @@ initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.25)
 
 
 NMoptions = {'adaptive': True,
-              'maxfev' :200,
+              'maxfev' :10,
               'initial_simplex' : initsimplex,
              'xatol' : 0.1, #both xatol and fatol needed for termination
              'fatol' : 10
@@ -96,17 +96,18 @@ for x in range(len(result.x)):
 residuals, df, ObsHeads = OptimisationFuncs.run_best_result_transient(best_params_t,sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto)
 
 
-df.to_csv(os.path.join('..','Data','Preprocessed',f'ModHead_{model_name}.csv'))
-ObsHeads.to_csv(os.path.join('..','Data','Preprocessed',f'ObsHead_{model_name}.csv'))
+df.to_csv(os.path.join('..\\Results',f'{model_name}',f'ModHead_{model_name}.csv'))
+ObsHeads.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsHead_{model_name}.csv'))
 best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Value'])
-best_paramdf.to_csv(os.path.join('..','Data','Preprocessed',f'BestParams_t_{model_name}.csv'))
+best_paramdf.to_csv(os.path.join('..\\Results',f'{model_name}',f'BestParams_t_{model_name}.csv'))
+
 #%%plot 
-for lay in [16,18,20,21]:
+for lay in idx[idx.laytype =='z'].idx.values:
     dfsel = df[ObsWells[ObsWells['Layno'] == lay].putcode]
     obssel = ObsHeads[ObsWells[ObsWells['Layno'] == lay].putcode]
 
     fig, axes = plt.subplots(nrows=len(dfsel.columns), ncols=1, figsize=(10, 2 * (len(dfsel.columns))))
-    
+    fig.set_dpi(600)
     for i, column in enumerate(dfsel.columns):  # Exclude the timestamp column
         ax = axes[i]
         ax.plot(dfsel.index, dfsel[column], label='Mod')
@@ -115,10 +116,9 @@ for lay in [16,18,20,21]:
         ax.legend()
         
     fig.suptitle(lay)
-    fig.save_
+    
     plt.tight_layout()
-    plt.show()
-
+    fig.save_fig(os.path.join('..\\Results',f'{model_name}',f'{lay}_Obs_Mod_heads.png'))
 #%%
 
 fig = plt.figure(figsize=(30,10))    

@@ -69,8 +69,8 @@ def readObs(Location,gwf,ds):
     return ObsWells
 
 def GetObs(model_name, Location, idx,ds):
-    ObsWells = pd.read_csv(f'..//Data/Preprocessed//ObsForCalibration_{Location}.csv')
-    ObsHeads = pd.read_csv(f'..//Data/Preprocessed//stijghoogtereeksen_{Location}.csv', index_col= 'Time')
+    ObsWells = pd.read_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
+    ObsHeads = pd.read_csv(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Location}.csv'), index_col= 'Time')
     ObsWells = ObsWells[ObsWells['Layno'].isin(idx.idx)]
     columns = list(set(ObsWells.putcode).intersection(ObsHeads.columns))
     ObsHeads = ObsHeads[columns]

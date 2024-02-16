@@ -96,12 +96,12 @@ def FixTS_Obs(TS, startdate, enddate, ObsWells, Name):
         
         TS = TS.resample('D').mean()
         TS = TS.loc[startdate:enddate]
-        if not os.path.isfile(f'..\\Data\\Preprocessed\\stijghoogtereeksen_{Name}.csv'):
-            TS.to_csv(f'..\\Data\\Preprocessed\\stijghoogtereeksen_{Name}.csv', index = True)
+        if not os.path.isfile(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Name}.csv')):
+            TS.to_csv(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Name}.csv'), index = True)
         return TS
 
 def add_refresco(ExWells,Discharge):
-    wells = pd.read_csv('..\\Data\\dawaco\\winputten_refresco.csv', delimiter= ';', index_col = False)
+    wells = pd.read_csv(os.path.join('..','Data','dawaco','winputten_refresco.csv'), delimiter= ';', index_col = False)
     ExWells = pd.concat([ExWells,wells], ignore_index = True)
     for well in wells.putcode.values:
         Discharge[well] = np.nan
@@ -118,7 +118,7 @@ def add_refresco(ExWells,Discharge):
     return ExWells, Discharge
 
 def add_bier(ExWells,Discharge):
-    wells = pd.read_csv('..\\Data\\dawaco\\winputten_budel.csv', delimiter= ';', index_col = False)
+    wells = pd.read_csv(os.path.join('..','Data','dawaco','winputten_budel.csv'), delimiter= ';', index_col = False)
     ExWells = pd.concat([ExWells,wells], ignore_index=True)
     for well in wells.putcode.values:
         Discharge[well] = np.nan
@@ -139,7 +139,7 @@ def make_gdf(ExWells,ObsWells):
     WellGdf = gpd.GeoDataFrame(pd.concat([ExWellGdf,ObsWellGdf]))
     return WellGdf
 
-def layermodel(extent, NLzuid,nlzuidpad = r"\\Tsn.tno.nl\data\projects\060\5\52146\Werkdocumenten\03_grondwaterdynamiek\03_testlocatieZeeland\PhDopschaling\Brabantwater\netcdfs\\NLZuidmodel.nc"):
+def layermodel(extent, NLzuid,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel.nc')):
     if NLzuid: 
         layer_model_full = xr.open_dataset(nlzuidpad)
         layer_model_sel = layer_model_full.sel(x = slice(extent[0], extent[1]), y = slice(extent[3], extent[2]))
@@ -162,8 +162,8 @@ def refiner(ds, refineranges, WellGdf):
 
 def resample(ds, layer_model, NLzuid):
     # if not NLzuid:
-    kv = nlmod.resample.structured_da_to_ds(layer_model.kv.sel(layer = ds.layer), ds, method='average')
-    kh = nlmod.resample.structured_da_to_ds(layer_model.kh.sel(layer = ds.layer), ds, method='average')
+    kv = nlmod.resample.structured_da_to_ds(layer_model.kv.sel(layer = ds.layer), ds, method='nearest')
+    kh = nlmod.resample.structured_da_to_ds(layer_model.kh.sel(layer = ds.layer), ds, method='nearest')
     ds['kh'], ds['kv'] = nlmod.layers.get_kh_kv(kh, kv, anisotropy = 10)
     # ds['top'] = nlmod.resample.structured_da_to_ds(layer_model.top, ds, method='average').sel(layer = ds.layer[0])
     # ds['botm'] = nlmod.resample.structured_da_to_ds(layer_model.botm, ds, method='nearest')

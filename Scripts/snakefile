@@ -1,12 +1,12 @@
 import os
 #Settings steady state
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
-modelname ='Budel400'
+modelname ='NoDrain'
 
-Range = 3200 #m Distance from grid border to centre of wells 3200
-GHBrange = 3200 
+Range = 4000 #m Distance from grid border to centre of wells 3200
+GHBrange = 2000 
 delr = 400
-refineranges = {200:4}
+refineranges = {300:4}
 steady_state = False
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
 enddate = '2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
@@ -20,16 +20,19 @@ KCal = True
 Weighted = False
 BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
 
+#Settings conditional simulation
+simlayer = 'KIk2'
+
 rule all: 
     input:
-        os.path.join('..','Data','Preprocessed',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..','Data','Preprocessed',f'ModHead_{modelname}.csv')
+        os.path.join('..\\Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        os.path.join('..\\Results',f'{modelname}',f'ModHead_{modelname}.csv')
 
 rule forward_model_ss:
     input:
         'ForwardModelGen.py'
     output:
-        f'../Results/{modelname}_ss/{modelname}_ss.hds'
+        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds')
     params:
         Name = Name,
         modelname = modelname,
@@ -47,7 +50,7 @@ rule forward_model_t:
     input:
         'ForwardModelGen.py',
     output:
-        f'../Results/{modelname}_t/{modelname}_t.hds'
+        os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds'),
     params:
         Name = Name ,
         modelname = modelname,
@@ -63,7 +66,7 @@ rule forward_model_t:
 
 rule calibration_ss:
     input:
-       f'../Results/{modelname}_t/{modelname}_ss.hds',
+       os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
        'Sensitivity.py'
     params:
         Name = Name,
@@ -75,22 +78,35 @@ rule calibration_ss:
         Weighted = Weighted,
         BadWells = BadWells,
     output:
-       os.path.join('..','Data','Preprocessed',f'ObsForCalibration_{modelname}_SS.csv'),
-       os.path.join('..','Data','Preprocessed',f'BestParams_SS_{modelname}.csv')
+       os.path.join('..\\Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
+       os.path.join('..\\Results',f'{modelname}',f'BestParams_SS_{modelname}.csv')
     script:
        'Sensitivity.py'
 
 rule calibration_t:
     input:
        'Calibration.py',
-       os.path.join('..','Data','Preprocessed',f'BestParams_SS_{modelname}.csv'),
-       f'../Results/{modelname}_t/{modelname}_t.hds'
+       os.path.join('..\\Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
+       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds')
     params:
         Name = Name,
         modelname = modelname,
         CorLayers = CorLayers,
     output:
-        os.path.join('..','Data','Preprocessed',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..','Data','Preprocessed',f'ModHead_{modelname}.csv')
+        os.path.join('..\\Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        os.path.join('..\\Results',f'{modelname}',f'ModHead_{modelname}.csv')
     script:
        'Calibration.py'
+       
+rule condsim:
+    input:
+       'condsim.py',
+       os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+    params:
+        Name = Name,
+        modelname = modelname,
+        simlayer = simlayer
+    output:
+        os.path.join('..' ,'Results',f'{modelname}_t','KfieldsQC')
+    script:
+       'condsim.py'

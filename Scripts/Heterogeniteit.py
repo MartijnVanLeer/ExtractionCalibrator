@@ -103,7 +103,7 @@ class boringen():
                         lith.append('zf')
             elif row.Hoofdgrondsoort == 'leem':
                 lith.append('kz')
-            elif row.Hoofdgrondsoort == 'veen':
+            elif row.Hoofdgrondsoort in ['veen', 'bruinkool']:
                 lith.append('v')
             elif row.Hoofdgrondsoort == 'grind':
                 lith.append('zg')
@@ -151,14 +151,18 @@ class boringen():
         sns.histplot(self.list, x = 'Lithoclass',ax = ax)
         ax.set_title('Local lithoclass distribution')
         
-    def plot_K_weighted(self, Kcore):
+    def plot_K_weighted(self, Kcore, TI):
         rn = []
         lth = []
         rng = np.random.default_rng()
         for col in self.list.Lithoclass.unique():
             count = self.list.Lithoclass[self.list.Lithoclass == col].count()
-            sel = Kcore.dist[Kcore.dist['LTH_klass_toegekend'] == col]['logk']
-            draw = rng.normal(sel.mean(), sel.std(), count)
+            if TI:
+                sel = Kcore.dist[Kcore.dist['LTH_klass_toegekend'] == col]['logk']
+                draw = rng.normal(sel.mean(), sel.std(), count)
+            else:
+                sel = Kcore.dist[Kcore.dist['LITHO_CLASS_CD'] == col]
+                draw = pert(sel.MIN_KV.values, sel.MEAN_KV.values,sel.MAX_KV.values, count)
             for x in draw:
                 rn.append(x)
                 lth.append(col)
@@ -225,20 +229,31 @@ class KDist():
             x_pdf = np.linspace(x0,x1,100)
             y_pdf = scipy.stats.norm.pdf(x_pdf, mu, std)
             ax.plot(x_pdf, y_pdf, c = 'r')
+        fp.savefig()
 
 class Kreg():
     def __init__(self,folder, layer):
         self.type = 'REG'
         stratls = [char for char in layer if char.isupper()]
         self.strat = "".join(stratls)
-        self.full = pd.read_excel(folder, sheet_name = 'REGIS_catalogus')
+        self.full = pd.read_csv(folder, delimiter = ';')
         self.layer = layer
         dist = self.full[self.full['UNIT_CD'] == self.strat]
         self.dist = dist[dist['HYD_VERSION'] == 'v02r2']
         self.dist = self.dist[['LITHO_CLASS_CD','MIN_KV','MEAN_KV','MAX_KV']]
 
         for col in ['MIN_KV','MEAN_KV','MAX_KV']:
-            self.dist[col] = np.log10(self.dist.col)
+            self.dist[col] = np.log10(self.dist[col])
+        self.dist['minfac'] = self.dist.MEAN_KV/self.dist.MIN_KV
+        self.dist['maxfac'] = self.dist.MAX_KV/self.dist.MEAN_KV
+        self.dist.replace('kk', 'k', inplace = True)
+        self.dist.replace('b', 'v', inplace = True)
+
+def pert(mini, mean, maxi, size=1, lamb=4):
+    r = maxi - mini
+    alpha = 1 + lamb * (mean - mini) / r
+    beta = 1 + lamb * (maxi - mean) / r
+    return mini + np.random.beta(alpha, beta, size=size) * r
     
 def annotate(data, **kws):
     n = len(data)

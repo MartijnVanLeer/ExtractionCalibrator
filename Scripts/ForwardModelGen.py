@@ -12,7 +12,6 @@ import flopy
 import pandas as pd
 import Helper
 import os
-import numpy as np
 
 #%%
 def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule":
@@ -22,10 +21,13 @@ def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule":
     return workflow.get_rule(rule)
 
 if "snakemake" not in globals():
-    snakemake = read_snakemake_rule('snakefile','forward_model_ss')
+    snakemake = read_snakemake_rule(r"C:\Users\leermdv\OneDrive - TNO\Documents\Python Scripts\ExtractionCalibrator\Scripts\snakefile",'forward_model_t')
 #%%Settings (model)
 Name = snakemake.params.Name #puttenveld Budel, Schijf, Vlijmen
-modelname =snakemake.params.modelname
+modelname_base =snakemake.params.modelname
+if not os.path.isdir(os.path.join('..', 'Results', f"{modelname_base}", )):
+    os.mkdir(os.path.join('..', 'Results', f"{modelname_base}", ))
+
 
 Range = snakemake.params.Range #m Distance from grid border to centre of wells 3200
 GHBrange = snakemake.params.GHBrange
@@ -41,10 +43,16 @@ use_ahn = False #True if Name == 'Budel' else False
 use_knmi = True
 cachedir = None
 
-modelname = modelname +  '_ss' if steady_state else modelname + '_t'
-    
+
+
+  
 startdate = snakemake.params.startdate #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
 enddate = snakemake.params.enddate #laatste '2023-12-30 22:00:00'
+
+modelname = modelname_base +  '_ss' if steady_state else modelname_base + '_t'
+
+if not nlmod.util.check_presence_mfbinaries():
+    nlmod.util.download_mfbinaries()
 
 #%% Loading data
 
@@ -83,7 +91,7 @@ WellGdf = Helper.make_gdf(ExWells,ObsWells)
     
     
     
-model_ws = os.path.join('..', 'Results', f"{modelname}")
+model_ws = os.path.join('..', 'Results', f"{modelname_base}", f"{modelname}")
 
 if not os.path.isdir(model_ws):
     os.mkdir(model_ws)
@@ -149,7 +157,7 @@ else:
     )
 
 # create ims
-ims = nlmod.sim.ims(sim, complexity = 'COMPLEX')
+ims = nlmod.sim.ims(sim, complexity = 'COMPLEX') #'MODERATE'
 
 # create groundwater flow model
 gwf = nlmod.gwf.gwf(ds, sim)
@@ -180,10 +188,10 @@ print('GHB package..')
 ds.update(nlmod.grid.mask_model_edge(ds))
 ghb = Helper.ghb(ds, gwf,cachedir,NLzuid, GHBrange, lhmpath = lhmpath, delr = delr)
 Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
-#Create drain packakge from AHN 
-drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=1, elev = 'top')
+#Create drain packakge
+# drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=100, elev = 'top')
 
-riv = Helper.riv(ds,gwf)
+# riv = Helper.riv(ds,gwf)
 
 print('WEL package..')
 #Create recharge packagefrom KNMI

@@ -38,7 +38,7 @@ BadWells =snakemake.params.BadWells # alleen begin'B57E0082_7','B57E0147_4'
 
 #%% Load model and dataset
 # Make new folder where files are edited 
-orgFolder = os.path.join('..\\Results', f'{model_name}_ss\\')
+orgFolder = os.path.join('..\\Results',f'{model_name}', f'{model_name}_ss\\')
 destFolder = os.path.join(orgFolder, 'Fitter', '')
 OptimisationFuncs.copyOriginalFolder(model_name + '_ss', orgFolder ,destFolder , 'Fitter\\' )
 
@@ -89,7 +89,7 @@ Best = ObsWells[ObsWells['Sensitivity'] > 0.01]
 Best = Best[~Best.putcode.isin(BadWells)]
 if Weighted: 
     Best = Best.drop_duplicates(subset = ['Sensitivity'])
-Best.to_csv(os.path.join('..','Data','Preprocessed',f'ObsForCalibration_{Location}.csv'))
+Best.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
 ObsWells.to_csv(os.path.join(destFolder,'ObsWellsSens.csv'))
 
 #%%Calibrate ss
@@ -106,7 +106,7 @@ Those are determined by the min/max
 
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal)   
        
-initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.25)
+initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.5)
 
 
 NMoptions = {'adaptive': True,
@@ -150,8 +150,8 @@ ax.axline([min(ObsWells.ObsHeadsSS), min(ObsWells.ObsHeadsSS)],[max(ObsWells.Obs
 
 #%%
 best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Value'])
-ObsWells.to_csv(os.path.join('..','Data','Preprocessed',f'ObsForCalibration_{model_name}_SS.csv'))
-best_paramdf.to_csv(os.path.join('..','Data','Preprocessed',f'BestParams_SS_{model_name}.csv'))
-idx.to_csv(os.path.join('..','Data','Preprocessed',f'idx_SS_{model_name}.csv'))
-ObsHeads.to_csv(os.path.join('..','Data','Preprocessed',f'ObsHeads_SS_{model_name}.csv'))
+ObsWells.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
+best_paramdf.to_csv(os.path.join('..\\Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
+idx.to_csv(os.path.join('..\\Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
+ObsHeads.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'))
 
