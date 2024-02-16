@@ -150,8 +150,8 @@ ax.axline([min(ObsWells.ObsHeadsSS), min(ObsWells.ObsHeadsSS)],[max(ObsWells.Obs
 
 #%%
 best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Value'])
-ObsWells.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
-best_paramdf.to_csv(os.path.join('..\\Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
-idx.to_csv(os.path.join('..\\Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
-ObsHeads.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'))
+ObsWells.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
+best_paramdf.to_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
+idx.to_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
+ObsHeads.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'))
 

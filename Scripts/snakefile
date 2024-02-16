@@ -42,7 +42,7 @@ rule forward_model_ss:
         refineranges = refineranges,
         steady_state = True,
         startdate = startdate,
-        enddate = enddate
+        enddate = enddate,
         drainC = drainC
     script:
        'ForwardModelGen.py'

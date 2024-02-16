@@ -37,7 +37,7 @@ drainC = snakemake.params.drainC
 
 steady_state = snakemake.params.steady_state
 
-warmup = False if steady_state else True
+warmup = False #if steady_state else True
 use_geotop = False
 NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
