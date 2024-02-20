@@ -13,7 +13,7 @@ if platform.platform().startswith('Win'):
     os.environ["PATH"]   =  r'C:\ProgramData\anaconda3\pkgs\r-base-4.1.3-hdca333a_12\lib\R\bin\x64' + ";" + os.environ["PATH"]
 else: 
    os.environ['R_HOME'] = '/home/4120973/.conda/pkgs/r-base-4.3.2-hb8ee39d_2/lib/R'
-   os.environ["PATH"]   =  r'/home/4120973/.conda/pkgs/r-base-4.3.2-hb8ee39d_2/lib/R/bin/exec' + ";" + os.environ["PATH"] 
+   os.environ["PATH"]   =  '/home/4120973/.conda/pkgs/r-base-4.3.2-hb8ee39d_2/lib/R/bin/Rscript' + ";" + os.environ["PATH"] 
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 gstat = importr('gstat')
