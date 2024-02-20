@@ -24,9 +24,9 @@ if "snakemake" not in globals():
     
 Location = snakemake.params.Name
 modelname = snakemake.params.modelname
-xcorlens = snakemake.params.xcorlens
-zcorlens = snakemake.params.zcorlens
-fracedit = snakemake.params.fracs
+xcorlens = snakemake.params.simulation.xcorlens
+zcorlens = snakemake.params.simulation.zcorlens
+fracedit = snakemake.params.simulation.fracs
 ens_no = snakemake.params.ens_no
 dx = dy = snakemake.params.dx
 

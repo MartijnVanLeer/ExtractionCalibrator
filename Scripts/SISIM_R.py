@@ -7,7 +7,8 @@ Created on Thu Mar 31 12:41:44 2022
 
 import os
 import platform
-if platform.platform() == 'win32':
+
+if platform.platform().startswith('Win'):
     os.environ['R_HOME'] = r'C:\ProgramData\anaconda3\pkgs\r-base-4.1.3-hdca333a_12\lib\R'
     os.environ["PATH"]   =  r'C:\ProgramData\anaconda3\pkgs\r-base-4.1.3-hdca333a_12\lib\R\bin\x64' + ";" + os.environ["PATH"]
 else: 
