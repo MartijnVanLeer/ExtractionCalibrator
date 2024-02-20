@@ -29,7 +29,9 @@ zcorlens = snakemake.params.zcorlens
 fracedit = snakemake.params.fracs
 ens_no = snakemake.params.ens_no
 dx = dy = snakemake.params.dx
-boringen = pickle.load(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'))
+
+with open(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'), 'rb') as f:
+    boringen = pickle.load(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'))
 frac = boringen.list.i[boringen.list.i > 0.5].count()/len(boringen.list)
 fracs =  frac + fracedit
 

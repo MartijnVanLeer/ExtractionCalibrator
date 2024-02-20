@@ -52,4 +52,5 @@ rn = boringen.plot_K_weighted(Kcore, TI)
 # cond.add_k(Kcore)
 
 boringen.list.to_csv(join('..','Results',f'{modelname}','boreholeindicators.csv'))
-pickle.dump(boringen,join('..','Results',f'{modelname}','boreholeindicators.pkl') )
+with open(join('..','Results',f'{modelname}','boreholeindicators.pkl'), 'wb') as f:
+    pickle.dump(boringen, f)
