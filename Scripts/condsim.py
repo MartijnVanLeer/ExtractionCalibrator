@@ -24,14 +24,15 @@ if "snakemake" not in globals():
     
 Location = snakemake.params.Name
 modelname = snakemake.params.modelname
-xcorlens = snakemake.params.simulation['xcorlens']
-zcorlens = snakemake.params.simulation['zcorlens']
-fracedit = snakemake.params.simulation['fracs']
+sim = snakemake.params.simulation
+xcorlens = sim['xcorlens']
+zcorlens = sim['zcorlens']
+fracedit = sim['fracs']
 ens_no = snakemake.params.ens_no
 dx = dy = snakemake.params.dx
 
 with open(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'), 'rb') as f:
-    boringen = pickle.load(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'))
+    boringen = pickle.load(f)
 frac = boringen.list.i[boringen.list.i > 0.5].count()/len(boringen.list)
 fracs =  frac + fracedit
 

@@ -22,29 +22,32 @@ Weighted = False
 BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1','B57E0081_4','B57E0081_3'] #Budel
 
 def get_paramspace(xcorlens,zcorlens,fracs):
-    xl =zl = fl = []
+    xl = []
+    zl = []
+    fl = []
     for x in xcorlens:
         for z in zcorlens:
             for f in fracs:
                 xl.append(x)
                 zl.append(z)
                 fl.append(f)
-    return Paramspace(pd.DataFrame({'xcorlens': xl,'zcorlens' : zl, 'fracs' : fl}))
+    return pd.DataFrame({'xcorlens': xl,'zcorlens' : zl, 'fracs' : fl})
 
 #Settings conditional simulation
 simlayer = 'KIk2'
-xcorlens = [200,400,600,800,1000]
-zcorlens = [2,4,8]
+xcorlens = [200.0,400.0,600.0,800.0,1000.0]
+zcorlens = [2.0,4.0,8.0]
 fracs = [0,0.1,0.2]
 ens_no = 50
 dx = 25
-paramspace = get_paramspace(xcorlens,zcorlens, fracs)
+df = get_paramspace(xcorlens,zcorlens, fracs)
+paramspace = Paramspace(df)
 
 rule all: 
     input:
-        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
-        directory(os.path.join('..' ,'Results',f'{modelname}_t','KfieldsQC'))
+        #os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        #os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}'), params = paramspace.instance_patterns)
 
 rule forward_model_ss:
     input:
@@ -145,6 +148,6 @@ rule condsim:
         ens_no = ens_no,
         dx = dx
     output:
-        directory(os.path.join('..' ,'Results',f'{modelname}_t','KfieldsQC'))
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}')
     script:
        'condsim.py'
