@@ -54,5 +54,5 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             ens_no = ens_no, frac =frac, nmax = 100, seed = 1337)
 
 Kfields = boringen.add_k(res)
-res.to_csv(snakemake.input[1])
-Kfields.to_csv(os.path.join(snakemake.input[2]))
+res.to_csv(snakemake.output[1])
+Kfields.to_csv(os.path.join(snakemake.output[2]))
