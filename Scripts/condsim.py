@@ -54,10 +54,5 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             ens_no = ens_no, frac =frac, nmax = 100, seed = 1337)
 
 Kfields = boringen.add_k(res)
-if not os.path.isdir(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC')):
-    os.mkdir(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC'))
-else:
-    shutil.rmtree(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC'))
-    os.mkdir(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC'))
-res.to_csv(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC',f'Ind_x{xcorlens}_z{zcorlens}_f{frac}_n{ens_no}.csv'))
-Kfields.to_csv(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC',f'K_x{xcorlens}_z{zcorlens}_f{frac}_n{ens_no}.csv'))
+res.to_csv(snakemake.output[1])
+Kfields.to_csv(os.path.join(snakemake.output[2]))
