@@ -1,4 +1,6 @@
 import os
+from snakemake.utils import Paramspace
+import pandas as pd
 #Settings steady state
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
 modelname ='grof'
@@ -19,13 +21,30 @@ KCal = True
 Weighted = False
 BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1','B57E0081_4','B57E0081_3'] #Budel
 
+def get_paramspace(xcorlens,zcorlens,fracs):
+    xl =zl = fl = []
+    for x in xcorlens:
+        for z in zcorlens:
+            for f in fracs:
+                xl.append(x)
+                zl.append(z)
+                fl.append(f)
+    return Paramspace(pd.DataFrame({'xcorlens': xl,'zcorlens' : zl, 'fracs' : fl}))
+
 #Settings conditional simulation
 simlayer = 'KIk2'
+xcorlens = [200,400,600,800,1000]
+zcorlens = [2,4,8]
+fracs = [0,0.1,0.2]
+ens_no = 50
+dx = 25
+paramspace = get_paramspace(xcorlens,zcorlens, fracs)
 
 rule all: 
     input:
         os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv')
+        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
+        directory(os.path.join('..' ,'Results',f'{modelname}_t','KfieldsQC'))
 
 rule forward_model_ss:
     input:
@@ -51,6 +70,7 @@ rule forward_model_t:
         'ForwardModelGen.py',
     output:
         os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds'),
+        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
     params:
         Name = Name ,
         modelname = modelname,
@@ -99,15 +119,32 @@ rule calibration_t:
     script:
        'Calibration.py'
        
+rule prep_boringen:
+    input:
+        'prep_boringen.py',
+        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+    params:
+        modelname = modelname,
+        Name = Name,
+        simlayer = simlayer
+    output:
+        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl')
+    script:
+        'prep_boringen.py'
+
 rule condsim:
     input:
        'condsim.py',
-       os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+       os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
+       os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl')
     params:
         Name = Name,
         modelname = modelname,
-        simlayer = simlayer
+        simlayer = simlayer,
+        simulation = paramspace.instance,
+        ens_no = ens_no,
+        dx = dx
     output:
-        os.path.join('..' ,'Results',f'{modelname}_t','KfieldsQC')
+        directory(os.path.join('..' ,'Results',f'{modelname}_t','KfieldsQC'))
     script:
        'condsim.py'
