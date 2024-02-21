@@ -17,7 +17,7 @@ model_name = snakemake.params.modelname
 layer = snakemake.params.simlayer
 ens_no = snakemake.params.ens_no
 real_dx = snakemake.params.dx
-
+ws = snakemake.params.ws
 #load k realizations and move to ds
 df = pd.read_csv(filename, index_col=['x','y','z'])
 df.drop('Unnamed: 0', axis = 1)
@@ -32,7 +32,7 @@ for cellid in ids:
     dx = np.sqrt(cell.area.values)/2
     cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     for sim in range(ens_no):
-        fieldK = uf.Run_MF_WholeField(cellk[f'K_{sim +1}'].values,Lx =2*dx,Ly = 2*dx,Lz = cellk.z.max() - cellk.z.min(),dx = real_dx,dy = real_dx,dz = 1, mds = mds, model_name = model_name)
+        fieldK = uf.Run_MF_WholeField(cellk[f'K_{sim +1}'].values,Lx =2*dx,Ly = 2*dx,Lz = cellk.z.max() - cellk.z.min(),dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
         result.loc[dict(sim = sim, icell2d = cellid)] = fieldK
 
 result.to_netcdf(snakemake.output[0])
