@@ -46,7 +46,7 @@ def run_mf(sim, Kfield,mds, ws):
     npf = gwf.get_package('NPF')
     # npf.k = np.rot90(Kfield, k=1, axes = (0,2))
     npf.write()
-    sim.run_simulation(silent = False)
+    sim.run_simulation(silent = True)
     cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
     qs = cbb.get_data(text='DATA-SPDIS')[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
