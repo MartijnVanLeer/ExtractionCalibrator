@@ -41,7 +41,7 @@ def Run_MF_WholeField(Kfields,Lx,Ly,Lz,dx,dy,dz, mds, model_name):
         keffWholeField = run_mf(sim, Kfields, mds,model_name)
     return keffWholeField
 
-def run_mf(sim, Kfield,mds):
+def run_mf(sim, Kfield,mds, model_name):
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
     # npf.k = np.rot90(Kfield, k=1, axes = (0,2))
