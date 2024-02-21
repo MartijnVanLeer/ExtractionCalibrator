@@ -45,7 +45,7 @@ paramspace = Paramspace(df)
 
 rule all: 
     input:
-        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}_k.csv'), params = paramspace.instance_patterns)
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns)
 
 rule forward_model_ss:
     input:
@@ -146,7 +146,6 @@ rule condsim:
         ens_no = ens_no,
         dx = dx
     output:
-        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}_k.csv'),
-        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}_ind.csv')
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
     script:
        'condsim.py'

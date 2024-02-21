@@ -12,8 +12,10 @@ import SISIM_R
 import os
 import pickle
 import shutil
+import xarray as xr
+import Heterogeniteit
 
-def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule":
+def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule": # type: ignore
     import snakemake as sm
     workflow = sm.Workflow(snakefile="snakefile")
     workflow.include(path)
@@ -24,7 +26,9 @@ if "snakemake" not in globals():
     
 Location = snakemake.params.Name
 modelname = snakemake.params.modelname
+Layer = snakemake.params.simlayer
 sim = snakemake.params.simulation
+
 xcorlens = sim['xcorlens']
 zcorlens = sim['zcorlens']
 fracedit = sim['fracs']
@@ -53,6 +57,11 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xcorlen =xcorlens, zcorlen = zcorlens,
             ens_no = ens_no, frac =frac, nmax = 100, seed = 1337)
 
+
+ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'))
+res = Heterogeniteit.trim(res,ds, Layer)
 Kfields = boringen.add_k(res)
-res.to_csv(snakemake.output[1])
-Kfields.to_csv(os.path.join(snakemake.output[2]))
+
+
+
+Kfields.to_csv(snakemake.output[0])
