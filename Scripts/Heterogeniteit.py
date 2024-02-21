@@ -14,6 +14,7 @@ import numpy as np
 import seaborn as sns
 import scipy.stats
 from tqdm import tqdm
+from nlmod.dims.grid import xy_to_icell2d
 import io
 
 class boringen():
@@ -263,7 +264,8 @@ def annotate(data, **kws):
 def trim(Kfields,ds, Layer):
     keep = []
     for index, row in Kfields.iterrows():
-        cell = ds.sel(x = row.x, y = row.y, method = 'nearest').sel(layer = Layer)
+        cellid = xy_to_icell2d((row.x,row.y), ds)
+        cell = ds.sel(icell2d = cellid, layer = Layer)
         if row.z >= cell.botm.values and row.z <= cell.top.values:
             keep.append(True)
         else: 
@@ -274,6 +276,7 @@ def trim(Kfields,ds, Layer):
     
     
         
+    
     
     
     
