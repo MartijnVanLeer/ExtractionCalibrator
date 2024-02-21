@@ -58,7 +58,7 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             ens_no = ens_no, frac =frac, nmax = 100, seed = 1337)
 
 
-ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'))
+ds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
 res = Heterogeniteit.trim(res,ds, Layer)
 Kfields = boringen.add_k(res)
 
