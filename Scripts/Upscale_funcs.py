@@ -47,7 +47,7 @@ def run_mf(sim, Kfield,mds, ws):
     # npf.k = np.rot90(Kfield, k=1, axes = (0,2))
     npf.write()
     sim.run_simulation(silent = False)
-    cbb = flopy.utils.CellBudgetFile(os.path.join(ws, 'Upscaler', f"{gwf.name}.cbc"))
+    cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
     qs = cbb.get_data(text='DATA-SPDIS')[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
     K = abs(qz[:, :,:].mean())
