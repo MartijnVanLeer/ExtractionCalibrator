@@ -160,7 +160,7 @@ rule upscaler:
         modelname = modelname,
         simlayer = simlayer,
         ens_no = ens_no,
-        dx = dx
+        dx = dx,
         ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Upscaler')
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
