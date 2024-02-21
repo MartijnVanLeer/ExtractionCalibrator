@@ -26,7 +26,7 @@ def setup_mf(Lx,Ly,Lz,dx,dy,dz,z, mds,ws):
     chd = flopy.mf6.ModflowGwfchd(gwf, stress_period_data=chd_spd, save_flows=True)
     oc = flopy.mf6.ModflowGwfoc(gwf,head_filerecord='Upscaler' + ".hds", budget_filerecord="{}.cbc".format('Upscaler'), saverecord=[('BUDGET', 'ALL'), ('HEAD', 'ALL')])
     npf = flopy.mf6.ModflowGwfnpf(gwf, k = 10, k33 = 1,  k33overk = True, save_specific_discharge=True)
-    sim.write_simulation()
+    sim.write_simulation(silent = True)
     return sim
 
 def Run_MF_WholeField(Kfields,Lx,Ly,Lz,dx,dy,dz, mds, ws):
