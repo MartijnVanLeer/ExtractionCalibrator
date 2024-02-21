@@ -35,19 +35,17 @@ def get_paramspace(xcorlens,zcorlens,fracs):
 
 #Settings conditional simulation
 simlayer = 'KIk2'
-xcorlens = [200.0,400.0,600.0,800.0,1000.0]
+xcorlens = [200,500,1000, 2000]
 zcorlens = [2.0,4.0,8.0]
 fracs = [0,0.1,0.2]
 ens_no = 50
-dx = 25
+dx = 50
 df = get_paramspace(xcorlens,zcorlens, fracs)
 paramspace = Paramspace(df)
 
 rule all: 
     input:
-        #os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-        #os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
-        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}'), params = paramspace.instance_patterns)
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns)
 
 rule forward_model_ss:
     input:
@@ -148,6 +146,6 @@ rule condsim:
         ens_no = ens_no,
         dx = dx
     output:
-        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}')
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
     script:
        'condsim.py'

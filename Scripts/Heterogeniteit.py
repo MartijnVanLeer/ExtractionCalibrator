@@ -260,7 +260,15 @@ def annotate(data, **kws):
     ax = plt.gca()
     ax.text(.1, .9, f"N = {n}", transform=ax.transAxes, bbox = dict(facecolor = 'white', edgecolor ='black'))     
     
-
+def trim(Kfields,ds, Layer):
+    keep = []
+    for index, row in Kfields.iterrows():
+        if ds.sel(x = row.x, y = row.y, z = row.z, method = 'nearest').values == Layer:
+            keep.append(True)
+        else: 
+            keep.append(False)
+    Kfields['keep'] = keep
+    return Kfields[Kfields.keep==True] 
     
     
     
