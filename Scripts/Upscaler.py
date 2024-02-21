@@ -9,22 +9,35 @@ import xarray as xr
 import glob
 import os
 import pandas as pd
-import matplotlib.colors as colors
-import matplotlib.pyplot as plt
-import matplotlib.cm as cmx
+import numpy as np
+import Upscale_funcs as uf
 
-# path = r'C:\Users\leermdv\OneDrive - TNO\Documents\Python Scripts\Brabant water\Results\Vlijmen\Kfields'
-path = r'C:\Users\leermdv\OneDrive - TNO\Documents\Python Scripts\Brabant water\Results\Vlijmen\KfieldsQC'
-all_files = os.listdir(path)
-kfiles = [i for i in all_files if i.startswith('K_')]
+filename = snakemake.input[1]
+model_name = snakemake.params.modelname
+layer = snakemake.params.simlayer
+ens_no = snakemake.params.ens_no
+real_dx = snakemake.params.dx
 
-#%%
-# for filename in kfiles:
-filename = kfiles[-2]
+#load k realizations and move to ds
+df = pd.read_csv(filename, index_col=['x','y','z'])
+df.drop('Unnamed: 0', axis = 1)
+kds = xr.Dataset.from_dataframe(df)
 
-df = pd.read_csv(os.path.join(path,filename), index_col=['x','y','z'])
-df.drop('Unnamed: 0', axis = 1, )
-ds = xr.Dataset.from_dataframe(df)
-ds.K_1.isel(y = 30).T.plot(norm = colors.TwoSlopeNorm(vmin =  -7, vcenter = -1, vmax = 2))
-plt.title(filename)
+#load model ds
+mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
+ids = mds.icell2d.values
+result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
+for cellid in ids:
+    cell = mds.sel(icell2d = cellid)
+    dx = np.sqrt(cell.area.values)/2
+    cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
+    for sim in range(ens_no):
+        fieldK = uf.Run_MF_WholeField(cellk[f'K_{sim +1}'].values,Lx =2*dx,Ly = 2*dx,Lz = cellk.z.max() - cellk.z.min(),dx = real_dx,dy = real_dx,dz = 1, mds = mds)
+        result.loc[dict(sim = sim, icell2d = cellid)] = fieldK
+
+result.to_netcdf(snakemake.output[0])
+
+
+
+
 

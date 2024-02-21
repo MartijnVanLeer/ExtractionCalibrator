@@ -45,7 +45,8 @@ paramspace = Paramspace(df)
 
 rule all: 
     input:
-        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns)
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns),
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
 
 rule forward_model_ss:
     input:
@@ -149,3 +150,18 @@ rule condsim:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
     script:
        'condsim.py'
+
+rule upscaler:
+    input:
+       'Upscaler.py',
+       os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
+    params:
+        Name = Name,
+        modelname = modelname,
+        simlayer = simlayer,
+        ens_no = ens_no,
+        dx = dx
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
+    script:
+       'Upscaler.py'
