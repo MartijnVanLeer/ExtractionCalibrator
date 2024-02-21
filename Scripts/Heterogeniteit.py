@@ -263,7 +263,7 @@ def annotate(data, **kws):
 def trim(Kfields,ds, Layer):
     keep = []
     for index, row in Kfields.iterrows():
-        cell = ds.sel(x = row.x, y = row.y, layer = Layer, method = 'nearest')
+        cell = ds.sel(x = row.x, y = row.y, method = 'nearest').sel(layer = Layer)
         if row.z >= cell.botm.values and row.z <= cell.top.values:
             keep.append(True)
         else: 
