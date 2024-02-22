@@ -96,10 +96,10 @@ for x in range(len(result.x)):
 residuals, df, ObsHeads = OptimisationFuncs.run_best_result_transient(best_params_t,sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto)
 
 
-df.to_csv(os.path.join('..\\Results',f'{model_name}',f'ModHead_{model_name}.csv'))
-ObsHeads.to_csv(os.path.join('..\\Results',f'{model_name}',f'ObsHead_{model_name}.csv'))
+df.to_csv(os.path.join('..','Results',f'{model_name}',f'ModHead_{model_name}.csv'))
+ObsHeads.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'))
 best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Value'])
-best_paramdf.to_csv(os.path.join('..\\Results',f'{model_name}',f'BestParams_t_{model_name}.csv'))
+best_paramdf.to_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_t_{model_name}.csv'))
 
 #%%plot 
 for lay in idx[idx.laytype =='z'].idx.values:
