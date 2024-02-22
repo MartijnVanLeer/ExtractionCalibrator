@@ -73,7 +73,7 @@ initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.25)
 
 
 NMoptions = {'adaptive': True,
-              'maxfev' :10,
+              'maxfev' :200,
               'initial_simplex' : initsimplex,
              'xatol' : 0.1, #both xatol and fatol needed for termination
              'fatol' : 10
@@ -118,7 +118,7 @@ for lay in idx[idx.laytype =='z'].idx.values:
     fig.suptitle(lay)
     
     plt.tight_layout()
-    fig.save_fig(os.path.join('..\\Results',f'{model_name}',f'{lay}_Obs_Mod_heads.png'))
+    fig.savefig(os.path.join('..\\Results',f'{model_name}',f'{lay}_Obs_Mod_heads.png'))
 #%%
 
 fig = plt.figure(figsize=(30,10))    

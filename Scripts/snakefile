@@ -49,7 +49,7 @@ rule all:
         # expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
 
-rule forward_model_ss:
+rule Forward_Model_SS:
     input:
         'ForwardModelGen.py'
     output:
@@ -68,7 +68,7 @@ rule forward_model_ss:
     script:
        'ForwardModelGen.py'
        
-rule forward_model_t:
+rule Forward_Model_T:
     input:
         'ForwardModelGen.py',
     output:
@@ -88,7 +88,7 @@ rule forward_model_t:
     script:
        'ForwardModelGen.py'
 
-rule calibration_ss:
+rule Calibration_SS:
     input:
        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
        'Sensitivity.py'
@@ -107,7 +107,7 @@ rule calibration_ss:
     script:
        'Sensitivity.py'
 
-rule calibration_t:
+rule Calibration_T:
     input:
        'Calibration.py',
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
@@ -122,7 +122,7 @@ rule calibration_t:
     script:
        'Calibration.py'
        
-rule prep_boringen:
+rule Prep_Boreholes:
     input:
         'prep_boringen.py',
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
@@ -135,7 +135,7 @@ rule prep_boringen:
     script:
         'prep_boringen.py'
 
-rule condsim:
+rule Cond_Simulator:
     input:
        'condsim.py',
        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
@@ -152,7 +152,7 @@ rule condsim:
     script:
        'condsim.py'
 
-rule upscaler:
+rule Upscaler:
     input:
        'Upscaler.py',
        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
@@ -168,7 +168,7 @@ rule upscaler:
     script:
        'Upscaler.py'
 
-rule runner:
+rule Runner:
     input:
        'Runner.py',
        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
@@ -181,3 +181,16 @@ rule runner:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
     script:
        'Runner.py'
+
+rule Collector:
+    input:
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
+        'collect.py'
+    params:
+        simulation = paramspace.instance,
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
+    script:
+        'collect.py'
+    resources:
+        n = 1 
