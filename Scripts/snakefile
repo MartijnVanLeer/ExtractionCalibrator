@@ -77,7 +77,7 @@ rule Forward_Model_T:
     output:
         os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
-        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_t')),
     params:
         Name = Name ,
@@ -108,7 +108,7 @@ rule Calibration_SS:
         BadWells = BadWells,
     output:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
-       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv')
+       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_SS','Fitter')),
     script:
        'Sensitivity.py'
