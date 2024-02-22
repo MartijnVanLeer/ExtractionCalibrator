@@ -47,6 +47,7 @@ rule all:
     input:
         #expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns),
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
+        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
 
 rule forward_model_ss:
     input:
