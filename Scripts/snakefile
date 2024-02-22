@@ -48,12 +48,15 @@ rule all:
         #expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns),
         # expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
 
 rule Forward_Model_SS:
     input:
         'ForwardModelGen.py'
     output:
-        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds')
+        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
+        directory(os.path.join('..','Results',modelname, f'{modelname}_ss')),
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_SS',f'{modelname}_SS.nc'),
     params:
         Name = Name,
         modelname = modelname,
@@ -73,7 +76,9 @@ rule Forward_Model_T:
         'ForwardModelGen.py',
     output:
         os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds'),
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+        directory(os.path.join('..','Results',modelname, f'{modelname}_t')),
     params:
         Name = Name ,
         modelname = modelname,
@@ -104,6 +109,7 @@ rule Calibration_SS:
     output:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv')
+        directory(os.path.join('..','Results',modelname, f'{modelname}_SS','Fitter')),
     script:
        'Sensitivity.py'
 
@@ -118,7 +124,9 @@ rule Calibration_T:
         CorLayers = CorLayers,
     output:
         os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv')
+        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
+        directory(os.path.join('..','Results',modelname, f'{modelname}_t','Fitter')),
+        os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
     script:
        'Calibration.py'
        
@@ -138,7 +146,7 @@ rule Prep_Boreholes:
 rule Cond_Simulator:
     input:
        'condsim.py',
-       os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
+       os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl')
     params:
         Name = Name,
@@ -173,6 +181,7 @@ rule Runner:
        'Runner.py',
        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+       os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
     params:
         modelname = modelname,
         simlayer = simlayer,
