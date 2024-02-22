@@ -188,9 +188,9 @@ rule Collector:
         'collect.py'
     params:
         simulation = paramspace.instance,
+    resources:
+        n = 1 
     output:
         os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
     script:
         'collect.py'
-    resources:
-        n = 1 
