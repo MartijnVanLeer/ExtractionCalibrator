@@ -172,6 +172,7 @@ rule runner:
     input:
        'Runner.py',
        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
+       os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
     params:
         modelname = modelname,
         simlayer = simlayer,
