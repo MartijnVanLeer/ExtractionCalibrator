@@ -46,8 +46,8 @@ paramspace = Paramspace(df)
 rule all: 
     input:
         #expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns),
-        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
-        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        # expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
 
 rule forward_model_ss:
     input:
@@ -167,3 +167,16 @@ rule upscaler:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
     script:
        'Upscaler.py'
+
+rule runner:
+    input:
+       'Runner.py',
+       os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
+    params:
+        modelname = modelname,
+        simlayer = simlayer,
+        ens_no = ens_no,
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
+    script:
+       'Runner.py'
