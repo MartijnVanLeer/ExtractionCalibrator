@@ -7,7 +7,7 @@ import nlmod
 import numpy as np
 
 model_name = snakemake.params.modelname
-ds = xr.open_dataset(snakemake.input[0])
+ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
 
 idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
