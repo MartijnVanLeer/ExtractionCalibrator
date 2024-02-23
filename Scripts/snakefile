@@ -75,10 +75,9 @@ rule Forward_Model_T:
     input:
         'ForwardModelGen.py',
     output:
-        os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds'),
+        os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
-        directory(os.path.join('..','Results',modelname, f'{modelname}_t')),
     params:
         Name = Name ,
         modelname = modelname,
@@ -117,7 +116,7 @@ rule Calibration_T:
     input:
        'Calibration.py',
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
-       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds')
+       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam')
     params:
         Name = Name,
         modelname = modelname,
