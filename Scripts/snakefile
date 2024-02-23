@@ -108,7 +108,6 @@ rule Calibration_SS:
     output:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
-        directory(os.path.join('..','Results',modelname, f'{modelname}_ss','Fitter')),
     script:
        'Sensitivity.py'
 
