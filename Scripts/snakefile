@@ -3,10 +3,10 @@ from snakemake.utils import Paramspace
 import pandas as pd
 #Settings steady state
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
-modelname ='grof'
+modelname ='fullrun'
 
-Range = 4800 #m Distance from grid border to centre of wells 3200
-GHBrange = 200 
+Range = 4000 #m Distance from grid border to centre of wells 3200
+GHBrange = 2000 
 delr = 800
 refineranges = {500:4}
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
@@ -19,7 +19,7 @@ CorLayers = {'KIz4' : 'KIz5'}
 ghbCal = 'SensLayers' # 'obs', 'Single', None
 KCal = True
 Weighted = False
-BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1','B57E0081_4','B57E0081_3'] #Budel
+BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
 
 def get_paramspace(xcorlens,zcorlens,fracs):
     xl = []
@@ -39,7 +39,7 @@ xcorlens = [200,500,1000, 2000]
 zcorlens = [2.0,4.0,8.0]
 fracs = [0,0.1,0.2]
 ens_no = 50
-dx = 50
+dx = 25
 df = get_paramspace(xcorlens,zcorlens, fracs)
 paramspace = Paramspace(df)
 
