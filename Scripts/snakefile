@@ -56,7 +56,7 @@ rule Forward_Model_SS:
     output:
         os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_ss')),
-        os.path.join('..','Results',f'{modelname}', f'{modelname}_SS',f'{modelname}_SS.nc'),
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_ss',f'{modelname}_ss.nc'),
     params:
         Name = Name,
         modelname = modelname,
