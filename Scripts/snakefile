@@ -78,7 +78,7 @@ rule Forward_Model_T:
         os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.hds'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
-        os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
+        os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_t')),
     params:
         Name = Name ,
