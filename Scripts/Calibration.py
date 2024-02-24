@@ -118,7 +118,7 @@ for lay in idx[idx.laytype =='z'].idx.values:
     fig.suptitle(lay)
     
     plt.tight_layout()
-    fig.savefig(os.path.join('..\\Results',f'{model_name}',f'{lay}_Obs_Mod_heads.png'))
+    fig.savefig(os.path.join('..','Results',f'{model_name}',f'{lay}_Obs_Mod_heads.png'))
 #%%
 
 fig = plt.figure(figsize=(30,10))    
