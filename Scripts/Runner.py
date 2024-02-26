@@ -6,7 +6,7 @@ import os
 import nlmod
 import numpy as np
 from tqdm import tqdm
-
+import shutil 
 model_name = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
@@ -18,7 +18,8 @@ ObsHeads.index = pd.to_datetime(ObsHeads.index)
 ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
 layno = idx[idx.SensLayers == Layer].idx.values[0]
 
-mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
+shutil.copyfile(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'), os.path.join(destFolder, 'ds.nc'))
+mds = xr.open_dataset(os.path.join(destFolder, 'ds.nc'))
 
 orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
 OptimisationFuncs.copyOriginalFolder(model_name + '_t', orgFolder ,destFolder , 'Runner\\' )
@@ -41,7 +42,7 @@ for simno in tqdm(ds.sim.values):
     npf.k.set_data(data)
     npf.write()
     sim.run_simulation(silent = True)
-    head = nlmod.gwf.get_heads_da(gwf = gwf, fname = os.path.join(destFolder, 'fullrun_t.hds'))
+    head = nlmod.gwf.get_heads_da(ds)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
     for index, well in ObsWells.iterrows():
         modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
