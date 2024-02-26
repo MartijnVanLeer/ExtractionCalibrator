@@ -48,7 +48,7 @@ def run_mf(sim, Kfield,mds, ws):
     npf.write()
     sim.run_simulation(silent = True)
     cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
-    qs = cbb.get_data(text='DATA-SPDIS')[0]
+    qs = cbb.get_data(text='DATA-SPDIS')
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
     K = abs(qz[:, :,:].mean())
     return K
