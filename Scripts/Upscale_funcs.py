@@ -44,7 +44,6 @@ def Run_MF_WholeField(Kfields,Lx,Ly,Lz,dx,dy,dz, mds, ws):
 def run_mf(sim, Kfield,mds, ws):
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
-    print(Kfield.shape)
     npf.k = np.rot90(Kfield, k=1, axes = (0,2))
     npf.write()
     sim.run_simulation(silent = True)

@@ -36,7 +36,6 @@ for cellid in ids:
         result.loc[dict(sim = sim, icell2d = cellid)] = fieldK
 
 result.to_netcdf(snakemake.output[0])
-print(result.k[0].values)
 
 
 
