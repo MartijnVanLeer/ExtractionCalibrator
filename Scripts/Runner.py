@@ -36,10 +36,10 @@ npf = gwf.get_package('NPF')
 
 RMSE = []
 for simno in tqdm(ds.sim.values):
-    data33 = npf.k33.data
+    data33 = npf.k33.array
     data33[layno] = ds.sel(sim = simno).k.values
     npf.k33.set_data(data33)
-    data = npf.k.data
+    data = npf.k.array
     data[layno] = ds.sel(sim = simno).k.values
     npf.k.set_data(data)
     npf.write()
