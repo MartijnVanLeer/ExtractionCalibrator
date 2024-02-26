@@ -11,7 +11,7 @@ model_name = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
 #destFolder = snakemake.params.ws
-destFolder = os.path.join(snakemake.input[1], '..', 'Runner')
+destFolder = os.path.join(os.path.dirname(snakemake.input[1]), 'Runner')
 
 idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
 ObsHeads =pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'), index_col = 'Time')
