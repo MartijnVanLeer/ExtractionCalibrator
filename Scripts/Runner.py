@@ -32,7 +32,9 @@ npf = gwf.get_package('NPF')
 
 RMSE = []
 for simno in ds.sim.values:
-    npf.k[layno].set_data(ds.sel(sim = simno).k.values)
+    data = npf.k.data
+    data[layno] = ds.sel(sim = simno).k.values
+    npf.k.set_data(data)
     npf.write()
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
