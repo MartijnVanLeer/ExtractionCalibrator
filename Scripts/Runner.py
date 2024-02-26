@@ -12,7 +12,8 @@ Layer = snakemake.params.simlayer
 
 
 idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
-ObsHeads =pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'))
+ObsHeads =pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'), index_col = 'Time')
+pd. to_datetime(ObsHeads.index)
 ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
 layno = idx[idx.SensLayers == Layer].idx.values[0]
 
