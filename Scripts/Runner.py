@@ -25,7 +25,6 @@ ds.attrs['model_ws'] = destFolder
 
 
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name = mds.exe_name)
-sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = r'C:\Users\leermdv\OneDrive - TNO\Documents\Python Scripts\ExtractionCalibrator\Results\refresco_t\Fitter')
 
 gwf = sim.get_model()
 npf = gwf.get_package('NPF')
