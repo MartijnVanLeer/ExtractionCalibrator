@@ -33,12 +33,15 @@ npf = gwf.get_package('NPF')
 
 RMSE = []
 for simno in tqdm(ds.sim.values):
+    data33 = npf.k33.data
+    data33[layno] = ds.sel(sim = simno).k.values
+    npf.k33.set_data(data33)
     data = npf.k.data
     data[layno] = ds.sel(sim = simno).k.values
-    npf.k = data
+    npf.k.set_data(data)
     npf.write()
     sim.run_simulation(silent = True)
-    head = nlmod.gwf.get_heads_da(mds)
+    head = nlmod.gwf.get_heads_da(ds = mds, gwf = gwf)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
     for index, well in ObsWells.iterrows():
         modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
