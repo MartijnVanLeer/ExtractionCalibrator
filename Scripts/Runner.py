@@ -42,7 +42,7 @@ for simno in tqdm(ds.sim.values):
     npf.k.set_data(data)
     npf.write()
     sim.run_simulation(silent = True)
-    head = nlmod.gwf.get_heads_da(ds)
+    head = nlmod.gwf.get_heads_da(mds)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
     for index, well in ObsWells.iterrows():
         modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
