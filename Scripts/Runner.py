@@ -9,7 +9,7 @@ import numpy as np
 model_name = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
-ws = snakemake.params.ws
+destFolder = snakemake.params.ws
 
 idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
 ObsHeads =pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'), index_col = 'Time')
@@ -20,7 +20,6 @@ layno = idx[idx.SensLayers == Layer].idx.values[0]
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
 
 orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
-destFolder = ws)
 OptimisationFuncs.copyOriginalFolder(model_name + '_t', orgFolder ,destFolder , 'Runner\\' )
 mds.attrs['model_ws'] = destFolder
 
