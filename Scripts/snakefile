@@ -183,6 +183,7 @@ rule Runner:
         modelname = modelname,
         simlayer = simlayer,
         ens_no = ens_no,
+        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Runner')
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
     script:
