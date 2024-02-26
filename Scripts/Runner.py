@@ -21,7 +21,7 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name
 orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
 destFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t', 'Runner','')
 OptimisationFuncs.copyOriginalFolder(model_name + '_t', orgFolder ,destFolder , 'Runner\\' )
-ds.attrs['model_ws'] = destFolder
+mds.attrs['model_ws'] = destFolder
 
 
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name = mds.exe_name)
@@ -37,7 +37,7 @@ for simno in ds.sim.values:
     npf.k.set_data(data)
     npf.write()
     sim.run_simulation(silent = True)
-    head = nlmod.gwf.get_heads_da(ds)
+    head = nlmod.gwf.get_heads_da(mds)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
     for index, well in ObsWells.iterrows():
         modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
