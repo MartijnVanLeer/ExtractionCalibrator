@@ -1,7 +1,7 @@
 import os
 import pandas as pd 
 
-if not os.path.is_file(snakemake.output[0]):
+if not os.path.isfile(snakemake.output[0]):
     df = pd.DataFrame({'sim' : [],'RMSE' : [], 'xcorlen' : [] , 'zcorlen' : [], 'frac' : []})
     df.to_csv[snakemake.output[0]]
 

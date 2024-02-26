@@ -31,7 +31,7 @@ npf = gwf.get_package('NPF')
 
 
 RMSE = []
-for simno in ds.sim.values:
+for simno in [10]:
     data = npf.k.data
     data[layno] = ds.sel(sim = simno).k.values
     npf.k.set_data(data)
@@ -42,13 +42,15 @@ for simno in ds.sim.values:
     for index, well in ObsWells.iterrows():
         modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
         df[f'{well["putcode"]}'] = modheads.values
-
+    print(df.iloc[3])
     residuals = df - ObsHeads
+    print(residuals.iloc[3])
     residuals = residuals.to_numpy().flatten()
     residuals = residuals[~np.isnan(residuals)]
+    print(residuals)
     residuals = sum(residuals**2)
     RMSE.append(np.sqrt(residuals))
-
+print(RMSE)
 RMSEdf = pd.DataFrame({'sim' : ds.sim.values, 'RMSE' : RMSE})
 RMSEdf.to_csv(snakemake.output[0])
 
