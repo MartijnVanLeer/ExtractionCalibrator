@@ -13,7 +13,7 @@ destFolder = snakemake.params.ws
 
 idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
 ObsHeads =pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'), index_col = 'Time')
-pd. to_datetime(ObsHeads.index)
+pd.to_datetime(ObsHeads.index)
 ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
 layno = idx[idx.SensLayers == Layer].idx.values[0]
 
@@ -42,9 +42,11 @@ for simno in [10]:
     for index, well in ObsWells.iterrows():
         modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
         df[f'{well["putcode"]}'] = modheads.values
-    print(df.iloc[3])
+    print(f'df.iloc3: {df.iloc[3]}')
+    print(f'ObsHeads.iloc[3] : {ObsHeads.iloc[3]}')
     residuals = df - ObsHeads
-    print(residuals.iloc[3])
+    print(f'residuals.iloc[3] : {residuals.iloc[3]}')
+
     residuals = residuals.to_numpy().flatten()
     residuals = residuals[~np.isnan(residuals)]
     print(residuals)
