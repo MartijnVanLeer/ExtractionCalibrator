@@ -5,6 +5,7 @@ import pandas as pd
 import os
 import nlmod
 import numpy as np
+from tqdm import tqdm
 
 model_name = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
@@ -31,7 +32,7 @@ npf = gwf.get_package('NPF')
 
 
 RMSE = []
-for simno in ds.sim.values:
+for simno in tqdm(ds.sim.values):
     data = npf.k.data
     data[layno] = ds.sel(sim = simno).k.values
     npf.k.set_data(data)
@@ -48,8 +49,9 @@ for simno in ds.sim.values:
     residuals = residuals.to_numpy().flatten()
     residuals = residuals[~np.isnan(residuals)]
     residuals = sum(residuals**2)
+    print(residuals)
     RMSE.append(np.sqrt(residuals))
-print(RMSE[0])
+
 RMSEdf = pd.DataFrame({'sim' : ds.sim.values, 'RMSE' : RMSE})
 RMSEdf.to_csv(snakemake.output[0])
 
