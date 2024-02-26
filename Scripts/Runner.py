@@ -10,7 +10,8 @@ import shutil
 model_name = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
-destFolder = snakemake.params.ws
+#destFolder = snakemake.params.ws
+destFolder = os.path.join(snakemake.input[1], '..', 'Runner')
 
 idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
 ObsHeads =pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'), index_col = 'Time')
@@ -18,8 +19,9 @@ ObsHeads.index = pd.to_datetime(ObsHeads.index)
 ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
 layno = idx[idx.SensLayers == Layer].idx.values[0]
 
-shutil.copyfile(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'), os.path.join(destFolder, 'ds.nc'))
-mds = xr.open_dataset(os.path.join(destFolder, 'ds.nc'))
+#shutil.copyfile(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'), os.path.join(destFolder, 'ds.nc'))
+#mds = xr.open_dataset(os.path.join(destFolder, 'ds.nc'))
+mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
 
 orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
 OptimisationFuncs.copyOriginalFolder(model_name + '_t', orgFolder ,destFolder , 'Runner\\' )
