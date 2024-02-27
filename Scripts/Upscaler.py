@@ -29,7 +29,7 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name
 
 cellid = [] 
 for idx, row in df.iterrows():
-    cellid.append(nlmod.dims.grid.xy_to_icell2d((row.index[0],row.index[1]), mds))
+    cellid.append(nlmod.dims.grid.xy_to_icell2d((idx[0],idx[1]), mds))
 df['cellid'] = cellid
 kds = xr.Dataset.from_dataframe(df)
 ids = mds.icell2d.values
