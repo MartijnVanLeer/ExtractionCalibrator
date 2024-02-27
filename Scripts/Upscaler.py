@@ -11,6 +11,7 @@ import os
 import pandas as pd
 import numpy as np
 import Upscale_funcs as uf
+import nlmod
 
 filename = snakemake.input[1]
 model_name = snakemake.params.modelname
@@ -21,18 +22,30 @@ ws = snakemake.params.ws
 #load k realizations and move to ds
 df = pd.read_csv(filename, index_col=['x','y','z'])
 df.drop('Unnamed: 0', axis = 1)
-kds = xr.Dataset.from_dataframe(df)
+
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
+
+cellid = [] 
+for idx, row in df.iterrows():
+    cellid.append(nlmod.dims.grid.xy_to_icell2d((row.x,row.y), mds))
+df['cellid'] = cellid
+kds = xr.Dataset.from_dataframe(df)
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 for cellid in ids:
     cell = mds.sel(icell2d = cellid)
     dx = np.sqrt(cell.area.values)/2
-    cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
+    #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
+    cellk = kds.where(kds.cellid == cellid, drop = True)
     for sim in range(ens_no):
-        fieldK = uf.Run_MF_WholeField(cellk[f'K_{sim +1}'].values,Lx =2*dx,Ly = 2*dx,Lz = cellk[f'K_{sim +1}'].values.shape[2],dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
+        k = cellk[f'K_{sim +1}'].values
+        fieldK = uf.Run_MF_WholeField(cellk[f'K_{sim +1}'].values,
+                                      Lx =k.shape[0] *real_dx,
+                                      Ly = k.shape[1] *real_dx,
+                                      Lz = k.shape[2],
+                                      dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
         result.loc[dict(sim = sim, icell2d = cellid)] = fieldK
 
 result.to_netcdf(snakemake.output[0])
