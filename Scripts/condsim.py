@@ -55,7 +55,7 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             Lz =abs(boringen.list.z.min()-boringen.list.z.max()),
             dx =dx,dy =dy,dz =1,
             xcorlen =xcorlens, zcorlen = zcorlens,
-            ens_no = ens_no, frac =frac, nmax = 100, seed = 1337)
+            ens_no = ens_no, frac =frac, nmax = 100, seed = xcorlens*zcorlens*frac)
 
 
 ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
