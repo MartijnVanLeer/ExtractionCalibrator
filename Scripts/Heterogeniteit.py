@@ -266,7 +266,7 @@ def trim(Kfields,ds, Layer):
     cellids = [] 
     for index, row in Kfields.iterrows():
         cellid = xy_to_icell2d((row.x,row.y), ds)
-        cellids.append(idx)
+        cellids.append(cellid)
         cell = ds.sel(icell2d = cellid, layer = Layer)
         if row.z >= cell.botm.values and row.z <= cell.top.values:
             keep.append(True)
