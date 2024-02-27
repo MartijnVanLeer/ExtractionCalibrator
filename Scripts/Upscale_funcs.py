@@ -44,8 +44,8 @@ def Run_MF_WholeField(Kfields,Lx,Ly,Lz,dx,dy,dz, mds, ws):
 def run_mf(sim, Kfield,mds, ws):
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
-    npf.k33 = Kfield.transpose(2,0,1)
-    npf.k = Kfield.transpose(2,0,1)*10
+    npf.k33.set_data(Kfield.transpose(2,0,1))
+    npf.k.set_data(Kfield.transpose(2,0,1))
     npf.write()
     success, buff = sim.run_simulation(silent = True)
     if not success:
