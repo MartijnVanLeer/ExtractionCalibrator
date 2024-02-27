@@ -44,10 +44,13 @@ def Run_MF_WholeField(Kfields,Lx,Ly,Lz,dx,dy,dz, mds, ws):
 def run_mf(sim, Kfield,mds, ws):
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
-    npf.k33 = np.rot90(Kfield, k=1, axes = (0,2))
-    npf.k = np.rot90(Kfield, k=1, axes = (0,2))
+    npf.k33 = Kfield.transpose(2,0,1)
+    npf.k = Kfield.transpose(2,0,1)*10
     npf.write()
-    sim.run_simulation(silent = True)
+    success, buff = sim.run_simulation(silent = True)
+    if not success:
+        print(buff)
+        raise Exception('Modflow crashed')
     cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
     qs = cbb.get_data(text='DATA-SPDIS')[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
