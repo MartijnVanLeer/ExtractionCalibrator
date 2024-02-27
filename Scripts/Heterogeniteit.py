@@ -263,14 +263,16 @@ def annotate(data, **kws):
     
 def trim(Kfields,ds, Layer):
     keep = []
+    cellid = [] 
     for index, row in Kfields.iterrows():
-        cellid = xy_to_icell2d((row.x,row.y), ds)
+        cellid.append(xy_to_icell2d((row.x,row.y), ds))
         cell = ds.sel(icell2d = cellid, layer = Layer)
         if row.z >= cell.botm.values and row.z <= cell.top.values:
             keep.append(True)
         else: 
             keep.append(False)
     Kfields['keep'] = keep
+    Kfields['cellid'] = cellid
     return Kfields[Kfields.keep==True] 
     
     

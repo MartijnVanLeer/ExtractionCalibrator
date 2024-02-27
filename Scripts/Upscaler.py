@@ -26,12 +26,8 @@ df.drop('Unnamed: 0', axis = 1)
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
-
-cellid = [] 
-for idx, row in df.iterrows():
-    cellid.append(nlmod.dims.grid.xy_to_icell2d((idx[0],idx[1]), mds))
-df['cellid'] = cellid
 kds = xr.Dataset.from_dataframe(df)
+
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 for cellid in ids:
@@ -40,13 +36,13 @@ for cellid in ids:
     #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     cellk = kds.where(kds.cellid == cellid, drop = True)
     for sim in range(ens_no):
-        k = cellk[f'K_{sim +1}'].values
-        fieldK = uf.Run_MF_WholeField(cellk[f'K_{sim +1}'].values,
-                                      Lx =k.shape[0] *real_dx,
-                                      Ly = k.shape[1] *real_dx,
-                                      Lz = k.shape[2],
+        k = cellk.values
+        fieldK = uf.Run_MF_WholeField(k,
+                                      Lx =k.shape[1] *real_dx,
+                                      Ly = k.shape[2] *real_dx,
+                                      Lz = k.shape[3],
                                       dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
-        result.loc[dict(sim = sim, icell2d = cellid)] = fieldK
+        result.loc[dict(icell2d = cellid)] = fieldK
 
 result.to_netcdf(snakemake.output[0])
 

@@ -52,7 +52,8 @@ rule all:
 
 rule Forward_Model_SS:
     input:
-        'ForwardModelGen.py'
+        'ForwardModelGen.py',
+        'Helper.py'
     output:
         os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_ss')),
@@ -74,6 +75,7 @@ rule Forward_Model_SS:
 rule Forward_Model_T:
     input:
         'ForwardModelGen.py',
+        'Helper.py'
     output:
         os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
@@ -95,7 +97,8 @@ rule Forward_Model_T:
 rule Calibration_SS:
     input:
        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
-       'Sensitivity.py'
+       'Sensitivity.py',
+       'OptimisationFuncs.py'
     params:
         Name = Name,
         modelname = modelname,
@@ -115,7 +118,8 @@ rule Calibration_T:
     input:
        'Calibration.py',
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
-       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam')
+       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
+       'OptimisationFuncs.py'
     params:
         Name = Name,
         modelname = modelname,
@@ -130,7 +134,8 @@ rule Calibration_T:
 rule Prep_Boreholes:
     input:
         'prep_boringen.py',
-        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
+        'Heterogeniteit.py'
     params:
         modelname = modelname,
         Name = Name,
@@ -144,7 +149,8 @@ rule Cond_Simulator:
     input:
        'condsim.py',
        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
-       os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl')
+       os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'),
+       'Heterogeniteit.py'
     params:
         Name = Name,
         modelname = modelname,
@@ -159,8 +165,9 @@ rule Cond_Simulator:
 
 rule Upscaler:
     input:
-       'Upscaler.py',
-       os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
+        'Upscaler.py',
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
+        'Upscale_funcs.py'
     params:
         Name = Name,
         modelname = modelname,
