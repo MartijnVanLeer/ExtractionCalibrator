@@ -36,13 +36,13 @@ for cellid in ids:
     #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     cellk = kds.where(kds.cellid == cellid, drop = True)
     for sim in range(ens_no):
-        k = cellk.values
+        k = cellk[f"K_{sim+1}"].values
         fieldK = uf.Run_MF_WholeField(k,
-                                      Lx =k.shape[1] *real_dx,
-                                      Ly = k.shape[2] *real_dx,
-                                      Lz = k.shape[3],
+                                      Lx =k.shape[0] *real_dx,
+                                      Ly = k.shape[1] *real_dx,
+                                      Lz = k.shape[2],
                                       dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
-        result.loc[dict(icell2d = cellid)] = fieldK
+        result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
 
 result.to_netcdf(snakemake.output[0])
 
