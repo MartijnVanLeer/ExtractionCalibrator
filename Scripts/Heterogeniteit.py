@@ -187,7 +187,7 @@ class boringen():
         rng = np.random.default_rng()
         K1 = rng.normal(self.mu1,self.std1, len(res))
         K2 = rng.normal(self.mu2,self.std2, len(res))
-        Kfield = res[['x','y','z']]
+        Kfield = res[['x','y','z','cellid']]
         for x in range(len(res.columns)-5):
             Kfield.loc[:,f"K_{x+1}"] = np.where(res[f'sim{x+1}'] == 1, K1,K2)
             np.random.shuffle(K1)
