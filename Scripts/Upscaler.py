@@ -39,12 +39,16 @@ for cellid in ids:
     print(cellk['K_1'].shape)
     for sim in range(ens_no):
         k = cellk[f"K_{sim+1}"].values
-        fieldK = uf.Run_MF_WholeField(10**(k),
-                                      Lx = k.shape[0] *real_dx,
-                                      Ly = k.shape[1] *real_dx,
-                                      Lz = k.shape[2],
-                                      dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
-        result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
+        if k.shape[2] != 0:
+            fieldK = uf.Run_MF_WholeField(10**(k),
+                                        Lx = k.shape[0] *real_dx,
+                                        Ly = k.shape[1] *real_dx,
+                                        Lz = k.shape[2],
+                                        dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
+            result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
+        else:
+            result.loc[dict(icell2d = cellid, sim = sim)] = 1
+
 
 result.to_netcdf(snakemake.output[0])
 
