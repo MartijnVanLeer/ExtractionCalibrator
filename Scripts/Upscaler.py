@@ -36,7 +36,7 @@ for cellid in ids:
     #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     cellk = kds.where(kds.cellid == cellid, drop = True,)
     cellk = cellk.dropna('z')
-    print(cellk['K-sim1'].shape)
+    print(cellk['K_sim1'].shape)
     for sim in range(ens_no):
         k = cellk[f"K_{sim+1}"].values
         fieldK = uf.Run_MF_WholeField(10**(k),
