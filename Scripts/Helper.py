@@ -162,11 +162,11 @@ def refiner(ds, refineranges, WellGdf):
 
 def resample(ds, layer_model, NLzuid):
     # if not NLzuid:
-    kv = nlmod.resample.structured_da_to_ds(layer_model.kv.sel(layer = ds.layer), ds, method='nearest')
-    kh = nlmod.resample.structured_da_to_ds(layer_model.kh.sel(layer = ds.layer), ds, method='nearest')
+    kv = nlmod.resample.structured_da_to_ds(layer_model.kv.sel(layer = ds.layer), ds, method='average')
+    kh = nlmod.resample.structured_da_to_ds(layer_model.kh.sel(layer = ds.layer), ds, method='average')
     ds['kh'], ds['kv'] = nlmod.layers.get_kh_kv(kh, kv, anisotropy = 10)
-    # ds['top'] = nlmod.resample.structured_da_to_ds(layer_model.top, ds, method='average').sel(layer = ds.layer[0])
-    # ds['botm'] = nlmod.resample.structured_da_to_ds(layer_model.botm, ds, method='nearest')
+    ds['top'] = nlmod.resample.structured_da_to_ds(layer_model.top, ds, method='average')
+    ds['botm'] = nlmod.resample.structured_da_to_ds(layer_model.botm, ds, method='average')
     return ds
     
 
