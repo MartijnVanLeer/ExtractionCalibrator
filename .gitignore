@@ -4,3 +4,4 @@
 /scripts/__pycache__
 /scripts/.snakemake
 /scripts/%LOCALAPPDATA%
+Scripts/NLzuidcheck.py

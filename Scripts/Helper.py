@@ -165,8 +165,8 @@ def resample(ds, layer_model, NLzuid):
     kv = nlmod.resample.structured_da_to_ds(layer_model.kv.sel(layer = ds.layer), ds, method='average')
     kh = nlmod.resample.structured_da_to_ds(layer_model.kh.sel(layer = ds.layer), ds, method='average')
     ds['kh'], ds['kv'] = nlmod.layers.get_kh_kv(kh, kv, anisotropy = 10)
-    ds['top'] = nlmod.resample.structured_da_to_ds(layer_model.top, ds, method='average')
-    ds['botm'] = nlmod.resample.structured_da_to_ds(layer_model.botm, ds, method='average')
+    ds['top'] = nlmod.resample.structured_da_to_ds(layer_model.top.sel(layer = ds.layer), ds, method='average')
+    ds['botm'] = nlmod.resample.structured_da_to_ds(layer_model.botm.sel(layer = ds.layer), ds, method='average')
     return ds
     
 
