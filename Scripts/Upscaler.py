@@ -35,7 +35,7 @@ for cellid in ids:
     dx = np.sqrt(cell.area.values)/2
     #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     cellk = kds.where(kds.cellid == cellid, drop = True,)
-    cellk = cellk.dropna('z')
+    cellk = cellk.dropna('z', how = 'all')
     print(cellk['K_1'].shape)
     for sim in range(ens_no):
         k = cellk[f"K_{sim+1}"].values

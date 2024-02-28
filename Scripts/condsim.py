@@ -40,18 +40,19 @@ with open(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'), 
 frac = boringen.list.i[boringen.list.i > 0.5].count()/len(boringen.list)
 fracs =  frac + fracedit
 
-xmin = boringen.layermodel.extent[0]
-ymin = boringen.layermodel.extent[2]
-Lx = boringen.layermodel.extent[1] - boringen.layermodel.extent[0]
-Ly = boringen.layermodel.extent[3] - boringen.layermodel.extent[2]
+xmin = boringen.layermodel.extent[0] - 0.5*dx
+ymin = boringen.layermodel.extent[2] - 0.5*dx
+Lx = boringen.layermodel.extent[1] - boringen.layermodel.extent[0] - dx 
+Ly = boringen.layermodel.extent[3] - boringen.layermodel.extent[2] - dx 
+Lz =abs(boringen.list.z.min()-boringen.list.z.max())
 zmin = boringen.list.z.min()
 
 
 
 a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
-            xmin = boringen.layermodel.extent[0],ymin = boringen.layermodel.extent[2],zmin = boringen.list.z.min(),
-            Lx=boringen.layermodel.extent[1] - boringen.layermodel.extent[0],
-            Ly=boringen.layermodel.extent[3] - boringen.layermodel.extent[2],
+            xmin = xmin,ymin = ymin,zmin = zmin,
+            Lx=Lx,
+            Ly=Ly,
             Lz =abs(boringen.list.z.min()-boringen.list.z.max()),
             dx =dx,dy =dy,dz =1,
             xcorlen =xcorlens, zcorlen = zcorlens,
@@ -59,6 +60,7 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
 
 
 ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
+
 res = Heterogeniteit.trim(res,ds, Layer)
 Kfields = boringen.add_k(res)
 

@@ -42,6 +42,7 @@ def Run_MF_WholeField(Kfields,Lx,Ly,Lz,dx,dy,dz, mds, ws):
     return keffWholeField
 
 def run_mf(sim, Kfield,mds, ws):
+    ''' Change npf package, run MF, extract K value'''
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
     npf.k33.set_data(Kfield.transpose(2,0,1))
