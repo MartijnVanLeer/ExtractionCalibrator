@@ -50,6 +50,12 @@ Ly = ds.extent[3] - ds.extent[2] - dx
 Lz =abs((ds.sel(layer = Layer).top.max()-ds.sel(layer = Layer).botm.min()).values)
 zmin = ds.sel(layer = Layer).botm.min().values
 
+print(dx)
+print(ymin)
+print(Lx)
+print(Lz)
+print(zmin)
+
 a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xmin = xmin,ymin = ymin,zmin = zmin,
             Lx=Lx,  Ly=Ly,  Lz =Lz,
