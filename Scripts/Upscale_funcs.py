@@ -47,11 +47,10 @@ def run_mf(sim, Kfield,mds, ws):
     npf.k33.set_data(Kfield.transpose(2,0,1))
     npf.k.set_data(Kfield.transpose(2,0,1))
     npf.write()
-    success, buff = sim.run_simulation(silent = False)
-    # if not success:
-    #     print(Kfield)
-    #     sim.check()
-    #     raise Exception('Modflow crashed')
+    success, buff = sim.run_simulation(silent = True)
+    if not success:
+        print(Kfield)
+        raise Exception('Modflow crashed')
     cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
     qs = cbb.get_data(text='DATA-SPDIS')[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
