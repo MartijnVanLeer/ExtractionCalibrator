@@ -19,7 +19,7 @@ CorLayers = {'KIz4' : 'KIz5'}
 ghbCal = 'SensLayers' # 'obs', 'Single', None
 KCal = True
 Weighted = False
-BadWells =[]#['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
+BadWells =['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
 
 def get_paramspace(xcorlens,zcorlens,fracs):
     xl = []
