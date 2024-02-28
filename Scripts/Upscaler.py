@@ -37,7 +37,7 @@ for cellid in ids:
     cellk = kds.where(kds.cellid == cellid, drop = True)
     for sim in range(ens_no):
         k = cellk[f"K_{sim+1}"].values
-        fieldK = uf.Run_MF_WholeField(np.log10(k),
+        fieldK = uf.Run_MF_WholeField(10**(k),
                                       Lx = k.shape[0] *real_dx,
                                       Ly = k.shape[1] *real_dx,
                                       Lz = k.shape[2],
