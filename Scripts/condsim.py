@@ -14,6 +14,7 @@ import pickle
 import shutil
 import xarray as xr
 import Heterogeniteit
+import numpy as np
 
 def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule": # type: ignore
     import snakemake as sm
