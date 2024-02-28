@@ -93,11 +93,9 @@ def FixTS_Obs(TS, startdate, enddate, ObsWells, Name):
         TS.set_index(['Time'], inplace = True)
         TS.index = TS.index.tz_convert(None)
         TS = TS.pivot(columns = 'putcode', values = 'meting_NAP')
-        
         TS = TS.resample('D').mean()
         TS = TS.loc[startdate:enddate]
-        if not os.path.isfile(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Name}.csv')):
-            TS.to_csv(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Name}.csv'), index = True)
+        TS.to_csv(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Name}.csv'), index = True)
         return TS
 
 def add_refresco(ExWells,Discharge):

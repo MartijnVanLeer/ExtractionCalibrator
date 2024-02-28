@@ -64,7 +64,7 @@ def copyOriginalFolder(modelName, orgFolder ,destFolder , mfsimPrefix):
 def readObs(Location,gwf,ds):
     ObsWells = pd.read_csv(os.path.join('..','Data','dawaco',f'waarnemingsputten_WG_{Location}.csv'))
     ObsWells['putcode'] = ObsWells['putcode'].astype(str) + '_' +ObsWells['filter_nummer'].astype(str)
-    ObsWells['putcode'] = ObsWells.putcode.str.rstrip('.0')   
+    ObsWells['putcode'] = ObsWells.putcode.str.rstrip('0').rstrip('.')   
     ObsWells = add_cellid(ObsWells,gwf,ds)
     return ObsWells
 
