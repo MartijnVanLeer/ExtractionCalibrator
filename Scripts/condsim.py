@@ -47,14 +47,9 @@ xmin = ds.extent[0] - 0.5*dx
 ymin = ds.extent[2] - 0.5*dx
 Lx = ds.extent[1] - ds.extent[0] - dx 
 Ly = ds.extent[3] - ds.extent[2] - dx 
-Lz =abs((ds.sel(layer = Layer).top.max()-ds.sel(layer = Layer).botm.min()).values)
-zmin = ds.sel(layer = Layer).botm.min().values
+Lz =np.ceil(abs((ds.sel(layer = Layer).top.max()-ds.sel(layer = Layer).botm.min()).values))
+zmin = np.floor(ds.sel(layer = Layer).botm.min().values)
 
-print(dx)
-print(ymin)
-print(Lx)
-print(Lz)
-print(zmin)
 
 a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xmin = xmin,ymin = ymin,zmin = zmin,
