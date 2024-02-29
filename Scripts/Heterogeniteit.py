@@ -82,7 +82,7 @@ class boringen():
         self.selection = self.boreholes
         idx = list(ds.layer).index(layer)
         thickness = ds.isel(layer = idx-1).botm-ds.sel(layer = layer).botm
-        condrange = np.ceil(thickness.max())
+        condrange = np.ceil(thickness.max().values)
         ds['Layermid'] = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
 
         for boringnr, df in self.boreholes.items():
@@ -91,7 +91,9 @@ class boringen():
             mid = ds.sel(icell2d = xy_to_icell2d((df['x'].values[0],df['y'].values[0]), ds)).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
-            df = df[df['z'].between(minrange,maxrange)]
+            print(condrange)
+            print (mid)
+            df = df[df['z'] >= minrange & df['z'] < maxrange)]
             df['z'] = np.arange(len(df))
             self.selection[boringnr] = df
     
