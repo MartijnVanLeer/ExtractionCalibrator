@@ -84,7 +84,7 @@ class boringen():
         Layermid = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
 
         for boringnr, df in self.boreholes.items():
-            mid = Layermid.sel(x = df.x, y = df.y, method = 'nearest').values
+            mid = Layermid.sel(x = df['x'].values[0], y = df['y'].values[0], method = 'nearest').values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
             df = df[df['z'].between(minrange,maxrange)]
@@ -198,6 +198,7 @@ class boringen():
         y_pdf2 = scipy.stats.norm.pdf(x_pdf, self.mu2, self.std2)
         ax.plot(x_pdf, y_pdf2, c = 'green')
         return rn
+    
     def add_k(self, res):
         rng = np.random.default_rng()
         K1 = rng.normal(self.mu1,self.std1, len(res))
