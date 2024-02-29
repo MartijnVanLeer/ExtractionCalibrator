@@ -80,7 +80,7 @@ class boringen():
         self.selection = self.boreholes
         idx = list(ds.layer).index(layer)
         thickness = ds.isel(layer = idx-1).botm-ds.sel(layer = layer).botm
-        condrange = np.ceil(max(thickness.max()))
+        condrange = np.ceil(thickness.max())
         Layermid = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
 
         for boringnr, df in self.boreholes.items():
