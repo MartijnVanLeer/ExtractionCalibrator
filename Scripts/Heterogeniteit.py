@@ -50,8 +50,9 @@ class boringen():
                     row['quality'] = md.loc['Kwaliteitcode beschrijving lithologie', 'ALGEMENE GEGEVENS BORING']
                     row['boringnr'] = ix
                     result.append(row.copy())
-            if (md.loc['X-coordinaat (m)'].astype(int)[0].between(ds.extent[0], ds.extent[1])) and (md.loc['Y-coordinaat (m)'].astype(int)[0].between(ds.extent[2], ds.extent[3])):
-                self.boreholes[name] = pd.DataFrame(result)
+            if (md.loc['X-coordinaat (m)'].values[0] >= ds.extent[0] & md.loc['X-coordinaat (m)'].values[0] <=  ds.extent[1])
+                if (md.loc['X-coordinaat (m)'].values[0] >= ds.extent[2] & md.loc['X-coordinaat (m)'].values[0] <=  ds.extent[3])
+                    self.boreholes[name] = pd.DataFrame(result)
         self.metadata = pd.concat(metadata, axis = 1)
         self.metadata.columns = self.metadata.iloc[0]
 
