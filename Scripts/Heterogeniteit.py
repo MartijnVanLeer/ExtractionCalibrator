@@ -84,7 +84,7 @@ class boringen():
         Layermid = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
 
         for boringnr, df in self.boreholes.items():
-            mid = Layermid.sel(x = df['x'].values[0], y = df['y'].values[0], method = 'nearest').values
+            mid = Layermid.sel(x = df['x'].values[0], method = 'nearest').sel(y = df['y'].values[0], method = 'nearest').values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
             df = df[df['z'].between(minrange,maxrange)]
