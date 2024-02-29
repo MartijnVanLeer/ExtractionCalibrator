@@ -21,7 +21,7 @@ class boringen():
     def __init__(self, folder,ds):
         self.get_boringen(folder,ds)
         self.selection = None
-    def get_boringen(self,folder):
+    def get_boringen(self,folder, ds):
         csv_files = glob.glob(folder + "/*.txt")
         self.boreholes = {}
         metadata = []
