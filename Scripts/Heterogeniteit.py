@@ -75,6 +75,21 @@ class boringen():
         for boringnr, df in self.boreholes.items():
             df = df[df['layer'] == layer]
             self.selection[boringnr] = df
+
+    def select_range(self, layer, ds):
+        self.selection = self.boreholes
+        idx = list(ds.layer).index(layer)
+        thickness = ds.isel(layer = idx-1).botm-ds.sel(layer = layer).botm
+        condrange = np.ceil(max(thickness.max()))
+        Layermid = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
+
+        for boringnr, df in self.boreholes.items():
+            mid = Layermid.sel(x = df.x, y = df.y, method = 'nearest').values
+            minrange = mid - 0.5 * condrange
+            maxrange = mid + 0.5 * condrange
+            df = df[df['z'].between(minrange,maxrange)]
+            df['z'] = np.arange(len(df))
+            self.selection[boringnr] = df
     
     def listify(self):        
         if self.selection != None:

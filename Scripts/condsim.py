@@ -49,10 +49,11 @@ ymin = ds.extent[2] - 0.5*dx
 Lx = ds.extent[1] - ds.extent[0] - dx 
 Ly = ds.extent[3] - ds.extent[2] - dx 
 
-idxtop = list(ds.layer).index('KIk2') -1
-Lz =np.ceil(abs(ds.isel(layer = idxtop).botm.max()-ds.sel(layer = Layer).botm.min()).values)
-zmin = np.floor(ds.sel(layer = Layer).botm.min().values)
 
+Lz = boringen.list.z.max()
+zmin = boringen.list.z.min()
+print(zmin)
+print(Lz)
 
 a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xmin = xmin,ymin = ymin,zmin = zmin,
@@ -65,9 +66,7 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
 
 
 
-res = Heterogeniteit.trim(res,ds, Layer)
+# res = Heterogeniteit.trim(res,ds, Layer)
 Kfields = boringen.add_k(res)
-
-
 
 Kfields.to_csv(snakemake.output[0])

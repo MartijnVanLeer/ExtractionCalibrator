@@ -24,6 +24,7 @@ Layer = snakemake.params.simlayer
 TI = True if Location == 'Vlijmen' else False
 borefolder = join("..",'Data',f'Boringen {Location}',r'Boormonsterprofiel_Geologisch booronderzoek')
 ncpath =join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
+ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
 TIpath = join("..",'Data','AllDB.csv')
 RegCat = join('..', 'Data','REGIS_catalogus_export18122015.csv' )
 
@@ -32,9 +33,12 @@ RegCat = join('..', 'Data','REGIS_catalogus_export18122015.csv' )
 boringen = h.boringen(borefolder)
 md = boringen.metadata
 #voeg REGIS laag toe aan boringen
-boringen.add_layers(xr.open_dataset(ncpath))
+#boringen.add_layers(xr.open_dataset(ncpath))
 #selecteer trajecten binnen een laag en explode naar meterschaal
 boringen.select_layer(Layer)
+
+boringen.select_range(Layer, ds)
+
 #Maak lijst met xyz en laag
 boringen.listify()
 cond = boringen.indicators(g1 = ['v', 'k', 'kz'])
