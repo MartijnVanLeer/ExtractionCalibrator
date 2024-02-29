@@ -90,7 +90,11 @@ class boringen():
             mid = ds.sel(icell2d = xy_to_icell2d((df['x'].values[0],df['y'].values[0]), ds)).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
-            df = df[df['z'].between(-minrange,-maxrange)]
+            print (mid)
+            print(condrange)
+            print(minrange)
+            print(maxrange)
+            df = df[df['z'].between(minrange,maxrange)]
             df['z'] = np.arange(len(df))
             self.selection[boringnr] = df
     
