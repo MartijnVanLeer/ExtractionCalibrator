@@ -54,6 +54,7 @@ else:
 rn = boringen.plot_K_weighted(Kcore, TI)
 #Trek K uit Kcore en voeg toe aan boringlijst
 # cond.add_k(Kcore)
+print(boringen.list)
 
 boringen.list.to_csv(join('..','Results',f'{modelname}','boreholeindicators.csv'))
 with open(join('..','Results',f'{modelname}','boreholeindicators.pkl'), 'wb') as f:
