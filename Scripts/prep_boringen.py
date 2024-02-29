@@ -30,7 +30,7 @@ RegCat = join('..', 'Data','REGIS_catalogus_export18122015.csv' )
 
 
 
-boringen = h.boringen(borefolder)
+boringen = h.boringen(borefolder, ds)
 md = boringen.metadata
 #voeg REGIS laag toe aan boringen
 #boringen.add_layers(xr.open_dataset(ncpath))
