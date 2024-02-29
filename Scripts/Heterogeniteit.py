@@ -14,7 +14,7 @@ import numpy as np
 import seaborn as sns
 import scipy.stats
 from tqdm import tqdm
-from nlmod.dims.grid import xy_to_icell2d
+from nlmod.dims.grid import xyz_to_cid
 import io
 
 class boringen():
@@ -265,10 +265,9 @@ def trim(Kfields,ds, Layer):
     keep = []
     cellids = [] 
     for index, row in Kfields.iterrows():
-        cellid = xy_to_icell2d((row.x,row.y), ds)
+        celllayer, cellid = xyz_to_cid((row.x,row.y, row.z), ds)
         cellids.append(cellid)
-        cell = ds.sel(icell2d = cellid, layer = Layer)
-        if row.z >= cell.botm.values and row.z <= cell.top.values:
+        if ds.layer[celllayer] == Layer:
             keep.append(True)
         else: 
             keep.append(False)
