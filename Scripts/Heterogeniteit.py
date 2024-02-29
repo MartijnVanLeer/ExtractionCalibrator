@@ -94,7 +94,7 @@ class boringen():
             print(condrange)
             print(minrange)
             print(maxrange)
-            df = df[df['z'].between(minrange,maxrange)]
+            df = df[df['z'].astype(float).between(maxrange,minrange)]
             df['z'] = np.arange(len(df))
             self.selection[boringnr] = df
     
