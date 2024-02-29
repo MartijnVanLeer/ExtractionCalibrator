@@ -15,6 +15,7 @@ import seaborn as sns
 import scipy.stats
 from tqdm import tqdm
 from nlmod.dims.grid import xyz_to_cid
+from nlmod.dims.grid import xy_to_icell2d
 import io
 
 class boringen():
@@ -86,7 +87,8 @@ class boringen():
 
         for boringnr, df in self.boreholes.items():
             print(df['x'].values[0])
-            mid = ds.sel(x = df['x'].values[0], method = 'nearest').sel(y = df['y'].values[0], method = 'nearest').Layermid.values
+            cellid = xy_to_icell2d
+            mid = ds.sel(icell2d = xy_to_icell2d((df['x'].values[0],df['y'].values[0]))).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
             df = df[df['z'].between(minrange,maxrange)]
