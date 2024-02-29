@@ -113,7 +113,7 @@ def add_cellid(ObsWells,gwf, ds):
                     else:
                         Layno.append(idx[0]+1)
                 else:
-                Layno.append(idx[0])
+                    Layno.append(idx[0])
             except Exception:
                 print(f'{well["putcode"]} outside model area')
                 CellID.append(np.nan)

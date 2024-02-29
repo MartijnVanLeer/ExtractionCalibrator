@@ -24,7 +24,7 @@ Layer = snakemake.params.simlayer
 TI = True if Location == 'Vlijmen' else False
 borefolder = join("..",'Data',f'Boringen {Location}',r'Boormonsterprofiel_Geologisch booronderzoek')
 ncpath =join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc')
-ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
+ds = xr.open_dataset(join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
 TIpath = join("..",'Data','AllDB.csv')
 RegCat = join('..', 'Data','REGIS_catalogus_export18122015.csv' )
 
