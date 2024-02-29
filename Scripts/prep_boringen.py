@@ -35,7 +35,7 @@ md = boringen.metadata
 #voeg REGIS laag toe aan boringen
 #boringen.add_layers(xr.open_dataset(ncpath))
 #selecteer trajecten binnen een laag en explode naar meterschaal
-boringen.select_layer(Layer)
+# boringen.select_layer(Layer)
 
 boringen.select_range(Layer, ds)
 
