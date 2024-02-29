@@ -18,8 +18,8 @@ from nlmod.dims.grid import xyz_to_cid
 import io
 
 class boringen():
-    def __init__(self, folder):
-        self.get_boringen(folder)
+    def __init__(self, folder,ds):
+        self.get_boringen(folder,ds)
         self.selection = None
     def get_boringen(self,folder):
         csv_files = glob.glob(folder + "/*.txt")
@@ -50,8 +50,8 @@ class boringen():
                     row['quality'] = md.loc['Kwaliteitcode beschrijving lithologie', 'ALGEMENE GEGEVENS BORING']
                     row['boringnr'] = ix
                     result.append(row.copy())
-                    
-            self.boreholes[name] = pd.DataFrame(result)
+            if (md.loc['X-coordinaat (m)'].between(ds.extent[0], ds.extent[1])) and (md.loc['Y-coordinaat (m)'].between(ds.extent[2], ds.extent[3])):
+                self.boreholes[name] = pd.DataFrame(result)
         self.metadata = pd.concat(metadata, axis = 1)
         self.metadata.columns = self.metadata.iloc[0]
 
@@ -81,10 +81,11 @@ class boringen():
         idx = list(ds.layer).index(layer)
         thickness = ds.isel(layer = idx-1).botm-ds.sel(layer = layer).botm
         condrange = np.ceil(thickness.max())
-        Layermid = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
+        ds['Layermid'] = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
 
         for boringnr, df in self.boreholes.items():
-            mid = Layermid.sel(x = df['x'].values[0], method = 'nearest').sel(y = df['y'].values[0], method = 'nearest').values
+            print df['x'].values[0]
+            mid = ds.sel(x = df['x'].values[0], method = 'nearest').sel(y = df['y'].values[0], method = 'nearest').Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
             df = df[df['z'].between(minrange,maxrange)]
