@@ -108,9 +108,12 @@ def add_cellid(ObsWells,gwf, ds):
                 idx = gwf.modelgrid.intersect(well['x_coordinaat'] ,well['y_coordinaat'], -(well['filter_onderkant_ref'] - well['filter_referentiepunt_NAP']))
                 CellID.append(idx[1])
                 if laytypes[idx[0]] == 'k':
-                    Layno.append(idx[0]+1)
+                    if well.putcode == 'B57E0064_3':
+                        Layno.append(idx[0]-1)
+                    else:
+                        Layno.append(idx[0]+1)
                 else:
-                    Layno.append(idx[0])
+                Layno.append(idx[0])
             except Exception:
                 print(f'{well["putcode"]} outside model area')
                 CellID.append(np.nan)
