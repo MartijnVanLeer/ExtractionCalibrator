@@ -51,7 +51,7 @@ class boringen():
                     row['boringnr'] = ix
                     result.append(row.copy())
             if (int(md.loc['X-coordinaat (m)'].values[0]) >= ds.extent[0]) and (int(md.loc['X-coordinaat (m)'].values[0]) <=  ds.extent[1]):
-                if (int(md.loc['X-coordinaat (m)'].values[0] >= ds.extent[2])) and (int(md.loc['X-coordinaat (m)'].values[0] <=  ds.extent[3])):
+                if (int(md.loc['Y-coordinaat (m)'].values[0]) >= ds.extent[2]) and (int(md.loc['Y-coordinaat (m)'].values[0]) <=  ds.extent[3]):
                     self.boreholes[name] = pd.DataFrame(result)
         self.metadata = pd.concat(metadata, axis = 1)
         self.metadata.columns = self.metadata.iloc[0]
