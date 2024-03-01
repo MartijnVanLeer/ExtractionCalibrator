@@ -5,7 +5,6 @@ Created on Mon Oct 16 16:14:09 2023
 @author: leermdv
 """
 
-from SISIM_R import * 
 import pandas as pd
 import glob 
 import statistics
@@ -44,7 +43,7 @@ class boringen():
             for ix, row in bh.iterrows():
                 top = row['Bovenkant laag (m beneden maaiveld)']
                 bot = row['Onderkant laag (m beneden maaiveld)']
-                for range_ in range(int(top), int(bot) + 1):
+                for range_ in range(int(top), int(bot)):
                     row['z'] = -range_ + round(float(md.loc['Maaiveldhoogte (meter t.o.v. NAP)'].values[0]))
                     row['x'] = int(md.loc['X-coordinaat (m)'].values[0])
                     row['y'] = int(md.loc['Y-coordinaat (m)'].values[0])
@@ -89,7 +88,7 @@ class boringen():
             mid = ds.sel(icell2d = xy_to_icell2d((tdf['x'].values[0],tdf['y'].values[0]), ds)).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
-            tdf = tdf[tdf['z'].between(minrange,maxrange)]
+            tdf = tdf[tdf['z'] > minrange & tdf['z'] > maxrange ]
             print(tdf.head(10))
             tdf['z'] = np.arange(len(tdf))
             self.selection[boringnr] = tdf
