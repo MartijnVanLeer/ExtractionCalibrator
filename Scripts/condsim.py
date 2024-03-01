@@ -53,7 +53,6 @@ Ly = ds.extent[3] - ds.extent[2] - dx
 Lz = boringen.list.z.max()
 zmin = boringen.list.z.min()
 
-print (len(boringen.list) / Lz)
 
 a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xmin = xmin,ymin = ymin,zmin = zmin,
@@ -66,7 +65,7 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
 
 
 
-# res = Heterogeniteit.trim(res,ds, Layer)
+res = Heterogeniteit.add_cellid(res,ds, Layer)
 Kfields = boringen.add_k(res)
 
 Kfields.to_csv(snakemake.output[0])
