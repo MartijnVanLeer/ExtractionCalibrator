@@ -26,7 +26,8 @@ class boringen():
         self.boreholes = {}
         metadata = []
         for file in tqdm(csv_files, 'Read borehole files..'):
-            name = file.split('\\')[-1].split('.')[0]
+            base = os.path.basename(file)
+            name = os.path.splitext(base)[0]
             #metadata
             with open(file) as f:
                 text = f.read()
@@ -53,7 +54,6 @@ class boringen():
             self.boreholes[name] = pd.DataFrame(result)
         self.metadata = pd.concat(metadata, axis = 1)
         self.metadata.columns = self.metadata.iloc[0]
-        print(self.boreholes)
 
     def add_layers(self, layermodel):
         self.layermodel = layermodel
