@@ -53,6 +53,7 @@ class boringen():
             self.boreholes[name] = pd.DataFrame(result)
         self.metadata = pd.concat(metadata, axis = 1)
         self.metadata.columns = self.metadata.iloc[0]
+        print(len(self.boreholes.items())
 
     def add_layers(self, layermodel):
         self.layermodel = layermodel
@@ -88,8 +89,8 @@ class boringen():
             mid = ds.sel(icell2d = xy_to_icell2d((tdf['x'].values[0],tdf['y'].values[0]), ds)).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
-            tdf = tdf[(tdf['z'] > minrange) and (tdf['z'] > maxrange) ]
-            print(tdf.head(10))
+            tdf = tdf[tdf['z'] >= minrange]
+            tdf = tdf[tdf['z'] <= maxrange]
             tdf['z'] = np.arange(len(tdf))
             self.selection[boringnr] = tdf
     
