@@ -16,6 +16,7 @@ from tqdm import tqdm
 from nlmod.dims.grid import xyz_to_cid
 from nlmod.dims.grid import xy_to_icell2d
 import io
+import os
 
 class boringen():
     def __init__(self, folder,ds):
