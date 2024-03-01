@@ -92,7 +92,7 @@ class boringen():
             maxrange = mid + 0.5 * condrange
             tdf = tdf[tdf['z'] >= minrange]
             tdf = tdf[tdf['z'] <= maxrange]
-            tdf['z'] = np.arange(len(tdf))
+            tdf['z'] = -np.arange(len(tdf))
             self.selection[boringnr] = tdf
     
     def listify(self):        
