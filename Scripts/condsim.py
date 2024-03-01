@@ -50,7 +50,7 @@ Lx = ds.extent[1] - ds.extent[0] - dx
 Ly = ds.extent[3] - ds.extent[2] - dx 
 
 
-Lz = boringen.list.z.max()
+Lz = boringen.list.z.max() - boringen.list.z.min()
 zmin = boringen.list.z.min()
 
 
