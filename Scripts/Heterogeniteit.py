@@ -86,16 +86,18 @@ class boringen():
         ds['Layermid'] = (ds.isel(layer = idx-1).botm + ds.sel(layer = layer).botm)/2
 
         for boringnr, df in self.boreholes.items():
+            tdf = df.copy()
             cellid = xy_to_icell2d
-            mid = ds.sel(icell2d = xy_to_icell2d((df['x'].values[0],df['y'].values[0]), ds)).Layermid.values
+            mid = ds.sel(icell2d = xy_to_icell2d((tdf['x'].values[0],tdf['y'].values[0]), ds)).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
             print (mid)
             print(condrange)
             print(minrange)
             print(maxrange)
-            df = df[df['z'].astype(float).between(maxrange,minrange)]
-            df['z'] = np.arange(len(df))
+            tdf = tdf[tdf['z'].between(maxrange,minrange)]
+            print(tdf.head(10))
+            tdf['z'] = np.arange(len(df))
             self.selection[boringnr] = df
     
     def listify(self):        
