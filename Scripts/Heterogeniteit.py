@@ -53,7 +53,7 @@ class boringen():
             self.boreholes[name] = pd.DataFrame(result)
         self.metadata = pd.concat(metadata, axis = 1)
         self.metadata.columns = self.metadata.iloc[0]
-        print(len(self.boreholes.items())
+        print(len(self.boreholes.items()))
 
     def add_layers(self, layermodel):
         self.layermodel = layermodel
