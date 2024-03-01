@@ -89,13 +89,9 @@ class boringen():
             mid = ds.sel(icell2d = xy_to_icell2d((tdf['x'].values[0],tdf['y'].values[0]), ds)).Layermid.values
             minrange = mid - 0.5 * condrange
             maxrange = mid + 0.5 * condrange
-            print (mid)
-            print(condrange)
-            print(minrange)
-            print(maxrange)
-            tdf = tdf[tdf['z'].between(maxrange,minrange)]
+            tdf = tdf[tdf['z'].between(minrange,maxrange)]
             print(tdf.head(10))
-            tdf['z'] = np.arange(len(df))
+            tdf['z'] = np.arange(len(tdf))
             self.selection[boringnr] = tdf
     
     def listify(self):        
