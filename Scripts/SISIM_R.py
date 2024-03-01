@@ -151,7 +151,7 @@ def Cond_SISIM(borelogs_grid_df_r,xmin,ymin,zmin,Lx=100,Ly=100,Lz =0.5,dx =2,dy 
                 
 
                     g <- gstat(formula = i~1,id = "i", data = xyz_sel, locations = xyz_sel,dummy = FALSE,beta = frac, model = vgm(frac,"Sph",xcorlen, anis = c(0,0,0,1,zcorlen/xcorlen)), maxdist = as.numeric(xcorlen), nmax = nmax)
-                    sdf <- predict(g, newdata = xyz, nsim = ens_no, indicators = TRUE)
+                    sdf <- predict(g, newdata = xyz, nsim = ens_no, indicators = TRUE, debug.level = -1)
                     as.data.frame(sdf)
                     }          
 '''

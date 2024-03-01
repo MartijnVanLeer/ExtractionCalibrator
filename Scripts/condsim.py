@@ -65,7 +65,7 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
 
 
 
-res = Heterogeniteit.add_cellid(res,ds, Layer)
+res = Heterogeniteit.add_cellid(res,ds)
 Kfields = boringen.add_k(res)
 
 Kfields.to_csv(snakemake.output[0])
