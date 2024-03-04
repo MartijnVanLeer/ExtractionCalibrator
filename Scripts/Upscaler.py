@@ -27,7 +27,7 @@ df = pd.read_csv(filename, index_col=['x','y','z'])
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
 kds = xr.Dataset.from_dataframe(df)
-
+print(kds)
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 for cellid in ids:
