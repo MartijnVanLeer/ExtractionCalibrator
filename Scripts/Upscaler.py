@@ -21,8 +21,9 @@ real_dx = snakemake.params.dx
 ws = snakemake.params.ws
 #load k realizations and move to ds
 df = pd.read_csv(filename, index_col=['x','y','z'])
-# df.drop('Unnamed: 0', axis = 1)
 
+df.drop('Unnamed: 0', axis = 1)
+print(df.columns)
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
