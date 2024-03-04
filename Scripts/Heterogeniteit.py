@@ -298,7 +298,7 @@ def trim(Kfields,ds, Layer):
 def add_cellid(Kfields,ds):
     cellids = [] 
     for index, row in Kfields.iterrows():
-        celllayer, cellid = xyz_to_cid((row.x,row.y, row.z), ds)
+        celllayer, cellid = xy_to_icell2d((row.x,row.y), ds)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields

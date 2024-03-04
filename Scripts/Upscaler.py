@@ -32,22 +32,17 @@ ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 for cellid in ids:
     cell = mds.sel(icell2d = cellid)
-    dx = np.sqrt(cell.area.values)/2
     #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     cellk = kds.where(kds.cellid == cellid, drop = True,)
-    cellk = cellk.dropna('z', how = 'all')
     print(cellk['K_1'].shape)
     for sim in range(ens_no):
         k = cellk[f"K_{sim+1}"].values
-        if k.shape[2] != 0:
-            fieldK = uf.Run_MF_WholeField(10**(k),
-                                        Lx = k.shape[0] *real_dx,
-                                        Ly = k.shape[1] *real_dx,
-                                        Lz = k.shape[2],
-                                        dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
-            result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
-        else:
-            result.loc[dict(icell2d = cellid, sim = sim)] = 1
+        fieldK = uf.Run_MF_WholeField(10**(k),
+                                    Lx = k.shape[0] *real_dx,
+                                    Ly = k.shape[1] *real_dx,
+                                    Lz = k.shape[2],
+                                    dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
+        result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
 
 
 result.to_netcdf(snakemake.output[0])
