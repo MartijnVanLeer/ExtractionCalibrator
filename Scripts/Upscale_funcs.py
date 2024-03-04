@@ -16,7 +16,7 @@ def setup_mf(Lx,Ly,Lz,dx,dy,dz,z, mds,ws):
     for lay in range((int(Lz/dz))):
         botm[lay,:,:] = -z[lay]
     dis = flopy.mf6.ModflowGwfdis(gwf, nlay = int(Lz/dz), nrow = int(Lx/dx), ncol = int(Ly/dy), delr = dx, delc = dy, top = 0, botm = botm )
-    ims = flopy.mf6.ModflowIms(sim)
+    ims = flopy.mf6.ModflowIms(sim,complexity = 'COMPLEX')
     ic = flopy.mf6.ModflowGwfic(gwf, strt =0)
     chd_spd = [] 
     for row in range(int(Lx/dx)):
@@ -25,7 +25,7 @@ def setup_mf(Lx,Ly,Lz,dx,dy,dz,z, mds,ws):
              chd_spd.append( [(int(Lz/dz)-1,row,col),Lz-dz])
     chd = flopy.mf6.ModflowGwfchd(gwf, stress_period_data=chd_spd, save_flows=True)
     oc = flopy.mf6.ModflowGwfoc(gwf,head_filerecord='Upscaler' + ".hds", budget_filerecord="{}.cbc".format('Upscaler'), saverecord=[('BUDGET', 'ALL'), ('HEAD', 'ALL')])
-    npf = flopy.mf6.ModflowGwfnpf(gwf, k = 10, k33 = 1,  k33overk = False, save_specific_discharge=True)
+    npf = flopy.mf6.ModflowGwfnpf(gwf, k = 1, k33 = 1,  k33overk = False, save_specific_discharge=True)
     sim.write_simulation(silent = True)
     return sim
 
@@ -45,7 +45,6 @@ def run_mf(sim, Kfield,mds, ws):
     ''' Change npf package, run MF, extract K value'''
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
-    npf.k33.set_data(Kfield.transpose(2,0,1))
     npf.k.set_data(Kfield.transpose(2,0,1))
     npf.write()
     success, buff = sim.run_simulation(silent = True)

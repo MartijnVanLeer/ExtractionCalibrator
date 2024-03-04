@@ -21,7 +21,7 @@ real_dx = snakemake.params.dx
 ws = snakemake.params.ws
 #load k realizations and move to ds
 df = pd.read_csv(filename, index_col=['x','y','z'])
-df.drop('Unnamed: 0', axis = 1)
+# df.drop('Unnamed: 0', axis = 1)
 
 
 #load model ds
@@ -31,8 +31,6 @@ kds = xr.Dataset.from_dataframe(df)
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 for cellid in ids:
-    cell = mds.sel(icell2d = cellid)
-    #cellk = kds.sel(x = slice(cell.x.values - dx, cell.x.values + dx),y = slice(cell.y.values - dx, cell.y.values + dx))
     cellk = kds.where(kds.cellid == cellid, drop = True,)
     print(cellk['K_1'].shape)
     for sim in range(ens_no):
