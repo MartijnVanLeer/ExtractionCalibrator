@@ -40,19 +40,16 @@ with open(os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'), 
     boringen = pickle.load(f)
 frac = boringen.list.i[boringen.list.i > 0.5].count()/len(boringen.list)
 fracs =  frac + fracedit
-
-
 ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
 
-xmin = ds.extent[0] - 0.5*dx
-ymin = ds.extent[2] - 0.5*dx
+xmin = ds.extent[0] + 0.5*dx
+ymin = ds.extent[2] + 0.5*dx
 Lx = ds.extent[1] - ds.extent[0] - dx 
 Ly = ds.extent[3] - ds.extent[2] - dx 
 
 
 Lz = boringen.list.z.max() - boringen.list.z.min()
 zmin = boringen.list.z.min()
-
 
 a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xmin = xmin,ymin = ymin,zmin = zmin,
@@ -63,9 +60,6 @@ a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             nmax = 100, seed = xcorlens*zcorlens*frac)
 
 
-
-
 res = Heterogeniteit.add_cellid(res,ds)
-Kfields = boringen.add_k(res)
-
+Kfields = boringen.add_k(res, ens_no)
 Kfields.to_csv(snakemake.output[0])

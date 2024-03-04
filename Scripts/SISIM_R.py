@@ -160,11 +160,7 @@ def Cond_SISIM(borelogs_grid_df_r,xmin,ymin,zmin,Lx=100,Ly=100,Lz =0.5,dx =2,dy 
     res_r = SIS(borelogs_grid_df_r,xmin,ymin,zmin,Lx,Ly,Lz,dx,dy,dz, xcorlen, zcorlen, ens_no, frac, nmax,seed)
     # with robjects.default_converter + pandas2ri.converter:
     res = robjects.conversion.get_conversion().rpy2py(res_r)
-    GausfieldList = []
-    for idx in range(ens_no):
-        binfield = np.array(res[f'sim{idx+1}']) # convert pd.dataframe to np.array, 
-        GausfieldList.append((binfield.reshape(int(Lz/dz),int(Lx/dx),int(Ly/dy)).T)) #reshape list to 3D box
-    return GausfieldList,res
+    return res
 
 def Cond_SGSIM(borelogs_grid_df_r,LogMean, LogVar, xmin,ymin,zmin,Lx=100,Ly=100,Lz =0.5,dx =2,dy =2,dz =0.05, xcorlen =40, zcorlen = 0.1, ens_no = 50, nmax = 20, seed = 1337):
     """
