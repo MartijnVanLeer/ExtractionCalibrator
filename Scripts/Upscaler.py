@@ -23,7 +23,7 @@ ws = snakemake.params.ws
 #load k realizations and move to ds
 df = pd.read_csv(filename, index_col=['x','y','z'])
 df.drop('Unnamed: 0', axis = 1)
-print(df.isnull().values.sum())
+
 kds = xr.Dataset.from_dataframe(df)
 
 #load model ds
@@ -37,8 +37,9 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 #run modflow for modelcell for all realizations
 for cellid in ids:
     cellk = kds.where(kds.cellid == cellid, drop = True,)
+    clean  = cellk.dropna('x', 'all').dropna('y', 'all').dropna('z', 'all')
     for sim in range(ens_no):
-        k = cellk[f"K_{sim+1}"].values
+        k = clean[f"K_{sim+1}"].values
         fieldK = uf.Run_MF_WholeField(10**(k),
                                     Lx = k.shape[0] *real_dx,
                                     Ly = k.shape[1] *real_dx,
