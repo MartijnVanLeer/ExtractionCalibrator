@@ -29,10 +29,9 @@ kds = xr.Dataset.from_dataframe(df)
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
 
 #init result xarray
+ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 
-#get cellids in cell
-ids = mds.icell2d.values
 
 #run modflow for modelcell for all realizations
 for cellid in ids:
