@@ -37,7 +37,6 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 #run modflow for modelcell for all realizations
 for cellid in ids:
     cell = df[df.cellid == cellid]
-    print(cell.head(10))
     cellk = xr.Dataset.from_dataframe(cell)
     clean  = cellk.dropna('x', how = 'all').dropna('y', how = 'all').dropna('z', how = 'all')
     for sim in range(ens_no):
