@@ -37,7 +37,7 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 #run modflow for modelcell for all realizations
 for cellid in ids:
     cellk = kds.where(kds.cellid == cellid, drop = True,)
-    clean  = cellk.dropna('x', 'all').dropna('y', 'all').dropna('z', 'all')
+    clean  = cellk.dropna('x', how = 'all').dropna('y', how = 'all').dropna('z', how = 'all')
     for sim in range(ens_no):
         k = clean[f"K_{sim+1}"].values
         fieldK = uf.Run_MF_WholeField(10**(k),
