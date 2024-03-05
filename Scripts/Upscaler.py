@@ -42,7 +42,7 @@ for cellid in ids:
     clean  = cellk.dropna('x', how = 'all').dropna('y', how = 'all').dropna('z', how = 'all')
     for sim in range(ens_no):
         k = clean[f"K_{sim+1}"].values
-        if numpy.isnan(a).any():
+        if np.isnan(k).any():
             print(f'Nans spotted, cellid = {cellid}')
         fieldK = uf.Run_MF_WholeField(10**(k),
                                     Lx = k.shape[0] *real_dx,
