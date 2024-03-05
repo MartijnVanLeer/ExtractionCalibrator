@@ -23,6 +23,7 @@ ws = snakemake.params.ws
 #load k realizations and move to ds
 df = pd.read_csv(filename, index_col=['x','y','z'])
 df.drop('Unnamed: 0', axis = 1)
+print(df.isnull().values.sum())
 kds = xr.Dataset.from_dataframe(df)
 
 #load model ds
