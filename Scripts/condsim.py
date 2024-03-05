@@ -51,7 +51,7 @@ Ly = ds.extent[3] - ds.extent[2] - dx
 Lz = boringen.list.z.max() - boringen.list.z.min()
 zmin = boringen.list.z.min()
 
-a,res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
+res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             xmin = xmin,ymin = ymin,zmin = zmin,
             Lx=Lx,  Ly=Ly,  Lz =Lz,
             dx =dx,dy =dy,dz =1,
