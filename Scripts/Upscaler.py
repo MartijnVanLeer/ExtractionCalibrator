@@ -38,7 +38,7 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 for cellid in ids:
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
-    clean  = cellk.dropna('x', how = 'all').dropna('y', how = 'all').dropna('z', how = 'all')
+    clean  = cellk.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
     for sim in range(ens_no):
         k = clean[f"K_{sim+1}"].values
         if np.isnan(k).any():
