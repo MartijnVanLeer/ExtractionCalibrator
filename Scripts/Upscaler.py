@@ -24,7 +24,7 @@ ws = snakemake.params.ws
 df = pd.read_csv(filename, index_col=['x','y','z'])
 df.drop('Unnamed: 0', axis = 1)
 
-kds = xr.Dataset.from_dataframe(df)
+# xdf = xr.Dataset.from_dataframe(df)
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
@@ -36,10 +36,14 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 
 #run modflow for modelcell for all realizations
 for cellid in ids:
-    cellk = kds.where(kds.cellid == cellid, drop = True,)
+    cell = df[df.cellid == cellid]
+    print(cell.head(10))
+    cellk = xr.Dataset.from_dataframe(df).values
     clean  = cellk.dropna('x', how = 'all').dropna('y', how = 'all').dropna('z', how = 'all')
     for sim in range(ens_no):
         k = clean[f"K_{sim+1}"].values
+        if numpy.isnan(a).any():
+            print(f'Nans spotted, cellid = {cellid}')
         fieldK = uf.Run_MF_WholeField(10**(k),
                                     Lx = k.shape[0] *real_dx,
                                     Ly = k.shape[1] *real_dx,
