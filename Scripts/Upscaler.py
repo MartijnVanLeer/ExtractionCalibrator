@@ -43,7 +43,7 @@ for cellid in ids:
         k = clean[f"K_{sim+1}"].values
         if np.isnan(k).any():
             print(f'Nans spotted, cellid = {cellid}')
-        if (k.shape[0]) == 0 or (k.shape[1] == 0) or (K.shape[2] == 0):
+        if (k.shape[0]) == 0 or (k.shape[1] == 0) or (k.shape[2] == 0):
             result.loc[dict(icell2d = cellid, sim = sim)] = 10**(np.mean(k))
         else:
             fieldK = uf.Run_MF_WholeField(10**(k),
