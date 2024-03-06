@@ -43,15 +43,16 @@ for cellid in ids:
         k = clean[f"K_{sim+1}"].values
         if np.isnan(k).any():
             print(f'Nans spotted, cellid = {cellid}')
-        if (k.shape[0]) != 0 or (k.shape[1] != 0) or (K.shape[2] != 0):
-            fieldK = uf.Run_MF_WholeField(10**(k),
-                                        Lx = k.shape[0] *real_dx,
-                                        Ly = k.shape[1] *real_dx,
-                                        Lz = k.shape[2],
-                                        dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
-            result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
+        if (k.shape[0]) == 0 or (k.shape[1] == 0) or (K.shape[2] == 0):
+            result.loc[dict(icell2d = cellid, sim = sim)] = 10**(np.mean(k))
         else:
-            result.loc[dict(icell2d = cellid, sim = sim)] = np.nan
+            fieldK = uf.Run_MF_WholeField(10**(k),
+                            Lx = k.shape[0] *real_dx,
+                            Ly = k.shape[1] *real_dx,
+                            Lz = k.shape[2],
+                            dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
+            result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
+            
 
 
 result.to_netcdf(snakemake.output[0])
