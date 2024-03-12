@@ -43,7 +43,7 @@ for simno in tqdm(ds.sim.values):
     data[layno] = ds.sel(sim = simno).k.values
     npf.k.set_data(data)
     npf.write()
-    sim.run_simulation(silent = True)
+    success, buff = sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(mds)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
     for index, well in ObsWells.iterrows():
