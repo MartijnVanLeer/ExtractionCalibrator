@@ -103,15 +103,22 @@ def add_refresco(ExWells,Discharge):
     ExWells = pd.concat([ExWells,wells], ignore_index = True)
     for well in wells.putcode.values:
         Discharge[well] = np.nan
-        if well in ['PP1', 'PP3', 'PP4']:
-            Discharge.loc['2014-12-31 00:00:00':'2018-12-31 00:00:00', well] = 383000/365/3
-            Discharge.loc['2019', well] = 300000/365/3
-            Discharge.loc['2019-12-31 00:00:00':, well] = 125000/365/3
-        else:
-            Discharge.loc['2014-12-31 00:00:00':'2016-12-31 00:00:00', well] = 117000/365/5
-            Discharge.loc['2016-12-31 00:00:00':'2018-12-31 00:00:00', well] = 250000/365/5
-            Discharge.loc['2019', well] = 450000/365/5
-            Discharge.loc['2019-12-31 00:00:00':, well] = 875000/365/5
+        if well in ['PP1', 'PP3', 'PP4']: #ondiep
+            Discharge.loc['2015-12-31 00:00:00':'2016-12-31 00:00:00', well] = 366175/365/3
+            Discharge.loc['2016-12-31 00:00:00':'2017-12-31 00:00:00', well] = 419378/365/3
+            Discharge.loc['2017-12-31 00:00:00':'2018-12-31 00:00:00', well] = 495747/365/3
+            Discharge.loc['2018-12-31 00:00:00':'2019-12-31 00:00:00', well] = 542213/365/3
+            Discharge.loc['2019-12-31 00:00:00':'2020-12-31 00:00:00', well] = 485648/365/3
+            Discharge.loc['2020-12-31 00:00:00':'2021-12-31 00:00:00', well] = 511875/365/3
+            Discharge.loc['2021-12-31 00:00:00':'2022-12-31 00:00:00', well] = 534500/365/3
+        else: #diep
+            Discharge.loc['2015-12-31 00:00:00':'2016-12-31 00:00:00', well] = 96673/365/5
+            Discharge.loc['2016-12-31 00:00:00':'2017-12-31 00:00:00', well] = 118092/365/5
+            Discharge.loc['2017-12-31 00:00:00':'2018-12-31 00:00:00', well] = 73181/365/5
+            Discharge.loc['2018-12-31 00:00:00':'2019-12-31 00:00:00', well] = 60246/365/3
+            Discharge.loc['2019-12-31 00:00:00':'2020-12-31 00:00:00', well] = 83167/365/3
+            Discharge.loc['2020-12-31 00:00:00':'2021-12-31 00:00:00', well] = 84688/365/3
+            Discharge.loc['2021-12-31 00:00:00':'2022-12-31 00:00:00', well] = 115780/365/3
     Discharge.fillna(0, inplace = True)
     return ExWells, Discharge
 
@@ -120,7 +127,7 @@ def add_bier(ExWells,Discharge):
     ExWells = pd.concat([ExWells,wells], ignore_index=True)
     for well in wells.putcode.values:
         Discharge[well] = np.nan
-        Discharge.loc[:, well] = 150000/365
+        Discharge.loc[:, well] = 125000/365
 
     Discharge.fillna(0, inplace = True)
     return ExWells, Discharge

@@ -59,11 +59,7 @@ res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             ens_no = ens_no, frac =frac, 
             nmax = 100, seed = xcorlens*zcorlens*frac)
 
-xrange = np.linspace(xmin, xmin + Lx, int(Lx/dx + 1))
-yrange = np.linspace(ymin, ymin + Ly, int(Ly/dx + 1))
-print(len(res))
-res = res[(res['x'].isin(xrange)) & (res['y'].isin(yrange))] 
-print(len(res))
+
 res = Heterogeniteit.add_cellid(res,ds)
 Kfields = boringen.add_k(res, ens_no)
 Kfields.to_csv(snakemake.output[0])
