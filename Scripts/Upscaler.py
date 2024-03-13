@@ -43,12 +43,12 @@ df.set_index(['x', 'y', 'z'], inplace = True)
 for cellid in ids:
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
-    clean  = cellk.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
+    # clean  = cellk.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
     for sim in range(ens_no):
         k = clean[f"K_{sim+1}"].values
         if np.isnan(k).any():
             print(f'Nans spotted, cellid = {cellid}')
-        if (k.shape[0]) == 0 or (k.shape[1] == 0) or (k.shape[2] == 0):
+        if (k.shape[0]) == 1 or (k.shape[1] == 1):
             result.loc[dict(icell2d = cellid, sim = sim)] = 10**(np.mean(k))
         else:
             fieldK = uf.Run_MF_WholeField(10**(k),
