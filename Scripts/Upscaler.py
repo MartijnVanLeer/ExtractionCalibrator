@@ -41,7 +41,7 @@ print(len(df))
 
 
 test = df[df.cellid == 12]
-print(test.z.unique())
+print(test.x.unique())
 raise Exception(f'stop')
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
