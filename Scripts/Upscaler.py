@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import Upscale_funcs as uf
 import nlmod
+from tqdm import tqdm
 
 filename = snakemake.input[1]
 model_name = snakemake.params.modelname
@@ -40,7 +41,7 @@ print(len(df))
 
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
-for cellid in ids:
+for cellid in tqdm(ids):
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
     clean  = cellk #.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
@@ -48,6 +49,7 @@ for cellid in ids:
         k = clean[f"K_{sim+1}"].values
         if np.isnan(k).any():
             print(f'Nans spotted, cellid = {cellid}')
+            raise Exception(f'Nan gevonden in cellid {cellid}')
         if (k.shape[0]) == 1 or (k.shape[1] == 1):
             result.loc[dict(icell2d = cellid, sim = sim)] = 10**(np.mean(k))
         else:
