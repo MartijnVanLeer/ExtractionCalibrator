@@ -35,8 +35,8 @@ ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 def add_cellid(Kfields,ds, layer):
     cellids = [] 
-    for index, row in Kfields.iterrows():
-        layer, cellid = xyz_to_cid((row.x,row.y), ds)
+    for index, row in tqdm(Kfields.iterrows()):
+        layer, cellid = xyz_to_cid((row.x,row.y, ds.botm.values.mean()), ds)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
