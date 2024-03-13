@@ -31,7 +31,7 @@ df = pd.read_csv(filename)
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
 
 orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
-sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name = mds.exe_name)
+sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = mds.exe_name)
 gwf = sim.get_model()
 
 #init result xarray
