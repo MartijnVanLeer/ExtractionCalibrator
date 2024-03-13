@@ -25,7 +25,7 @@ ws = snakemake.params.ws
 
 #load k realizations and move to ds
 df = pd.read_csv(filename)
-print([df.x.min(), df.x.max(), df.y.min(), df.y.max())
+print([df.x.min(), df.x.max(), df.y.min(), df.y.max()])
 
 # xdf = xr.Dataset.from_dataframe(df)
 
