@@ -41,7 +41,7 @@ print(len(df))
 
 
 test = df[df.cellid == 12]
-testk= xr.Dataset.from_dataframe(cell)
+testk= xr.Dataset.from_dataframe(test)
 print([f"K_1"])
 raise Exception(f'stop')
 df.set_index(['x', 'y', 'z'], inplace = True)
