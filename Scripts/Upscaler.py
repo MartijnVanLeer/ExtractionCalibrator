@@ -30,13 +30,17 @@ df = pd.read_csv(filename)
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
 
+orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
+sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name = mds.exe_name)
+gwf = sim.get_model()
+
 #init result xarray
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 def add_cellid(Kfields,ds, layer):
     cellids = [] 
     for index, row in tqdm(Kfields.iterrows()):
-        layer, cellid = xyz_to_cid((row.x,row.y, 18), ds)
+        layer, cellid = gwf.modelgrid.intersect(row.x,row.y)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
