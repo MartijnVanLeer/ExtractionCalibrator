@@ -39,9 +39,11 @@ print(len(df))
 df = df[(df['x'].isin(xrange)) & (df['y'].isin(yrange))] 
 print(len(df))
 
-df.set_index(['x', 'y', 'z'], inplace = True)
-print(df[df.cellid == 12])
+
+test = df[df.cellid == 12]
+print(test.z.unique())
 raise Exception(f'stop')
+df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
 for cellid in tqdm(ids):
     cell = df[df.cellid == cellid]
