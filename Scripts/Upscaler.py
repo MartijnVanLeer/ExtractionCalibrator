@@ -43,7 +43,7 @@ df.set_index(['x', 'y', 'z'], inplace = True)
 for cellid in ids:
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
-    # clean  = cellk.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
+    clean  = cellk #.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
     for sim in range(ens_no):
         k = clean[f"K_{sim+1}"].values
         if np.isnan(k).any():
