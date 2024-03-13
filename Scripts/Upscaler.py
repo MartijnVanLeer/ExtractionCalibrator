@@ -38,24 +38,21 @@ gwf = sim.get_model()
 #init result xarray
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
-def add_cellid(Kfields,ds, layer):
+def add_cellid(Kfields,gwf):
     cellids = [] 
     for index, row in tqdm(Kfields.iterrows()):
-        layer, cellid = gwf.modelgrid.intersect(row.x,row.y)
+        cellid = gwf.modelgrid.intersect(row.x,row.y)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
-print (df.iloc[35950:35953][['x','y','z']])
-print (mds.extent)
 
-df = add_cellid(df, mds, layer)
+df = add_cellid(df, gwf)
 
 df.set_index(['x', 'y', 'z'], inplace = True)
 test = df[df.cellid == 12]
-print(np.count_nonzero(np.isnan(ds)))
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
-
+print(np.count_nonzero(np.isnan(testk)))
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
 for cellid in tqdm(ids):
