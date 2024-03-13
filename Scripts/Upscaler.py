@@ -40,7 +40,9 @@ def add_cellid(Kfields,ds, layer):
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
-
+print df[0]
+print mds.extent
+raise Exception(f'stop')
 df = add_cellid(df, mds, layer)
 
 df.set_index(['x', 'y', 'z'], inplace = True)
@@ -49,7 +51,7 @@ print(np.count_nonzero(np.isnan(ds)))
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
 
-raise Exception(f'stop')
+
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
 for cellid in tqdm(ids):
