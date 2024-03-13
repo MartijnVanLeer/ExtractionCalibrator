@@ -35,9 +35,9 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 
 xrange = np.linspace(df.index.get_level_values('x').min(), df.index.get_level_values('x').max() , int((df.index.get_level_values('x').max() - df.index.get_level_values('x').min()) / real_dx) + 1)
 yrange = np.linspace(df.index.get_level_values('y').min(), df.index.get_level_values('y').max() , int((df.index.get_level_values('y').max() - df.index.get_level_values('y').min())/ real_dx) + 1)
-print(len(res))
-res = res[(res['x'].isin(xrange)) & (res['y'].isin(yrange))] 
-print(len(res))
+print(len(df))
+df = df[(df['x'].isin(xrange)) & (df['y'].isin(yrange))] 
+print(len(df))
 
 #run modflow for modelcell for all realizations
 for cellid in ids:
