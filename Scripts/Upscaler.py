@@ -35,7 +35,7 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 xrange = np.linspace(df.x.min(), df.x.max() , int((df.x.max() - df.x.min()) / real_dx) + 1)
 yrange = np.linspace(df.y.min(), df.y.max() , int((df.y.max() - df.y.min())/ real_dx) + 1)
 print(len(df))
-df = df[(res['x'].isin(xrange)) & (df['y'].isin(yrange))] 
+df = df[(df['x'].isin(xrange)) & (df['y'].isin(yrange))] 
 print(len(df))
 
 df.set_index(['x', 'y', 'z'], inplace = True)
