@@ -32,12 +32,15 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name
 #init result xarray
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
+def add_cellid(Kfields,ds):
+    cellids = [] 
+    for index, row in Kfields.iterrows():
+        layer, cellid = xyz_to_cid((row.x,row.y,ds.sel(layer = layer).botm.values.mean()), ds)
+        cellids.append(cellid)
+    Kfields['cellid'] = cellids
+    return Kfields
 
-xrange = np.linspace(df.x.min(), df.x.max() , int((df.x.max() - df.x.min()) / real_dx) + 1)
-yrange = np.linspace(df.y.min(), df.y.max() , int((df.y.max() - df.y.min())/ real_dx) + 1)
-print(len(df))
-df = df[(df['x'].isin(xrange)) & (df['y'].isin(yrange))] 
-print(len(df))
+df = add_cellid(df, mds)
 
 df.set_index(['x', 'y', 'z'], inplace = True)
 test = df[df.cellid == 12]
