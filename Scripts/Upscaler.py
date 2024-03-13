@@ -32,7 +32,7 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name
 #init result xarray
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
-def add_cellid(Kfields,ds):
+def add_cellid(Kfields,ds, layer):
     cellids = [] 
     for index, row in Kfields.iterrows():
         layer, cellid = xyz_to_cid((row.x,row.y,ds.sel(layer = layer).botm.values.mean()), ds)
@@ -40,10 +40,11 @@ def add_cellid(Kfields,ds):
     Kfields['cellid'] = cellids
     return Kfields
 
-df = add_cellid(df, mds)
+df = add_cellid(df, mds, layer)
 
 df.set_index(['x', 'y', 'z'], inplace = True)
 test = df[df.cellid == 12]
+print(np.count_nonzero(np.isnan(ds))
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
 
