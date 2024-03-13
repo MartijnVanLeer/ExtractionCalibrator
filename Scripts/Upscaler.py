@@ -14,6 +14,7 @@ import Upscale_funcs as uf
 import nlmod
 from nlmod.dims.grid import xyz_to_cid
 from tqdm import tqdm
+import flopy 
 
 filename = snakemake.input[1]
 model_name = snakemake.params.modelname
