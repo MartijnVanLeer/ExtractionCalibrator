@@ -41,7 +41,8 @@ print(len(df))
 
 
 test = df[df.cellid == 12]
-print(test.y.unique())
+testk= xr.Dataset.from_dataframe(cell)
+print([f"K_1"])
 raise Exception(f'stop')
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
