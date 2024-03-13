@@ -28,7 +28,7 @@ df = pd.read_csv(filename)
 # xdf = xr.Dataset.from_dataframe(df)
 
 #load model ds
-mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc')).sel(layer = layer)
+mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
 
 #init result xarray
 ids = mds.icell2d.values
@@ -36,7 +36,7 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 def add_cellid(Kfields,ds, layer):
     cellids = [] 
     for index, row in Kfields.iterrows():
-        layer, cellid = xyz_to_cid((row.x,row.y,ds.botm.values.mean()), ds)
+        layer, cellid = xyz_to_cid((row.x,row.y,ds.sel(layer = layer).botm.values.mean()), ds)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
