@@ -25,12 +25,13 @@ ws = snakemake.params.ws
 
 #load k realizations and move to ds
 df = pd.read_csv(filename)
+print([df.x.min(), df.x.max(), df.y.min(), df.y.max())
 
 # xdf = xr.Dataset.from_dataframe(df)
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
-
+print (mds.extent
 orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = mds.exe_name)
 gwf = sim.get_model()
