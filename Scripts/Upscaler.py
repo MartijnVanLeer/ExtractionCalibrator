@@ -36,13 +36,13 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 def add_cellid(Kfields,ds, layer):
     cellids = [] 
     for index, row in tqdm(Kfields.iterrows()):
-        layer, cellid = xyz_to_cid((row.x,row.y, ds.botm.values.mean()), ds)
+        layer, cellid = xyz_to_cid((row.x,row.y, 20), ds)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
 print (df.iloc[0][['x','y','z']])
 print (mds.extent)
-raise Exception(f'stop')
+
 df = add_cellid(df, mds, layer)
 
 df.set_index(['x', 'y', 'z'], inplace = True)
@@ -50,7 +50,7 @@ test = df[df.cellid == 12]
 print(np.count_nonzero(np.isnan(ds)))
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
-
+raise Exception(f'stop')
 
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
