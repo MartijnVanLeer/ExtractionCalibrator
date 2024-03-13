@@ -40,7 +40,7 @@ def add_cellid(Kfields,ds, layer):
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
-print (df.iloc[0][['x','y','z']])
+print (df.iloc[35950:35953][['x','y','z']])
 print (mds.extent)
 
 df = add_cellid(df, mds, layer)
