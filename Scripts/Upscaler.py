@@ -33,8 +33,8 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 
-xrange = np.linspace(df.index.x.min(), df.index.x.max() , int((df.index.x.max() - df.index.x.min()) / real_dx) + 1)
-yrange = np.linspace(df.index.y.min(), df.index.y.max() , int((df.index.y.max() - df.index.y.min())/ real_dx) + 1)
+xrange = np.linspace(df.get_level_values('x').min(), df.get_level_values('x').max() , int((df.get_level_values('x').max() - df.get_level_values('x').min()) / real_dx) + 1)
+yrange = np.linspace(df.get_level_values('y').min(), df.get_level_values('y').max() , int((df.get_level_values('y').max() - df.get_level_values('y').min())/ real_dx) + 1)
 print(len(res))
 res = res[(res['x'].isin(xrange)) & (res['y'].isin(yrange))] 
 print(len(res))
