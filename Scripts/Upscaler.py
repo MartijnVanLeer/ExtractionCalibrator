@@ -36,7 +36,7 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 def add_cellid(Kfields,ds, layer):
     cellids = [] 
     for index, row in Kfields.iterrows():
-        layer, cellid = xyz_to_cid((row.x,row.y,ds.sel(layer = layer).botm.values.mean()), ds)
+        layer, cellid = xyz_to_cid((row.x,row.y,-50, ds)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
