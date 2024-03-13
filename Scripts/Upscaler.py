@@ -21,8 +21,7 @@ real_dx = snakemake.params.dx
 ws = snakemake.params.ws
 
 #load k realizations and move to ds
-df = pd.read_csv(filename, index_col=['x','y','z'])
-df.drop('Unnamed: 0', axis = 1)
+df = pd.read_csv(filename)
 
 # xdf = xr.Dataset.from_dataframe(df)
 
@@ -33,12 +32,13 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
 
-xrange = np.linspace(df.index.get_level_values('x').min(), df.index.get_level_values('x').max() , int((df.index.get_level_values('x').max() - df.index.get_level_values('x').min()) / real_dx) + 1)
-yrange = np.linspace(df.index.get_level_values('y').min(), df.index.get_level_values('y').max() , int((df.index.get_level_values('y').max() - df.index.get_level_values('y').min())/ real_dx) + 1)
+xrange = np.linspace(df.x.min(), df.x.max() , int((df.x.max() - df.x.min()) / real_dx) + 1)
+yrange = np.linspace(df.y.min(), df.y.max() , int((df.y.max() - df.y.min())/ real_dx) + 1)
 print(len(df))
-df = df[(df['x'].isin(xrange)) & (df['y'].isin(yrange))] 
+df = df[(res['x'].isin(xrange)) & (df['y'].isin(yrange))] 
 print(len(df))
 
+df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
 for cellid in ids:
     cell = df[df.cellid == cellid]
