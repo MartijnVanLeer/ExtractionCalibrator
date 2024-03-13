@@ -39,10 +39,11 @@ print(len(df))
 df = df[(df['x'].isin(xrange)) & (df['y'].isin(yrange))] 
 print(len(df))
 
-
+df.set_index(['x', 'y', 'z'], inplace = True)
 test = df[df.cellid == 12]
 testk= xr.Dataset.from_dataframe(test)
-print([f"K_1"])
+testk.to_netcdf('test.nc')
+
 raise Exception(f'stop')
 df.set_index(['x', 'y', 'z'], inplace = True)
 #run modflow for modelcell for all realizations
