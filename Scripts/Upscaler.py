@@ -44,7 +44,7 @@ df = add_cellid(df, mds, layer)
 
 df.set_index(['x', 'y', 'z'], inplace = True)
 test = df[df.cellid == 12]
-print(np.count_nonzero(np.isnan(ds))
+print(np.count_nonzero(np.isnan(ds)))
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
 
