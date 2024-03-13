@@ -17,6 +17,7 @@ from nlmod.dims.grid import xyz_to_cid
 from nlmod.dims.grid import xy_to_icell2d
 import io
 import os
+import flopy
 
 class boringen():
     def __init__(self, folder,ds):
@@ -295,10 +296,10 @@ def trim(Kfields,ds, Layer):
     Kfields['cellid'] = cellids
     return Kfields[Kfields.keep==True] 
 
-def add_cellid(Kfields,ds):
+def add_cellid(Kfields,gwf):
     cellids = [] 
     for index, row in Kfields.iterrows():
-        cellid = xy_to_icell2d((row.x,row.y), ds)
+        cellid = gwf.modelgrid.intersect(row.x,row.y)
         cellids.append(cellid)
     Kfields['cellid'] = cellids
     return Kfields
