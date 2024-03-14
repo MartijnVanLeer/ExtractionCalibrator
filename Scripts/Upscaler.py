@@ -43,7 +43,7 @@ df.set_index(['x', 'y', 'z'], inplace = True)
 test = df[df.cellid == 12]
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
-print(np.count_nonzero(np.isnan(testk.values)))
+print(np.count_nonzero(np.isnan(testk["K_1"].values)))
 
 
 #run modflow for modelcell for all realizations
