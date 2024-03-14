@@ -44,7 +44,11 @@ test = df[df.cellid == 12]
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
 print(np.count_nonzero(np.isnan(testk.values)))
+<<<<<<< HEAD
 
+=======
+df.set_index(['x', 'y', 'z'], inplace = True)
+>>>>>>> ae3d352470a5eba429a5247cfecce65bc53727cb
 #run modflow for modelcell for all realizations
 for cellid in tqdm(ids):
     cell = df[df.cellid == cellid]
