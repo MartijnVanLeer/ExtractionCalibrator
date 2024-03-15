@@ -40,6 +40,7 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, l
 
 
 df.set_index(['x', 'y', 'z'], inplace = True)
+
 test = df[df.cellid == 12]
 testk= xr.Dataset.from_dataframe(test)
 testk.to_netcdf('test.nc')
