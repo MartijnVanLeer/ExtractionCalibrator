@@ -199,11 +199,7 @@ rule Runner:
 rule Collector:
     input:
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
-        'collect.py'
-    params:
-        simulation = paramspace.instance,
+    output:
         resultpath = os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
-    resources:
-        n = 1 
-    script:
-        'collect.py'
+    shell:
+        "cat {input} | sed '/^#/d' > {output}"
