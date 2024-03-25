@@ -9,10 +9,12 @@ else:
 
 sim = snakemake.params.simulation
 
-
-df['xcorlen'] = sim['xcorlens']
-df['zcorlen'] = sim['zcorlens']
-df['frac'] = sim['fracs']
+x = sim['xcorlens']
+df['xcorlen'] = x
+z = sim['zcorlens']
+df['zcorlen'] = z
+f = sim['fracs']
+df['frac'] = f
 
 
 Alldf = pd.read_csv(snakemake.output[0])
