@@ -198,7 +198,7 @@ rule Runner:
 
 rule Collector:
     input:
-        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'), params = paramspace.instance_patterns),
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
         'collect.py'
     params:
         simulation = paramspace.instance,
