@@ -3,7 +3,7 @@ import pandas as pd
 
 if not os.path.isfile(snakemake.output[0]):
     df = pd.DataFrame({'sim' : [],'RMSE' : [], 'xcorlen' : [] , 'zcorlen' : [], 'frac' : []})
-    df.to_csv[snakemake.output[0]]
+    df.to_csv(snakemake.output[0])
 
 sim = snakemake.params.simulation
 
