@@ -206,6 +206,6 @@ rule Collector:
         n = 1 
     output:
         os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
-        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','output.csv'),
     script:
         'collect.py'
