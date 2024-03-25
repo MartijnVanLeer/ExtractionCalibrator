@@ -10,6 +10,11 @@ import shutil
 model_name = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
+sim = snakemake.params.simulation
+xcorlens = sim['xcorlens']
+zcorlens = sim['zcorlens']
+fracs = sim['fracs']
+
 #destFolder = snakemake.params.ws
 destFolder = os.path.join(os.path.dirname(snakemake.input[1]), 'Runner')
 
@@ -65,8 +70,8 @@ for simno in tqdm(ds.sim.values):
     print(residuals)
     RMSE.append(np.sqrt(residuals))
 
-RMSEdf = pd.DataFrame({'sim' : ds.sim.values, 'RMSE' : RMSE})
-RMSEdf.to_csv(snakemake.output[0])
+RMSEdf = pd.DataFrame({'sim' : ds.sim.values, 'RMSE' : RMSE, 'xcorlen' : xcorlens, 'zcorlen' : zcorlens, 'frac' : fracs})
+RMSEdf.to_csv(snakemake.output[0], header = False)
 
 
 

@@ -190,7 +190,8 @@ rule Runner:
         modelname = modelname,
         simlayer = simlayer,
         ens_no = ens_no,
-        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Runner')
+        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Runner'),
+        simulation = paramspace.instance,
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
     script:
