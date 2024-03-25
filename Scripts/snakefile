@@ -203,4 +203,4 @@ rule Collector:
     output:
         resultpath = os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
     shell:
-        "cat {input} | sed '/^#/d' > {output}"
+        "cat {input} > {output}"

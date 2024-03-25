@@ -56,19 +56,16 @@ for simno in tqdm(ds.sim.values):
         for index, well in ObsWells.iterrows():
             modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
             df[f'{well["putcode"]}'] = modheads.values
+
+            residuals = df - ObsHeads
+            residuals = residuals.to_numpy().flatten()
+            residuals = residuals[~np.isnan(residuals)]
+            residuals = sum(residuals**2)
+            RMSE.append(np.sqrt(residuals))
     else:
         for index, well in ObsWells.iterrows():
-            df[f'{well["putcode"]}'] = np.nan
+            RMSE.append(np.nan)
 
-
-
-    residuals = df - ObsHeads
-
-    residuals = residuals.to_numpy().flatten()
-    residuals = residuals[~np.isnan(residuals)]
-    residuals = sum(residuals**2)
-    print(residuals)
-    RMSE.append(np.sqrt(residuals))
 
 RMSEdf = pd.DataFrame({'sim' : ds.sim.values, 'RMSE' : RMSE, 'xcorlen' : xcorlens, 'zcorlen' : zcorlens, 'frac' : fracs})
 RMSEdf.to_csv(snakemake.output[0], header = False)
