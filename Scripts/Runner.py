@@ -57,11 +57,11 @@ for simno in tqdm(ds.sim.values):
             modheads = head.isel(layer = int(well.Layno)).sel(icell2d = int(well.CellID)).sel(time = slice(pd.to_datetime(ObsHeads.index[0]),pd.to_datetime(ObsHeads.index[-1]) ))
             df[f'{well["putcode"]}'] = modheads.values
 
-            residuals = df - ObsHeads
-            residuals = residuals.to_numpy().flatten()
-            residuals = residuals[~np.isnan(residuals)]
-            residuals = sum(residuals**2)
-            RMSE.append(np.sqrt(residuals))
+        residuals = df - ObsHeads
+        residuals = residuals.to_numpy().flatten()
+        residuals = residuals[~np.isnan(residuals)]
+        residuals = sum(residuals**2)
+        RMSE.append(np.sqrt(residuals))
     else:
         for index, well in ObsWells.iterrows():
             RMSE.append(np.nan)
