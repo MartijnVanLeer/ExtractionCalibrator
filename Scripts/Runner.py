@@ -60,7 +60,7 @@ for simno in tqdm(ds.sim.values):
         residuals = df - ObsHeads
         residuals = residuals.to_numpy().flatten()
         residuals = residuals[~np.isnan(residuals)]
-        residuals = sum(residuals**2)
+        residuals = np.mean(residuals**2)
         RMSE.append(np.sqrt(residuals))
     else:
         for index, well in ObsWells.iterrows():
