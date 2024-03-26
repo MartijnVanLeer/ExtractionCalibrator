@@ -68,4 +68,4 @@ gwf = sim.get_model()
 
 res = Heterogeniteit.add_cellid(res,gwf)
 Kfields = boringen.add_k(res, ens_no)
-Kfields.to_csv(snakemake.output[0])
+Kfields.to_hdf(snakemake.output[0], key = 'c', complevel = 9, mode = 'w')

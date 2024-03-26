@@ -223,9 +223,9 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
     
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
-    residuals = sum(residuals**2)
-    sleep(0.5)
-    return residuals 
+    RMSE = np.sqrt(np.mean(residuals**2))
+
+    return RMSE 
 
 def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal,KCal):
     
@@ -377,8 +377,8 @@ def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers,
 
     residuals = residuals.to_numpy().flatten()
     residuals = residuals[~np.isnan(residuals)]
-    residuals = sum(residuals**2)
-    return residuals
+    RMSE = np.sqrt(np.mean(residuals**2))
+    return RMSE
 
 def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto):
     newk = npfk.copy()

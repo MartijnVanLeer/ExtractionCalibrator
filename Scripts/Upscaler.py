@@ -24,7 +24,7 @@ real_dx = snakemake.params.dx
 ws = snakemake.params.ws
 
 #load k realizations and move to ds
-df = pd.read_csv(filename)
+df = pd.read_hdf(filename, key = 'c')
 
 # xdf = xr.Dataset.from_dataframe(df)
 

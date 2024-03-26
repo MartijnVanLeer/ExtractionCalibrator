@@ -127,6 +127,7 @@ rule Calibration_T:
     output:
         os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
         os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
+        os.path.join('..','Results',f'{model_name}',f'Residuals_{model_name}.csv'),
         os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
     script:
        'Calibration.py'
@@ -159,14 +160,14 @@ rule Cond_Simulator:
         ens_no = ens_no,
         dx = dx
     output:
-        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.h5'),
     script:
        'condsim.py'
 
 rule Upscaler:
     input:
         'Upscaler.py',
-        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.csv'),
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.h5'),
         'Upscale_funcs.py'
     params:
         Name = Name,
