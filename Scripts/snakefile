@@ -38,6 +38,7 @@ simlayer = 'KIk2'
 xcorlens = [200,500,1000, 2000]
 zcorlens = [2.0,4.0,8.0]
 fracs = [0,0.1,0.2]
+CoreCorrection = [-0.5,0,0.5]
 ens_no = 50
 dx = 25
 df = get_paramspace(xcorlens,zcorlens, fracs)
@@ -151,6 +152,8 @@ rule Cond_Simulator:
        'condsim.py',
        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'),
+       os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+       os.path.join('..','Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'),
        'Heterogeniteit.py'
     params:
         Name = Name,
@@ -158,7 +161,8 @@ rule Cond_Simulator:
         simlayer = simlayer,
         simulation = paramspace.instance,
         ens_no = ens_no,
-        dx = dx
+        dx = dx,
+        cc = CoreCorrection
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.h5'),
     script:
@@ -175,7 +179,7 @@ rule Upscaler:
         simlayer = simlayer,
         ens_no = ens_no,
         dx = dx,
-        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Upscaler')
+        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Upscaler'),
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
     script:
@@ -185,7 +189,6 @@ rule Runner:
     input:
        'Runner.py',
        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
-       os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
        os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
     params:
         modelname = modelname,
