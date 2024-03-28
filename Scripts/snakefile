@@ -1,4 +1,4 @@
-import osBudel
+import os
 from snakemake.utils import Paramspace
 import pandas as pd
 #Settings steady state
