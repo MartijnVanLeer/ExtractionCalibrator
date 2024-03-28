@@ -149,7 +149,7 @@ sns.scatterplot(data = ObsWells, x = 'ObsHeadsSS', y = 'ModHead', hue = 'Layno',
 ax.axline([min(ObsWells.ObsHeadsSS), min(ObsWells.ObsHeadsSS)],[max(ObsWells.ObsHeadsSS), max(ObsWells.ObsHeadsSS)])
 
 #%%
-best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Layer','Value'])
+best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Value'])
 ObsWells.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'))
 best_paramdf.to_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
 idx.to_csv(os.path.join('..','Results',f'{modelname}',f'idx_SS_{modelname}.csv'))

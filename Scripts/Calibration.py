@@ -99,7 +99,7 @@ residuals, df, ObsHeads = OptimisationFuncs.run_best_result_transient(best_param
 df.to_csv(os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'))
 ObsHeads.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsHead_{modelname}.csv'))
 residuals.to_csv(os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'))
-best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Layer','Value'])
+best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Value'])
 best_paramdf.to_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
 
 #%%plot 
