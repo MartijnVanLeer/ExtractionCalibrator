@@ -21,14 +21,14 @@ if "snakemake" not in globals():
     snakemake = read_snakemake_rule('snakefile','calibration_t')
 
 Location = snakemake.params.Name
-model_name = snakemake.params.modelname
+modelname = snakemake.params.modelname
 
-BestParams = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
+BestParams = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
 BestK = BestParams[BestParams['Unnamed: 0'].str[-1] != 'b']
 BestGhb = BestParams[BestParams['Unnamed: 0'].str[-1] == 'b']
-idx = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
-ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
-ObsHeads = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'), index_col = 'Time')
+idx = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'idx_SS_{modelname}.csv'))
+ObsWells = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'))
+ObsHeads = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'ObsHeads_SS_{modelname}.csv'), index_col = 'Time')
 ObsHeads.index =  pd.DatetimeIndex(ObsHeads.index)
 
 CorLayers = snakemake.params.CorLayers
@@ -40,12 +40,12 @@ SensLayers = idx.SensLayers.values
 
 #%% Load model and dataset
 # Make new folder where files are edited 
-orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','')
+orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t','')
 destFolder = os.path.join(orgFolder, 'Fitter','')
-OptimisationFuncs.copyOriginalFolder(model_name + '_t', orgFolder ,destFolder , 'Fitter\\' )
+OptimisationFuncs.copyOriginalFolder(modelname + '_t', orgFolder ,destFolder , 'Fitter\\' )
 
 #Load model and obs
-ds = xr.open_dataset(os.path.join(orgFolder, f'{model_name}_t.nc'))
+ds = xr.open_dataset(os.path.join(orgFolder, f'{modelname}_t.nc'))
 ds.attrs['model_ws'] = destFolder
 ObsHeads = ObsHeads.loc[ds.startdate:ds.enddate]
 
@@ -96,10 +96,11 @@ for x in range(len(result.x)):
 residuals, df, ObsHeads = OptimisationFuncs.run_best_result_transient(best_params_t,sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto)
 
 
-df.to_csv(os.path.join('..','Results',f'{model_name}',f'ModHead_{model_name}.csv'))
-ObsHeads.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsHead_{model_name}.csv'))
-best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Value'])
-best_paramdf.to_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_t_{model_name}.csv'))
+df.to_csv(os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'))
+ObsHeads.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsHead_{modelname}.csv'))
+residuals.to_csv(os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'))
+best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Layer','Value'])
+best_paramdf.to_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
 
 #%%plot 
 for lay in idx[idx.laytype =='z'].idx.values:
@@ -118,7 +119,7 @@ for lay in idx[idx.laytype =='z'].idx.values:
     fig.suptitle(lay)
     
     plt.tight_layout()
-    fig.savefig(os.path.join('..','Results',f'{model_name}',f'{lay}_Obs_Mod_heads.png'))
+    fig.savefig(os.path.join('..','Results',f'{modelname}',f'{lay}_Obs_Mod_heads.png'))
 #%%
 
 fig = plt.figure(figsize=(30,10))    

@@ -27,7 +27,7 @@ if "snakemake" not in globals():
     snakemake = read_snakemake_rule('snakefile','calibration_ss')
 
 Location = snakemake.params.Name
-model_name = snakemake.params.modelname
+modelname = snakemake.params.modelname
 SensLayers = snakemake.params.SensLayers
 CorLayers = snakemake.params.CorLayers
 ghbCal = snakemake.params.ghbCal # 'obs', 'Single', None
@@ -38,12 +38,12 @@ BadWells =snakemake.params.BadWells # alleen begin'B57E0082_7','B57E0147_4'
 
 #%% Load model and dataset
 # Make new folder where files are edited 
-orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_ss')
+orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_ss')
 destFolder = os.path.join(orgFolder, 'Fitter', '')
-OptimisationFuncs.copyOriginalFolder(model_name + '_ss', orgFolder ,destFolder , 'Fitter\\' )
+OptimisationFuncs.copyOriginalFolder(modelname + '_ss', orgFolder ,destFolder , 'Fitter\\' )
 
 #Load model and obs
-ds = xr.open_dataset(os.path.join(orgFolder, f'{model_name}_ss.nc'))
+ds = xr.open_dataset(os.path.join(orgFolder, f'{modelname}_ss.nc'))
 ds.attrs['model_ws'] = destFolder
 
 
@@ -89,12 +89,12 @@ Best = ObsWells[ObsWells['Sensitivity'] > 0.01]
 Best = Best[~Best.putcode.isin(BadWells)]
 if Weighted: 
     Best = Best.drop_duplicates(subset = ['Sensitivity'])
-Best.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
+Best.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{Location}.csv'))
 ObsWells.to_csv(os.path.join(destFolder,'ObsWellsSens.csv'))
 
 #%%Calibrate ss
 
-ObsWells, ObsHeads = OptimisationFuncs.GetObs(model_name, Location, idx,ds)
+ObsWells, ObsHeads = OptimisationFuncs.GetObs(modelname, Location, idx,ds)
 ObsHeads = OptimisationFuncs.fix_heads(ObsHeads, minhead = 10, maxhead = None)
 
 
@@ -149,9 +149,9 @@ sns.scatterplot(data = ObsWells, x = 'ObsHeadsSS', y = 'ModHead', hue = 'Layno',
 ax.axline([min(ObsWells.ObsHeadsSS), min(ObsWells.ObsHeadsSS)],[max(ObsWells.ObsHeadsSS), max(ObsWells.ObsHeadsSS)])
 
 #%%
-best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Value'])
-ObsWells.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{model_name}_SS.csv'))
-best_paramdf.to_csv(os.path.join('..','Results',f'{model_name}',f'BestParams_SS_{model_name}.csv'))
-idx.to_csv(os.path.join('..','Results',f'{model_name}',f'idx_SS_{model_name}.csv'))
-ObsHeads.to_csv(os.path.join('..','Results',f'{model_name}',f'ObsHeads_SS_{model_name}.csv'))
+best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Layer','Value'])
+ObsWells.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'))
+best_paramdf.to_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
+idx.to_csv(os.path.join('..','Results',f'{modelname}',f'idx_SS_{modelname}.csv'))
+ObsHeads.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsHeads_SS_{modelname}.csv'))
 

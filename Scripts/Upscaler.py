@@ -17,11 +17,12 @@ from tqdm import tqdm
 import flopy 
 
 filename = snakemake.input[1]
-model_name = snakemake.params.modelname
+modelname = snakemake.params.modelname
 layer = snakemake.params.simlayer
 ens_no = snakemake.params.ens_no
 real_dx = snakemake.params.dx
 ws = snakemake.params.ws
+cc = snakemake.params.cc
 
 #load k realizations and move to ds
 df = pd.read_hdf(filename, key = 'c')
@@ -29,14 +30,14 @@ df = pd.read_hdf(filename, key = 'c')
 # xdf = xr.Dataset.from_dataframe(df)
 
 #load model ds
-mds = xr.open_dataset(os.path.join('..','Results',f'{model_name}', f'{model_name}_t',f'{model_name}_t.nc'))
-orgFolder = os.path.join('..','Results',f'{model_name}', f'{model_name}_t','Fitter','')
+mds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
+orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t','Fitter','')
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = mds.exe_name)
 gwf = sim.get_model()
 
 #init result xarray
 ids = mds.icell2d.values
-result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d'], np.zeros((ens_no, len(ids))))), coords =  dict(sim = range(ens_no), icell2d = ids))
+result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d','cc'], np.zeros((ens_no, len(ids), len(cc))))), coords =  dict(sim = range(ens_no), icell2d = ids, cc = cc))
 
 
 df.set_index(['x', 'y', 'z'], inplace = True)
@@ -45,21 +46,21 @@ df.set_index(['x', 'y', 'z'], inplace = True)
 for cellid in tqdm(ids):
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
-    clean  = cellk #.dropna('x', how = 'any').dropna('y', how = 'any').dropna('z', how = 'any')
     for sim in range(ens_no):
-        k = clean[f"K_{sim+1}"].values
-        if np.isnan(k).any():
-            print(f'Nans spotted, cellid = {cellid}')
-            raise Exception(f'Nan gevonden in cellid {cellid}')
-        if (k.shape[0]) == 1 or (k.shape[1] == 1):
-            result.loc[dict(icell2d = cellid, sim = sim)] = 10**(np.mean(k))
-        else:
-            fieldK = uf.Run_MF_WholeField(10**(k),
-                            Lx = k.shape[0] *real_dx,
-                            Ly = k.shape[1] *real_dx,
-                            Lz = k.shape[2],
-                            dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
-            result.loc[dict(icell2d = cellid, sim = sim)] = fieldK
+        for corfac in cc:
+            k = cellk[f"K_{sim+1}_{corfac}"].values
+            if np.isnan(k).any():
+                print(f'Nans spotted, cellid = {cellid}')
+                raise Exception(f'Nan gevonden in cellid {cellid}')
+            if (k.shape[0]) == 1 or (k.shape[1] == 1):
+                result.loc[dict(icell2d = cellid, sim = sim)] = 10**(np.mean(k))
+            else:
+                fieldK = uf.Run_MF_WholeField(10**(k),
+                                Lx = k.shape[0] *real_dx,
+                                Ly = k.shape[1] *real_dx,
+                                Lz = k.shape[2],
+                                dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
+                result.loc[dict(icell2d = cellid, sim = sim, cc = corfac)] = fieldK
             
 
 

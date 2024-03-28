@@ -204,13 +204,14 @@ class boringen():
         ax.plot(x_pdf, y_pdf2, c = 'green')
         return rn
     
-    def add_k(self, res, ens_no):
+    def add_k(self, res, ens_no, cc, Correction):
         rng = np.random.default_rng()
+        Kfield = res[['x','y','z','cellid']]
         K1 = rng.normal(self.mu1,self.std1, len(res))
         K2 = rng.normal(self.mu2,self.std2, len(res))
-        Kfield = res[['x','y','z','cellid']]
         for x in range(ens_no):
-            Kfield.loc[:,f"K_{x+1}"] = np.where(res[f'sim{x+1}'] == 1, K1,K2)
+            for corfac in cc:
+                Kfield.loc[:,f"K_{x+1}_{corfac}"] = np.where(res[f'sim{x+1}'] == 1, K1 * (corfac + Correction),K2)
             np.random.shuffle(K1)
             np.random.shuffle(K2)
         return Kfield

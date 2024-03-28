@@ -16,6 +16,7 @@ import xarray as xr
 import Heterogeniteit
 import numpy as np
 import flopy
+import pandas as pd
 
 def read_snakemake_rule(path, rule: str) -> "snakemake.rules.Rule": # type: ignore
     import snakemake as sm
@@ -30,7 +31,7 @@ Location = snakemake.params.Name
 modelname = snakemake.params.modelname
 Layer = snakemake.params.simlayer
 sim = snakemake.params.simulation
-
+cc = np.array(snakemake.params.cc)
 
 
 xcorlens = sim['xcorlens']
@@ -66,6 +67,10 @@ orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t')
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = ds.exe_name)
 gwf = sim.get_model()
 
+BestParams_ss = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
+BestParams_t = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
+Correction = 2**BestParams_ss[BestParams_ss.Layer == Layer] * 2**BestParams_t[BestParams_t.Layer == Layer]
+
 res = Heterogeniteit.add_cellid(res,gwf)
-Kfields = boringen.add_k(res, ens_no)
+Kfields = boringen.add_k(res, ens_no,cc, Correction)
 Kfields.to_hdf(snakemake.output[0], key = 'c', complevel = 9, mode = 'w')
