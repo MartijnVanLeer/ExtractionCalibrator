@@ -69,7 +69,7 @@ gwf = sim.get_model()
 
 BestParams_ss = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
 BestParams_t = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
-Correction = 2**BestParams_ss[BestParams_ss.Layer == Layer] * 2**BestParams_t[BestParams_t.Layer == Layer]
+Correction = 2**BestParams_ss[BestParams_ss['Unnamed: 0'] == Layer].Value.values[0] * 2**BestParams_t[BestParams_t['Unnamed: 0'] == Layer].Value.values[0]
 
 res = Heterogeniteit.add_cellid(res,gwf)
 Kfields = boringen.add_k(res, ens_no,cc, Correction)
