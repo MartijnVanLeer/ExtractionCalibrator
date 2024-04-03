@@ -46,9 +46,10 @@ df.set_index(['x', 'y', 'z'], inplace = True)
 for cellid in tqdm(ids):
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
-    for sim in range(ens_no):
-        for corfac in cc:
-            k = cellk[f"K_{sim+1}_{corfac}"].values
+    for col in df.columns[1:]:
+            sim = float(col.split('_')[1])
+            corfac = float(col.split('_')[2])
+            k = cellk[col].values
             if np.isnan(k).any():
                 print(f'Nans spotted, cellid = {cellid}')
                 raise Exception(f'Nan gevonden in cellid {cellid}')
