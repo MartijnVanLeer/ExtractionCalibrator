@@ -180,6 +180,7 @@ rule Upscaler:
         ens_no = ens_no,
         dx = dx,
         ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Upscaler'),
+        cc = CoreCorrection
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
     script:
