@@ -47,7 +47,7 @@ for cellid in tqdm(ids):
     cell = df[df.cellid == cellid]
     cellk = xr.Dataset.from_dataframe(cell)
     for col in df.columns[1:]:
-            sim = float(col.split('_')[1])
+            sim = float(col.split('_')[1]) -1
             corfac = float(col.split('_')[2])
             k = cellk[col].values
             if np.isnan(k).any():
