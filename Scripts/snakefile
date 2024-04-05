@@ -197,6 +197,7 @@ rule Runner:
         ens_no = ens_no,
         ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Runner'),
         simulation = paramspace.instance,
+        cc = CoreCorrection
     output:
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
     script:
