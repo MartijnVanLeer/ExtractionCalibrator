@@ -33,8 +33,6 @@ Layer = snakemake.params.simlayer
 sim = snakemake.params.simulation
 cc = np.array(snakemake.params.cc)
 
-print(Correction)
-print(cc)
 xcorlens = sim['xcorlens']
 zcorlens = sim['zcorlens']
 fracedit = sim['fracs']
