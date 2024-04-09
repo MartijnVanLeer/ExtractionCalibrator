@@ -26,7 +26,7 @@ cc = snakemake.params.cc
 
 #load k realizations and move to ds
 df = pd.read_hdf(filename, key = 'c')
-
+print(df.head(5))
 # xdf = xr.Dataset.from_dataframe(df)
 
 #load model ds
