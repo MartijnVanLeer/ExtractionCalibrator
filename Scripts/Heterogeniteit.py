@@ -207,14 +207,13 @@ class boringen():
     def add_k(self, res, ens_no, cc, Correction):
         rng = np.random.default_rng()
         Kfield = res[['x','y','z','cellid']]
-        K1 = rng.normal(self.mu1,self.std1, len(res))
-        K2 = rng.normal(self.mu2,self.std2, len(res))
-        for x in range(ens_no):
-            for corfac in cc:
-                K1_new = np.log10(10**K1 * (corfac + Correction))
-                Kfield.loc[:,f"K_{x+1}_{corfac}"] = np.where(res[f'sim{x+1}'] == 1, K1_new,K2)
-            np.random.shuffle(K1)
-            np.random.shuffle(K2)
+        for corfac in cc:
+            K1 = rng.normal(np.log10(10**self.mu1 * Correction) + corfac,self.std1, len(res))
+            K2 = rng.normal(self.mu2,self.std2, len(res))
+            for x in range(ens_no):
+                    Kfield.loc[:,f"K_{x+1}_{corfac}"] = np.where(res[f'sim{x+1}'] == 1, K1,K2)
+                np.random.shuffle(K1)
+                np.random.shuffle(K2)
         return Kfield
     
     
