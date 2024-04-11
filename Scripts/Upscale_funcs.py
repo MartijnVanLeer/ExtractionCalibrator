@@ -46,6 +46,7 @@ def run_mf(sim, Kfield,mds, ws):
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
     npf.k.set_data(Kfield.transpose(2,0,1))
+    npf.k33.set_data(Kfield.transpose(2,0,1))
     npf.write()
     success, buff = sim.run_simulation(silent = True)
     if not success:
