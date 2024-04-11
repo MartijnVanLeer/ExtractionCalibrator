@@ -60,6 +60,7 @@ for cellid in tqdm(ids):
                                 Ly = k.shape[1] *real_dx,
                                 Lz = k.shape[2],
                                 dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
+                print(fieldK)
                 result.loc[dict(icell2d = cellid, sim = sim, cc = corfac)] = fieldK
             
 
