@@ -61,7 +61,7 @@ for cellid in tqdm(ids):
                                 Lz = k.shape[2],
                                 dx = real_dx,dy = real_dx,dz = 1, mds = mds, ws = ws)
             result.loc[dict(icell2d = cellid, sim = sim, cc = corfac)] = k.shape[2] / fieldK
-            result.k = result.k.interpolate_na(dim = 'sim', method = 'nearest')
+            result['k'] = result.k.interpolate_na(dim = 'sim', method = 'nearest')
 
 
 result.to_netcdf(snakemake.output[0])
