@@ -38,7 +38,7 @@ sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe
 gwf = sim.get_model()
 npf = gwf.get_package('NPF')
 
-thickness = mds.isel(layer = layno-1).botm-ds.sel(layer = Layer).botm
+thickness = mds.isel(layer = layno-1).botm-mds.sel(layer = Layer).botm
 
 RMSE = []
 cc_ls = []
@@ -46,10 +46,10 @@ simno_ls = []
 for simno in tqdm(ds.sim.values):
     for corfac in ds.cc.values: 
         data33 = npf.k33.array
-        data33[layno] = thickness / ds.sel(sim = simno, cc = corfac).k.values 
+        data33[layno] = thickness.values / ds.sel(sim = simno, cc = corfac).k.values 
         npf.k33.set_data(data33)
         data = npf.k.array
-        data[layno] = thickness / ds.sel(sim = simno, cc = corfac).k.values
+        data[layno] = thickness.values / ds.sel(sim = simno, cc = corfac).k.values
         npf.k.set_data(data)
         npf.write()
         success, buff = sim.run_simulation(silent = True)
