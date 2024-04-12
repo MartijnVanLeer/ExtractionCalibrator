@@ -67,6 +67,7 @@ for simno in tqdm(ds.sim.values):
             RMSE.append(np.sqrt(residuals))
         else:
             RMSE.append(np.nan)
+            print('Modflow crashed')
         cc_ls.append(corfac)
         simno_ls.append(simno)
 
