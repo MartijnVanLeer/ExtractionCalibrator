@@ -35,9 +35,9 @@ def get_paramspace(xcorlens,zcorlens,fracs):
 
 #Settings conditional simulation
 simlayer = 'KIk2'
-xcorlens = [100,200,300,400]
-zcorlens = [4.0,8.0,16]
-fracs = [0,0.1,0.2]
+xcorlens = [200,400,600,800]
+zcorlens = [4,8,16]
+fracs = [-0.1,0,0.1]
 CoreCorrection = [-1,0,1]
 ens_no = 50
 dx = 25

@@ -60,7 +60,7 @@ res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             Lx=Lx,  Ly=Ly,  Lz =Lz,
             dx =dx,dy =dy,dz =1,
             xcorlen =xcorlens, zcorlen = zcorlens,
-            ens_no = ens_no, frac =frac, 
+            ens_no = ens_no, frac =fracs, 
             nmax = 100, seed = xcorlens*zcorlens*frac)
 
 orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t')
