@@ -223,8 +223,17 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
         modheads = head[:,int(well.Layno), int(well.CellID)]
         df[f'{well["putcode"]}'] = modheads.values
         Weights[f'{well["putcode"]}'] = well.Sensitivity
+<<<<<<< HEAD
     residuals = df - ObsHeadsSS
     residuals = residuals * Weights
+=======
+
+    print(ObsHeadsSS)
+    print(df)
+    residuals = df - ObsHeadsSS
+    residuals = residuals * Weights
+    print(residuals)
+>>>>>>> f4bacae (debug opt)
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
     RMSE = np.sqrt(np.mean(residuals**2))
