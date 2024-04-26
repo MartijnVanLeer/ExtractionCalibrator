@@ -178,7 +178,11 @@ if not steady_state:
 print('WEL package..')
 ds['idomain'] = nlmod.layers.get_idomain(ds)
 #create wel package
-
+print(ExWellsAll)
+print ds.extent
+print(ds.isel(layer = -1).botm.mean())
+import time.sleep
+sleep(100)
 wel_spd = Helper.get_wel_spd(ds, gwf,Discharge, ExWellsAll,steady_state)
 wel = flopy.mf6.ModflowGwfwel(
         gwf,
