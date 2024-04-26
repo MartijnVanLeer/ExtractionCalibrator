@@ -150,8 +150,8 @@ def layermodel(extent, NLzuid,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel
         layer_model_sel = layer_model_full.sel(x = slice(extent[0], extent[1]), y = slice(extent[3], extent[2]))
         # layer_model = layer_model.load()
         layer_model = layer_model_sel.dropna(dim = 'layer', how = 'all')
-        layer_model['meantop'] = layer_model.botm.mean(dim = ['x', 'y'], skipna = True)
-        layer_model = layer_model.sortby('meantop', ascending = False)
+        # layer_model['meantop'] = layer_model.botm.mean(dim = ['x', 'y'], skipna = True)
+        # layer_model = layer_model.sortby('meantop', ascending = False)
         layer_model.attrs['extent'] = extent
         # layer_model.transpose('layer', 'y', 'x')
     else:
