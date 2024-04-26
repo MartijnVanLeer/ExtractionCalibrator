@@ -156,9 +156,6 @@ def layermodel(extent, NLzuid,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel
         # layer_model.transpose('layer', 'y', 'x')
     else:
         layer_model = nlmod.read.regis.get_regis(extent)
-        layer_model = layer_model.dropna(dim = 'layer', how = 'all')
-        layer_model['meantop'] = layer_model.botm.mean(dim = ['x', 'y'], skipna = True)
-        layer_model = layer_model.sortby('meantop', ascending = False)
     return layer_model
 
 def refiner(ds, refineranges, WellGdf):

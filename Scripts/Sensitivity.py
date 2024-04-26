@@ -46,12 +46,14 @@ OptimisationFuncs.copyOriginalFolder(modelname + '_ss', orgFolder ,destFolder , 
 ds = xr.open_dataset(os.path.join(orgFolder, f'{modelname}_ss.nc'))
 ds.attrs['model_ws'] = destFolder
 
-
+print(ds.layer)
+sleep(10)
 #Load packages
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name =ds.exe_name)
 gwf = sim.get_model()
 npf = gwf.get_package('NPF')
 npfk = npf.k.data
+print(npfk.shape)
 npfk33 = npf.k33.data
 ghb = gwf.get_package('GHB')
 ghb_spd = ghb.stress_period_data.data[0]
