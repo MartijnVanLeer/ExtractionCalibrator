@@ -41,7 +41,7 @@ warmup = False #if steady_state else True
 use_geotop = False
 NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
-use_knmi = True
+use_knmi = False if Name == 'Schijf' else True
 cachedir = None
 
 
