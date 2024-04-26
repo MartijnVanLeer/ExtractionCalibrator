@@ -1,0 +1,26 @@
+import pandas as pd
+import os
+import xarray as xr 
+import numpy as np
+
+modelname = snakemake.params.modelname
+
+results = pd.read_csv(os.path.join('..', 'Results', modelname, 'RMSE_all.csv'))
+ResidualsBest = pd.read_csv(os.path.join('..', 'Results', modelname,f'Residuals_{modelname}.csv'), index_col = "Time")
+residuals =ResidualsBest.to_numpy()
+residuals = residuals[~np.isnan(residuals)]
+RMSE = np.sqrt(np.mean(residuals**2))
+Best = results[results.RMSE < RMSE]
+
+
+Best['k'] = np.nan
+realizations = xr.Dataset.from_dataframe(Best.set_index(['sim', 'xcorlen', 'zcorlen', 'frac', 'cc']))
+for index, row in Best.iterrows():
+    TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQc',f'xcorlens~{row.xcorlen}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'UpscaledK.nc'))
+    Vals = TempDS.sel(sim = row.sim, cc = row.cc)
+    if 'icell2d' not in realizations.dims.values():
+        realizations = realizations.expand_dims({'icell2d' : TempDS.icell2d.values})
+    realizations.loc(dict(sim = row.sim, xcorlen = row.xcorlen, zcorlen = row.zcorlen, frac = row.frac, cc = row.cc))['k'] = Vals
+
+realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'BestRealizations.nc'))
+
