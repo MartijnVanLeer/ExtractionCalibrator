@@ -46,8 +46,6 @@ OptimisationFuncs.copyOriginalFolder(modelname + '_ss', orgFolder ,destFolder , 
 ds = xr.open_dataset(os.path.join(orgFolder, f'{modelname}_ss.nc'))
 ds.attrs['model_ws'] = destFolder
 
-print(ds.layer)
-sleep(10)
 #Load packages
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name =ds.exe_name)
 gwf = sim.get_model()
