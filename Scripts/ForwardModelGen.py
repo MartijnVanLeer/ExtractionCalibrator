@@ -192,7 +192,8 @@ Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
 #Create drain packakge
 drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=drainC, elev = 'top')
 
-riv = Helper.riv(ds,gwf)
+if not steady_state:
+    riv = Helper.riv(ds,gwf)
 
 print('WEL package..')
 #Create recharge packagefrom KNMI

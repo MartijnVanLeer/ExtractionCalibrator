@@ -155,7 +155,7 @@ def layermodel(extent, NLzuid,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel
         layer_model.attrs['extent'] = extent
         # layer_model.transpose('layer', 'y', 'x')
     else:
-        layer_model = nlmod.read.regis.get_combined_layer_models(extent,use_geotop=False)
+        layer_model = nlmod.read.regis.get_regis(extent)
     return layer_model
 
 def refiner(ds, refineranges, WellGdf):
