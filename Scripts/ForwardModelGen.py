@@ -188,7 +188,7 @@ print('GHB package..')
 # add constant head cells at model boundaries
 ds.update(nlmod.grid.mask_model_edge(ds))
 ghb = Helper.ghb(ds, gwf,cachedir,NLzuid, GHBrange, lhmpath = lhmpath, delr = delr)
-Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
+# Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
 #Create drain packakge
 drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=drainC, elev = 'top')
 
