@@ -71,13 +71,17 @@ def readObs(Location,gwf,ds):
 def GetObs(model_name, Location, idx,ds):
     ObsWells = pd.read_csv(os.path.join('..','Results',f'{model_name}',f'ObsForCalibration_{Location}.csv'))
     ObsHeads = pd.read_csv(os.path.join('..','Data','Preprocessed',f'stijghoogtereeksen_{Location}.csv'), index_col= 'Time')
+    print(ObsHeads.shape)
     ObsWells = ObsWells[ObsWells['Layno'].isin(idx.idx)]
     columns = list(set(ObsWells.putcode).intersection(ObsHeads.columns))
     ObsHeads = ObsHeads[columns]
+    print(ObsHeads.shape)
     ObsHeads = ObsHeads.set_index(pd.to_datetime(ObsHeads.index))
     ObsWells = ObsWells[ObsWells.putcode.isin(columns)]
     ObsHeads = ObsHeads[ObsWells.putcode]
     ObsHeads = ObsHeads.loc[ds.time.start:ds.time.values[0]]
+    print(ObsHeads.shape)
+    sleep(10)
     return ObsWells, ObsHeads
 
 def layerid(SensLayers,ds):
@@ -216,12 +220,8 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
         modheads = head[:,int(well.Layno), int(well.CellID)]
         df[f'{well["putcode"]}'] = modheads.values
         Weights[f'{well["putcode"]}'] = well.Sensitivity
-
-    print(ObsHeadsSS)
-    print(df)
     residuals = df - ObsHeadsSS
     residuals = residuals * Weights
-    print(residuals)
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
     RMSE = np.sqrt(np.mean(residuals**2))
