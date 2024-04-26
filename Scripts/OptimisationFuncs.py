@@ -219,7 +219,6 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
 
     residuals = df - ObsHeadsSS
     residuals = residuals * Weights
-    print(residuals)
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
     RMSE = np.sqrt(np.mean(residuals**2))

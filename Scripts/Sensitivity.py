@@ -51,13 +51,13 @@ sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe
 gwf = sim.get_model()
 npf = gwf.get_package('NPF')
 npfk = npf.k.data
-print(npfk.shape)
 npfk33 = npf.k33.data
 ghb = gwf.get_package('GHB')
 ghb_spd = ghb.stress_period_data.data[0]
 
 #Get some info from model 
 idx = OptimisationFuncs.layerid(SensLayers,ds)
+print(idx)
 ObsWells = OptimisationFuncs.readObs(Location,gwf,ds)
 
 
