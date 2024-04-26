@@ -179,7 +179,7 @@ print('WEL package..')
 ds['idomain'] = nlmod.layers.get_idomain(ds)
 #create wel package
 print(ExWellsAll)
-print ds.extent
+print(ds.extent)
 print(ds.isel(layer = -1).botm.mean())
 import time.sleep
 sleep(100)
