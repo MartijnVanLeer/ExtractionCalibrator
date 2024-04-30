@@ -96,7 +96,7 @@ ObsWells.to_csv(os.path.join(destFolder,'ObsWellsSens.csv'))
 
 ObsWells, ObsHeads = OptimisationFuncs.GetObs(modelname, Location, idx,ds)
 print(ObsHeads)
-ObsHeads = OptimisationFuncs.fix_heads(ObsHeads, minhead = None, maxhead = None)
+ObsHeads = OptimisationFuncs.fix_heads(ObsHeads, minhead = 10, maxhead = None)
 print(ObsHeads)
 
 '''
