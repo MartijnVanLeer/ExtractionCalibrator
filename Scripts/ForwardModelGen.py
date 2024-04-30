@@ -194,7 +194,7 @@ ghb = Helper.ghb(ds, gwf,cachedir,NLzuid, GHBrange, lhmpath = lhmpath, delr = de
 #Create drain packakge
 drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=drainC, elev = 'top')
 
-riv = Helper.riv(ds,gwf)
+# riv = Helper.riv(ds,gwf)
 
 print('WEL package..')
 #Create recharge packagefrom KNMI
