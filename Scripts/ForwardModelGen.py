@@ -113,8 +113,8 @@ ds = nlmod.to_model_ds(layer_model, modelname, model_ws, delr=delr)
 refinements = Helper.refiner(ds, refineranges, WellGdf)
 ds = nlmod.grid.refine(ds,refinement_features=refinements)
 ds = Helper.resample(ds, layer_model, NLzuid)
-ds['depth'] = ((ds.isel(layer = slice(1,-1)).botm + ds.isel(layer = slice(0,-2)).botm )/2).mean(dim = 'icell2d', skipna = True)
-ds = ds.sortby('depth', ascending = False)
+# ds['depth'] = ((ds.isel(layer = slice(1,-1)).botm + ds.isel(layer = slice(0,-2)).botm )/2).mean(dim = 'icell2d', skipna = True)
+# ds = ds.sortby('depth', ascending = False)
 
 
 
