@@ -116,7 +116,7 @@ ds = Helper.resample(ds, layer_model, NLzuid)
 # ds['depth'] = ((ds.isel(layer = slice(1,-1)).botm + ds.isel(layer = slice(0,-2)).botm )/2).mean(dim = 'icell2d', skipna = True)
 # ds = ds.sortby('depth', ascending = False)
 
-
+print(ds.layer)
 
 if use_ahn:
     ahn_ds = nlmod.read.ahn.get_ahn(ds, cachedir=ds.cachedir, cachename="ahn")
