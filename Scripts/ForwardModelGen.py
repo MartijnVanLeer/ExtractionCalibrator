@@ -37,11 +37,11 @@ drainC = snakemake.params.drainC
 
 steady_state = snakemake.params.steady_state
 
-warmup = False #if steady_state else True
+warmup = False
 use_geotop = False
 NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
-use_knmi = True
+use_knmi = False if Name == 'Schijf' else True
 cachedir = None
 
 
@@ -113,8 +113,10 @@ ds = nlmod.to_model_ds(layer_model, modelname, model_ws, delr=delr)
 refinements = Helper.refiner(ds, refineranges, WellGdf)
 ds = nlmod.grid.refine(ds,refinement_features=refinements)
 ds = Helper.resample(ds, layer_model, NLzuid)
+# ds['depth'] = ((ds.isel(layer = slice(1,-1)).botm + ds.isel(layer = slice(0,-2)).botm )/2).mean(dim = 'icell2d', skipna = True)
+# ds = ds.sortby('depth', ascending = False)
 
-
+print(ds.layer)
 
 if use_ahn:
     ahn_ds = nlmod.read.ahn.get_ahn(ds, cachedir=ds.cachedir, cachename="ahn")
@@ -188,11 +190,11 @@ print('GHB package..')
 # add constant head cells at model boundaries
 ds.update(nlmod.grid.mask_model_edge(ds))
 ghb = Helper.ghb(ds, gwf,cachedir,NLzuid, GHBrange, lhmpath = lhmpath, delr = delr)
-Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
+# Helper.plot_map(ds, gwf, 'ghb_head', 'KIz3')
 #Create drain packakge
 drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=drainC, elev = 'top')
 
-riv = Helper.riv(ds,gwf)
+# riv = Helper.riv(ds,gwf)
 
 print('WEL package..')
 #Create recharge packagefrom KNMI
