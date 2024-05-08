@@ -144,7 +144,7 @@ def make_gdf(ExWells,ObsWells):
     WellGdf = gpd.GeoDataFrame(pd.concat([ExWellGdf,ObsWellGdf]))
     return WellGdf
 
-def layermodel(extent, NLzuid,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel.nc')):
+def layermodel(extent, NLzuid,DeepestLayer,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel.nc')):
     if NLzuid: 
         layer_model_full = xr.open_dataset(nlzuidpad)
         layer_model_sel = layer_model_full.sel(x = slice(extent[0], extent[1]), y = slice(extent[3], extent[2]))
@@ -153,6 +153,7 @@ def layermodel(extent, NLzuid,nlzuidpad = os.path.join('..','Data', 'NLZuidmodel
         layer_model['meantop'] = layer_model.botm.mean(dim = ['x', 'y'], skipna = True)
         layer_model = layer_model.sortby('meantop', ascending = False)
         layer_model.attrs['extent'] = extent
+        layer_model = layer_model.where(layer_model.botm >= layer_model.botm.sel(layer = DeepestLayer))
         # layer_model.transpose('layer', 'y', 'x')
     else:
         layer_model = nlmod.read.regis.get_combined_layer_models(extent,use_geotop=False)

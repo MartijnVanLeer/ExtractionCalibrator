@@ -57,7 +57,6 @@ ghb_spd = ghb.stress_period_data.data[0]
 
 #Get some info from model 
 idx = OptimisationFuncs.layerid(SensLayers,ds)
-print(idx)
 ObsWells = OptimisationFuncs.readObs(Location,gwf,ds)
 
 
@@ -95,9 +94,7 @@ ObsWells.to_csv(os.path.join(destFolder,'ObsWellsSens.csv'))
 #%%Calibrate ss
 
 ObsWells, ObsHeads = OptimisationFuncs.GetObs(modelname, Location, idx,ds)
-print(ObsHeads)
 ObsHeads = OptimisationFuncs.fix_heads(ObsHeads, minhead = 10, maxhead = None)
-print(ObsHeads)
 
 '''
 Layer K values powers of 2 (-1 = *0.5, 1 = *2)

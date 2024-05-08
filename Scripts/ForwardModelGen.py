@@ -34,6 +34,7 @@ GHBrange = snakemake.params.GHBrange
 delr = delc = snakemake.params.delr
 refineranges = snakemake.params.refineranges
 drainC = snakemake.params.drainC
+DeepestLayer = snakemake.params.DeepestLayer
 
 steady_state = snakemake.params.steady_state
 
@@ -104,7 +105,7 @@ if not os.path.isdir(model_ws):
 #Regis 
 print('Loading REGIS..')
 extent = Helper.GetExtent(ExWells, Range)
-layer_model = Helper.layermodel(extent, NLzuid,)
+layer_model = Helper.layermodel(extent, NLzuid,DeepestLayer)
 layer_model.to_netcdf(os.path.join(model_ws, 'layer_model.nc'))
 # print(f'spreidingslengte:{Helper.Spreidingslengte(extent, "PZWAz4","WAk1", layer_model)}') 
 #%% Grid functions
