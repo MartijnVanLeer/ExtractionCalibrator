@@ -41,7 +41,7 @@ warmup = False
 use_geotop = False
 NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
-use_knmi = False if Name == 'Schijf' else True
+use_knmi = True
 cachedir = None
 
 
@@ -116,7 +116,6 @@ ds = Helper.resample(ds, layer_model, NLzuid)
 # ds['depth'] = ((ds.isel(layer = slice(1,-1)).botm + ds.isel(layer = slice(0,-2)).botm )/2).mean(dim = 'icell2d', skipna = True)
 # ds = ds.sortby('depth', ascending = False)
 
-print(ds.layer)
 
 if use_ahn:
     ahn_ds = nlmod.read.ahn.get_ahn(ds, cachedir=ds.cachedir, cachename="ahn")
@@ -212,31 +211,6 @@ oc = nlmod.gwf.oc(ds, gwf)
 
 #%%run
 nlmod.sim.write_and_run(sim, ds, write_ds=True) 
-#%% post-processing
-ModHeads = Helper.GetHeadsAtObs(ds, ObsWells, gwf)
-
-# ModHeads.to_csv(f"{cachedir}\\Modelled_obs.csv")
-
-#%%
-putcodes = ObsWells[ObsWells['filter_bovenkant_ref'] >25].sort_values('filter_bovenkant_ref')['putcode']
-putcodes = putcodes[putcodes.isin(ModHeads.columns)]
-if not steady_state:
-    Helper.ComparePlot(ObsHeads[startdate:], ModHeads[startdate:], putcodes, ObsWells)
-
-#%%
-# plot head in extraction layer
-
-# if not steady_state:   
-#     Helper.PlotPumpedHeads(ds,gwf,400, tstep = '2019-05-25 00:00:00')
-# else:
-#     Helper.PlotPumpedHeads(ds,gwf,0, tstep = '2015-01-01')
-#%%
-# import Helper
-# Helper.plot_mean_res(ObsHeads,ModHeads, ObsWells, steady_state, depth = 350, tail = 365*1)
-
-#%%
-# import Helper
-# Helper.plot_map(ds, gwf, 'ghb_head', 'KIz5')
 
 
 
