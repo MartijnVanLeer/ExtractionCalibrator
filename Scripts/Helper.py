@@ -239,7 +239,7 @@ def ghb(ds, gwf,cachedir, NLzuid, GHBrange =1000, lhmpath = '..\\Data\\lhm.nc', 
     #Get bigger REGIS extent
     GHBextent = [ds.extent[0] - GHBrange-200,ds.extent[1] + GHBrange+200,  ds.extent[2] - GHBrange-200,ds.extent[3] + GHBrange +200 ]
     CellExt = [ds.x.min().values,ds.x.max().values, ds.y.min().values, ds.y.max().values]
-    layer_model = layermodel(GHBextent,NLzuid)
+    layer_model = layermodel(GHBextent,NLzuid,DeepestLayer )
     #load LHM data
     
     LHM = get_LHM_heads2(lhmpath, ds)
