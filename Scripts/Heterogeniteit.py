@@ -252,7 +252,7 @@ class KDist():
             x_pdf = np.linspace(x0,x1,100)
             y_pdf = scipy.stats.norm.pdf(x_pdf, mu, std)
             ax.plot(x_pdf, y_pdf, c = 'r')
-        fp.savefig()
+        fp.savefig(os.path.join('..', 'Results', ' weightedDist.png'))
 
 class Kreg():
     def __init__(self,folder, layer):
