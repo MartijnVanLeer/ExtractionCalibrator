@@ -67,10 +67,6 @@ orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t')
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = ds.exe_name)
 gwf = sim.get_model()
 
-BestParams_ss = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
-BestParams_t = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
-Correction = 2**BestParams_ss[BestParams_ss['Unnamed: 0'] == Layer].Value.values[0] * 2**BestParams_t[BestParams_t['Unnamed: 0'] == Layer].Value.values[0]
-
 res = Heterogeniteit.add_cellid(res,gwf)
-Kfields = boringen.add_k(res, ens_no,cc, Correction)
+Kfields = boringen.add_k(res, ens_no,cc)
 Kfields.to_hdf(snakemake.output[0], key = 'c', complevel = 9, mode = 'w')

@@ -155,8 +155,6 @@ rule Cond_Simulator:
        'condsim.py',
        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'),
-       os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
        'Heterogeniteit.py'
     params:
         Name = Name,
