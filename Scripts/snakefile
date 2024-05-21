@@ -211,3 +211,15 @@ rule Collector:
         resultpath = os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
     shell:
         "cat {input} > {output}"
+
+rule Merge_Best:
+    input:
+       'MergeBest.py',
+       os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
+       os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'),
+    params:
+        modelname = modelname,
+    output:
+        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+    script:
+       'MergeBest.py'
