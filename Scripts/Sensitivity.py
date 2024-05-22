@@ -112,7 +112,7 @@ NMoptions = {'adaptive': True,
               'initial_simplex' : initsimplex,
              'xatol' : 0.25, #both xatol and fatol needed for termination
              'fatol' : 0.005
-              }5
+              }
 options = {'options': NMoptions,} 
 fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
                          fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal), iter_cb=OptimisationFuncs.per_iteration)
