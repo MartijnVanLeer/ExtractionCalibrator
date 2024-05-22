@@ -69,7 +69,7 @@ ghb = OptimisationFuncs.ghb_best_values(ghb,gwf, BestGhb, idx, CorLayers)
 #%%
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal = None, KCal = True, Transient= True)
 
-initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.25)
+initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.5)
 
 
 NMoptions = {'adaptive': True,

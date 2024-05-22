@@ -128,7 +128,7 @@ ObsWells = OptimisationFuncs.run_calibration_ss_result(best_params, sim ,gwf, id
 print(f'MAE : {ObsWells.Residual.abs().mean()}')
 
 # #%% plot
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # head = nlmod.gwf.get_heads_da(ds)
 # pmv = flopy.plot.PlotMapView(modelgrid=gwf.modelgrid)
 # array = head.isel(layer=22)
