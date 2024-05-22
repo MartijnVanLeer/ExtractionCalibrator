@@ -5,10 +5,10 @@ import pandas as pd
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
 modelname ='fullrun'
 
-Range = 3600 #m Distance from grid border to centre of wells 3200
-GHBrange = 1000 
+Range = 3200 #m Distance from grid border to centre of wells 3200
+GHBrange = 2000 
 delr = 400
-refineranges = {1600:1, 800:2, 300:3, 100:4}
+refineranges = {1600:1, 800:2, 400:3, 200:4}
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
 enddate = '2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
 drainC = 1
