@@ -104,15 +104,15 @@ Those are determined by the min/max
 
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal)   
        
-initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.25)
+initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)
 
 
 NMoptions = {'adaptive': True,
               'maxfev' :2000,
               'initial_simplex' : initsimplex,
-             'xatol' : 0.05, #both xatol and fatol needed for termination
-             'fatol' : 0.05
-              }
+             'xatol' : 0.25, #both xatol and fatol needed for termination
+             'fatol' : 0.005
+              }5
 options = {'options': NMoptions,} 
 fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
                          fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal), iter_cb=OptimisationFuncs.per_iteration)
