@@ -104,11 +104,11 @@ Those are determined by the min/max
 
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal)   
        
-initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.5)
+initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.25)
 
 
 NMoptions = {'adaptive': True,
-              'maxfev' :1000,
+              'maxfev' :2000,
               'initial_simplex' : initsimplex,
              'xatol' : 0.05, #both xatol and fatol needed for termination
              'fatol' : 0.05
@@ -127,24 +127,25 @@ for x in range(len(result.x)):
 ObsWells = OptimisationFuncs.run_calibration_ss_result(best_params, sim ,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers, ghbCal, KCal )
 print(f'MAE : {ObsWells.Residual.abs().mean()}')
 
-#%% plot
-import matplotlib.pyplot as plt
-head = nlmod.gwf.get_heads_da(ds)
-pmv = flopy.plot.PlotMapView(modelgrid=gwf.modelgrid)
-array = head.isel(layer=22)
-ar = pmv.plot_array(array)
-cb = plt.colorbar(ar)
+# #%% plot
+# import matplotlib.pyplot as plt
+# head = nlmod.gwf.get_heads_da(ds)
+# pmv = flopy.plot.PlotMapView(modelgrid=gwf.modelgrid)
+# array = head.isel(layer=22)
+# ar = pmv.plot_array(array)
+# cb = plt.colorbar(ar)
 
-#%%
-layno = 20
-fig, ax = plt.subplots()
-sns.scatterplot(data = ObsWells[ObsWells.Layno == layno], x = 'x_coordinaat', y = 'y_coordinaat', hue = 'Residual')
-ax.set_xlim((ds.extent[0], ds.extent[1]))
-ax.set_ylim((ds.extent[2], ds.extent[3]))
-# ObsHeads.loc[:,ObsWells[ObsWells.Layno == layno].putcode].plot()
+# #%%
+# layno = 20
+# fig, ax = plt.subplots()
+# sns.scatterplot(data = ObsWells[ObsWells.Layno == layno], x = 'x_coordinaat', y = 'y_coordinaat', hue = 'Residual')
+# ax.set_xlim((ds.extent[0], ds.extent[1]))
+# ax.set_ylim((ds.extent[2], ds.extent[3]))
+# # ObsHeads.loc[:,ObsWells[ObsWells.Layno == layno].putcode].plot()
 fig, ax = plt.subplots()
 sns.scatterplot(data = ObsWells, x = 'ObsHeadsSS', y = 'ModHead', hue = 'Layno', ax =ax)
 ax.axline([min(ObsWells.ObsHeadsSS), min(ObsWells.ObsHeadsSS)],[max(ObsWells.ObsHeadsSS), max(ObsWells.ObsHeadsSS)])
+fig.savefig(os.path.join('..','Results',f'{modelname}', 'Calibration_ss.png'))
 
 #%%
 best_paramdf = pd.DataFrame.from_dict(best_params, orient = 'index', columns = ['Value'])
