@@ -34,6 +34,7 @@ ghbCal = snakemake.params.ghbCal # 'obs', 'Single', None
 KCal = snakemake.params.KCal
 Weighted = snakemake.params.Weighted
 BadWells =snakemake.params.BadWells # alleen begin'B57E0082_7','B57E0147_4'
+Lambda = snakemake.params.Lambda
 
 
 #%% Load model and dataset
@@ -115,7 +116,7 @@ NMoptions = {'adaptive': True,
               }
 options = {'options': NMoptions,} 
 fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
-                         fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal), iter_cb=OptimisationFuncs.per_iteration)
+                         fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal,Lambda), iter_cb=OptimisationFuncs.per_iteration)
 result = fitter.minimize('Nelder-Mead',**options)
 
 print(lmfit.fit_report(result))

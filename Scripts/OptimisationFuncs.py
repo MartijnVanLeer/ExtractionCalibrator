@@ -159,7 +159,7 @@ def init_params(idx,CorLayers, ghbCal, KCal, Transient = False):
         params.add(name = 'SS', value = 0)
     return params
 
-def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal):
+def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal, Lambda):
     #K
     if KCal:
         newk = npfk.copy()
@@ -222,8 +222,10 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
     RMSE = np.sqrt(np.mean(residuals**2))
+    #Regularization
+    RMSEreg = np.sqrt(np.mean(residuals**2) + Lambda * sum(p**2))
 
-    return RMSE 
+    return RMSEreg 
 
 def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal,KCal):
     

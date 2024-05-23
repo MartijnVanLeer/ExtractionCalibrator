@@ -21,6 +21,7 @@ ghbCal = 'SensLayers' # 'obs', 'Single', None
 KCal = True
 Weighted = False
 BadWells =[]#['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
+Lambda = 0.001
 
 def get_paramspace(xcorlens,zcorlens,fracs):
     xl = []
@@ -112,6 +113,7 @@ rule Calibration_SS:
         KCal = KCal,
         Weighted = Weighted,
         BadWells = BadWells,
+        Lambda = Lambda
     output:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
