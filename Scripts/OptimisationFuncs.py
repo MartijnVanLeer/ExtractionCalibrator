@@ -223,7 +223,7 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
     residuals = residuals[~np.isnan(residuals)]
     RMSE = np.sqrt(np.mean(residuals**2))
     #Regularization
-    RMSEreg = np.sqrt(np.mean(residuals**2) + Lambda * sum(p**2))
+    RMSEreg = np.sqrt(np.mean(residuals**2) + Lambda * sum(p.values**2))
 
     return RMSEreg 
 
