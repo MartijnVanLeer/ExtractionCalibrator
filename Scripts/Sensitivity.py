@@ -111,8 +111,8 @@ initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)
 NMoptions = {'adaptive': True,
               'maxfev' :2000,
               'initial_simplex' : initsimplex,
-             'xatol' : 0.25, #both xatol and fatol needed for termination
-             'fatol' : 0.005
+             'xatol' : 0.1, #both xatol and fatol needed for termination
+             'fatol' : 0.05
               }
 options = {'options': NMoptions,} 
 fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
