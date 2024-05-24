@@ -173,7 +173,7 @@ npf = nlmod.gwf.npf(ds, gwf)
 ic = nlmod.gwf.ic(ds, gwf, starting_head=0)
 
 if not steady_state:
-    sto = nlmod.gwf.sto(ds, gwf)
+    sto = nlmod.gwf.sto(ds, gwf, ss = 0.0001)
 
 print('WEL package..')
 ds['idomain'] = nlmod.layers.get_idomain(ds)

@@ -109,9 +109,9 @@ initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)
 
 
 NMoptions = {'adaptive': True,
-              'maxfev' :2000,
+              'maxfev' :1000,
               'initial_simplex' : initsimplex,
-             'xatol' : 0.1, #both xatol and fatol needed for termination
+             'xatol' : 0.05, #both xatol and fatol needed for termination
              'fatol' : 0.05
               }
 options = {'options': NMoptions,} 
