@@ -108,11 +108,10 @@ params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal)
 initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)
 
 
-NMoptions = {'adaptive': True,
-              'maxfev' :1000,
+NMoptions = {'adaptive': True              'maxfev' :1000,
               'initial_simplex' : initsimplex,
-             'xatol' : 0.05, #both xatol and fatol needed for termination
-             'fatol' : 0.05
+             'xatol' : 0.1, #both xatol and fatol needed for termination
+             'fatol' : 0.1
               }
 options = {'options': NMoptions,} 
 fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
