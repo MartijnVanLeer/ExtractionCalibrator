@@ -8,11 +8,12 @@ modelname ='fullrun'
 Range = 3200 #m Distance from grid border to centre of wells 3200
 GHBrange = 1000 
 delr = 400
-refineranges = {600:2, 50:4 }
+refineranges = {600:2, 100:4 }
 startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
-enddate = '2016-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
+enddate = '2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
 drainC = 1
 DeepestLayer = 'BRz1'
+ss = 0.00000001
 
 #Settings calibration
 SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
@@ -72,7 +73,8 @@ rule Forward_Model_SS:
         startdate = startdate,
         enddate = enddate,
         drainC = drainC,
-        DeepestLayer = DeepestLayer 
+        DeepestLayer = DeepestLayer,
+        ss = ss
     script:
        'ForwardModelGen.py'
        
@@ -95,7 +97,8 @@ rule Forward_Model_T:
         startdate = startdate,
         enddate = enddate,
         drainC = drainC,
-        DeepestLayer = DeepestLayer 
+        DeepestLayer = DeepestLayer,
+        ss = ss
     script:
        'ForwardModelGen.py'
 

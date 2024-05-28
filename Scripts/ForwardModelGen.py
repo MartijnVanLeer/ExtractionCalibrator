@@ -37,6 +37,7 @@ drainC = snakemake.params.drainC
 DeepestLayer = snakemake.params.DeepestLayer
 
 steady_state = snakemake.params.steady_state
+ss = snakemake.params.ss
 
 warmup = False
 use_geotop = False
