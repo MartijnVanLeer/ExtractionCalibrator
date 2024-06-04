@@ -2,7 +2,7 @@ import os
 import nlmod
 import flopy 
 import OptimisationFuncs
-import ModpathFuncs
+import ModpathFuncs as mf
 import xarray as xr
 import pandas as pd
 
@@ -15,18 +15,18 @@ OptimisationFuncs.copyOriginalFolder(modelname + '_ss', orgFolder ,destFolder , 
 ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', f'{modelname}_ss.nc'))
 ds.attrs['model_ws'] = destFolder
 
-npfk, npfk33 = load_calibrated_npf(modelname)
-sim, npf = load_ss(destFolder,ds, npfk, npfk33)
+npfk, npfk33 = mf.load_calibrated_npf(modelname)
+sim, npf = mf.load_ss(destFolder,ds, npfk, npfk33)
 
 #run ref model
-flowfrac_ref = run_modpath_ref_bw(modelname, sim, ds, npf, layer)
-dist_ref = run_modpath_ref_fw(modelname, sim, ds, npf, layer)
+flowfrac_ref = mf.run_modpath_ref_bw(modelname, sim, ds, npf, layer)
+dist_ref = mf.run_modpath_ref_fw(modelname, sim, ds, npf, layer)
 
 #load realizations
 rds = xr.open_dataset(os.path.join('..', 'Results', modelname, 'BestRealizations.nc'))
 
 #run modpath for realizations
-flowfrac, dist = run_modpath_realizations(modelname,sim,ds,npf, rds, layer)
+flowfrac, dist = mf.run_modpath_realizations(modelname,sim,ds,npf, rds, layer)
 flowfrac  = pd.DataFrame({'Flowfrac' : flowfrac, 'Realization' : 'Realizations'})
 flowfrac.append({'Flowfrac' : flowfrac_ref, 'Realization' : 'Reference'}, ignore_index=True)
 flowfrac.to_csv(os.path.join('..','Results',f'{modelname}','flowfrac.csv'))
