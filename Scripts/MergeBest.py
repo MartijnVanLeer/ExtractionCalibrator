@@ -17,10 +17,10 @@ Best = results[results.RMSE < RMSE]
 
 realizations = xr.Dataset.from_dataframe(Best.reset_index())
 print(realizations)
-for index, row in Best.iterrows()[0]:
-    TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{int(row.zcorlen)}', f'fracs~{row.frac}', 'UpscaledK.nc'))
+for index, row in Best.iterrows():
+    TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(Best.xcorlen[0])}', f'zcorlens~{int(Best.zcorlen[0])}', f'fracs~{Best.frac[0]}', 'UpscaledK.nc'))
 realizations = realizations.expand_dims({'icell2d' : TempDS.icell2d.values})
-realizations['k'] = np.nan
+realizations['k'] = np.empty((len(Best),len(realizations.icell2d)))
 for index, row in Best.iterrows():
     TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{int(row.zcorlen)}', f'fracs~{row.frac}', 'UpscaledK.nc'))
     Vals = TempDS.sel(sim = row.sim, cc = row.cc)
