@@ -12,7 +12,7 @@ destFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', 'Mod
 OptimisationFuncs.copyOriginalFolder(modelname + '_ss', orgFolder ,destFolder , 'Fitter\\' )
 
 #Load model and ds
-ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_ss' f'{modelname}_ss.nc'))
+ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', f'{modelname}_ss.nc'))
 ds.attrs['model_ws'] = destFolder
 
 npfk, npfk33 = load_calibrated_npf(modelname)
