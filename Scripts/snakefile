@@ -239,6 +239,7 @@ rule Modpath:
        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
     params:
         modelname = modelname,
+        layer = simlayer
     output:
         os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
         os.path.join('..','Results',f'{modelname}','TT_dist.csv')

@@ -56,7 +56,7 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
 def run_bw(modelname, sim, ds, layer):
     gwf = sim.get_model()
     #BW tracking
-    layno = list(ds.layer).index(layer)
+    layno = list(ds.layer).index(layer)-1
     layernodes = []
     for lay in range(layno+1):
         layernodes += nlmod.modpath.layer_to_nodes(mpf, lay)
@@ -77,7 +77,7 @@ def run_bw(modelname, sim, ds, layer):
     return flowfrac
 
 def run_fw(modelname, sim, ds, layer):
-    layno = list(ds.layer).index(layer)
+    layno = list(ds.layer).index(layer)-1
     gwf = sim.get_model()
     mpf = nlmod.modpath.mpf(gwf)
     mpfbas = nlmod.modpath.bas(mpf,)
