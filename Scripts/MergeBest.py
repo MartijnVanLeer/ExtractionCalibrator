@@ -5,7 +5,7 @@ import numpy as np
 
 modelname = snakemake.params.modelname
 
-results = pd.read_csv(os.path.join('..', 'Results', modelname, 'RMSE_all.csv'))
+results = pd.read_csv(os.path.join('..', 'Results', modelname, 'RMSE_all.csv'), names = ['sim', 'RMSE', 'xcorlen', 'zcorlen','frac', 'cc'])
 ResidualsBest = pd.read_csv(os.path.join('..', 'Results', modelname,f'Residuals_{modelname}.csv'), index_col = "Time")
 residuals =ResidualsBest.to_numpy()
 residuals = residuals[~np.isnan(residuals)]
