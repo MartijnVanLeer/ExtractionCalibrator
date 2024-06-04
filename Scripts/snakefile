@@ -53,7 +53,9 @@ rule all:
         # expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
         os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
-        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+        os.path.join('..', 'Results', modelname, 'BestRealizations.nc'),
+        os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
+        os.path.join('..','Results',f'{modelname}','TT_dist.csv')
 
 rule Forward_Model_SS:
     input:
