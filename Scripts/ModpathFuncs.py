@@ -88,7 +88,7 @@ def run_fw(modelname, sim, ds, layer):
 
     fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
-    welnodes = nlmod.modpath.package_to_nodes(gwf, 'WEL', mpf_bw)
+    welnodes = nlmod.modpath.package_to_nodes(gwf, 'WEL', mpf)
     all_epd = e.get_destination_endpoint_data(dest_cells = welnodes)
     dist = all_epd.time/365
     return dist
