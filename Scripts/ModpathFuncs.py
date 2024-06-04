@@ -56,12 +56,13 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
 def run_bw(modelname, sim, ds, layer):
     gwf = sim.get_model()
     #BW tracking
+
+    mpf_bw = nlmod.modpath.mpf(gwf)
+    mpfbas = nlmod.modpath.bas(mpf_bw,)
     layno = list(ds.layer).index(layer)-1
     layernodes = []
     for lay in range(layno+1):
-        layernodes += nlmod.modpath.layer_to_nodes(mpf, lay)
-    mpf_bw = nlmod.modpath.mpf(gwf)
-    mpfbas = nlmod.modpath.bas(mpf_bw,)
+        layernodes += nlmod.modpath.layer_to_nodes(mpf_bw, lay)
     welnodes = nlmod.modpath.package_to_nodes(gwf, 'WEL', mpf_bw)
     pg_bw = nlmod.modpath.pg_from_fdt(welnodes, divisions = 10)
     mpsim = nlmod.modpath.sim(mpf_bw, pg_bw, "backward", gwf = gwf, weaksinkoption = 'stop_at', weaksourceoption= 'stop_at')
