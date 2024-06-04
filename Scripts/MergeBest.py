@@ -18,7 +18,7 @@ Best = results[results.RMSE < RMSE]
 realizations = xr.Dataset.from_dataframe(Best.reset_index())
 print(realizations)
 for index, row in Best.iterrows():
-    TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(Best.xcorlen[0])}', f'zcorlens~{int(Best.zcorlen[0])}', f'fracs~{Best.frac[0]}', 'UpscaledK.nc'))
+    TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(Best.xcorlen.values[0])}', f'zcorlens~{int(Best.zcorlen.values[0])}', f'fracs~{Best.frac.values[0]}', 'UpscaledK.nc'))
 realizations = realizations.expand_dims({'icell2d' : TempDS.icell2d.values})
 realizations['k'] = np.empty((len(Best),len(realizations.icell2d)))
 for index, row in Best.iterrows():
