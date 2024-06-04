@@ -72,7 +72,7 @@ def run_bw(modelname, sim, ds, layer):
     aquitard_epd = aquitard_epd[np.isin(aquitard_epd.initialcellface, [1,2,3,4])]
     all_epd = e.get_alldata()
     all_epd = all_epd[np.isin(all_epd.initialcellface, [1,2,3,4])]
-    flowfrac =  sum(aquitard_epd)/sum(all_epd)
+    flowfrac =  sum(1/aquitard_epd.time)/sum(1/all_epd.time)
     return flowfrac
 
 def run_fw(modelname, sim, ds, layer):
