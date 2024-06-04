@@ -229,3 +229,16 @@ rule Merge_Best:
         os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
     script:
        'MergeBest.py'
+
+rule Modpath:
+    input:
+       'Modpath.py',
+       'ModpathFuncs.py',
+       os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+    params:
+        modelname = modelname,
+    output:
+        os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
+        os.path.join('..','Results',f'{modelname}','TT_dist.csv')
+    script:
+       'modpath.py'
