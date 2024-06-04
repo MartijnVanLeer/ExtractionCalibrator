@@ -21,7 +21,7 @@ for index, row in Best.iterrows():
     Vals = TempDS.sel(sim = row.sim, cc = row.cc)
     if 'icell2d' not in realizations.dims.values():
         realizations = realizations.expand_dims({'icell2d' : TempDS.icell2d.values})
-    realizations.loc[index]['k'] = Vals.k
+    realizations.loc[index, 'k'] = Vals.k
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'BestRealizations.nc'))
 
