@@ -1,6 +1,4 @@
 import os 
-import nlmod
-import flopy 
 import OptimisationFuncs
 import ModpathFuncs as mf
 import xarray as xr

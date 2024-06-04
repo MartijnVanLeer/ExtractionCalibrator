@@ -1,9 +1,7 @@
 import os 
 import nlmod
 import flopy 
-import OptimisationFuncs
-import xarray as xr
-import pandas as pd
+import numpy as np
 
 #Load packages from transient model for calibrated k values
 def load_calibrated_npf(modelname):
