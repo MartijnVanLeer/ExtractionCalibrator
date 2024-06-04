@@ -24,7 +24,7 @@ realizations['k'] = xr.DataArray(coords = (realizations.index, realizations.icel
 for index, row in Best.iterrows():
     TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{int(row.zcorlen)}', f'fracs~{row.frac}', 'UpscaledK.nc'))
     Vals = TempDS.sel(sim = row.sim, cc = row.cc)
-    realizations.loc[index, :]['k'] = Vals.k.values
+    realizations['k'].loc[index] = Vals.k.values
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'BestRealizations.nc'))
 
