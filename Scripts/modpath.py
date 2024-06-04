@@ -26,12 +26,12 @@ dist_ref = run_modpath_ref_fw(modelname, sim, ds, npf, layer)
 rds = xr.open_dataset(os.path.join('..', 'Results', modelname, 'BestRealizations.nc'))
 
 #run modpath for realizations
-flowfrac, dist = run_modpath_realizations(modelname,sim,ds,npf, rds)
+flowfrac, dist = run_modpath_realizations(modelname,sim,ds,npf, rds, layer)
 flowfrac  = pd.DataFrame({'Flowfrac' : flowfrac, 'Realization' : 'Realizations'})
-flowfrac.append({'Flowfrac' : flowfrac_ref, 'Realization' : 'Reference'}, , ignore_index=True)
+flowfrac.append({'Flowfrac' : flowfrac_ref, 'Realization' : 'Reference'}, ignore_index=True)
 flowfrac.to_csv(os.path.join('..','Results',f'{modelname}','flowfrac.csv'))
 
 dist  = pd.DataFrame({'dist' : dist, 'Realization' : 'Realizations'})
-dist.append({'Flowfrac' : dist_ref, 'Realization' : 'Reference'}, , ignore_index=True)
+dist.append({'Flowfrac' : dist_ref, 'Realization' : 'Reference'}, ignore_index=True)
 dist.to_csv(os.path.join('..','Results',f'{modelname}','TT_dist.csv'))
 

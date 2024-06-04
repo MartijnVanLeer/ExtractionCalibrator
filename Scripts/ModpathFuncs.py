@@ -39,12 +39,12 @@ def run_modpath_ref_fw(modelname, sim, ds, npf, layer):
     dist = run_fw(modelname, sim, ds, layer)
     return dist
 
-def run_modpath_realizations(modelname,sim,ds,npf, rds):
+def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
     flowfrac = []
     dist = []
     for i in len(rds.index):
-        npf.k = rds.sel('index' = i).k.values
-        npf.k33 = rds.sel('index' = i).k.values
+        npf.k = rds.sel(index = i).k.values
+        npf.k33 = rds.sel(index = i).k.values
         npf.write()
         nlmod.sim.write_and_run(sim, ds, write_ds = False)
         dist.extend(run_fw(modelname, sim, ds, layer))
@@ -53,7 +53,7 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds):
 
 
 
-def run_bw(modelname, sim, ds, layer)
+def run_bw(modelname, sim, ds, layer):
     gwf = sim.get_model()
     #BW tracking
     layno = list(ds.layer).index(layer)
@@ -76,7 +76,7 @@ def run_bw(modelname, sim, ds, layer)
     flowfrac =  sum(aquitard_epd_frac)/sum(all_epd_frac)
     return flowfrac
 
-def run_fw(modelname, sim, ds, layer)
+def run_fw(modelname, sim, ds, layer):
     layno = list(ds.layer).index(layer)
     gwf = sim.get_model()
     mpf = nlmod.modpath.mpf(gwf)

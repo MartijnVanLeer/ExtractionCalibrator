@@ -234,7 +234,7 @@ rule Merge_Best:
 
 rule Modpath:
     input:
-       'Modpath.py',
+       'modpath.py',
        'ModpathFuncs.py',
        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
     params:
