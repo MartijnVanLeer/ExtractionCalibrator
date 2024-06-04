@@ -14,13 +14,14 @@ Best = results[results.RMSE < RMSE]
 
 
 Best['k'] = np.nan
-realizations = xr.Dataset.from_dataframe(Best.set_index(['sim', 'xcorlen', 'zcorlen', 'frac', 'cc']))
+
+realizations = xr.Dataset.from_dataframe(Best.reset_index())
 for index, row in Best.iterrows():
     TempDS = xr.open_dataset(os.path.join('..', 'Results', modelname, 'KfieldsQc',f'xcorlens~{row.xcorlen}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'UpscaledK.nc'))
     Vals = TempDS.sel(sim = row.sim, cc = row.cc)
     if 'icell2d' not in realizations.dims.values():
         realizations = realizations.expand_dims({'icell2d' : TempDS.icell2d.values})
-    realizations.loc(dict(sim = row.sim, xcorlen = row.xcorlen, zcorlen = row.zcorlen, frac = row.frac, cc = row.cc))['k'] = Vals
+    realizations.loc[index]['k'] = Vals.k
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'BestRealizations.nc'))
 

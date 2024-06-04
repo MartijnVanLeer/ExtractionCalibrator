@@ -213,7 +213,7 @@ rule Collector:
     input:
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
     output:
-        resultpath = os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
     shell:
         "cat {input} > {output}"
 
