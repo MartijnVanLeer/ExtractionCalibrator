@@ -50,7 +50,7 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
         data[layno] = rds.sel(index = i).k.values
         npf.k.set_data(data)
         npf.write()
-        nlmod.sim.write_and_run(sim, ds, write_ds = False,, silent = True)
+        nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
         dist.extend(run_fw(modelname, sim, ds, layer))
         flowfrac.append(run_bw(modelname,sim,ds,layer))
     return flowfrac, dist
