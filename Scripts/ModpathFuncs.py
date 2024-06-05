@@ -28,13 +28,13 @@ def load_ss(destFolder,ds, npfk, npfk33):
 #run 'homogeneous' model with updated k values
 def run_modpath_ref_bw(modelname, sim, ds, npf, layer):
     npf.write()
-    nlmod.sim.write_and_run(sim, ds, write_ds = False)
+    nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
     flowfrac = run_bw(modelname, sim, ds, layer)
     return flowfrac
 
 def run_modpath_ref_fw(modelname, sim, ds, npf, layer):
     npf.write()
-    nlmod.sim.write_and_run(sim, ds, write_ds = False)
+    nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
     dist = run_fw(modelname, sim, ds, layer)
     return dist
 
@@ -42,7 +42,7 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
     flowfrac = []
     dist = []
     layno = list(ds.layer).index(layer)
-    for i in range(2):#tqdm(range(len(rds.index))):
+    for i in tqdm(range(len(rds.index))):
         data33 = npf.k33.array
         data33[layno] = rds.isel(index = i).k.values
         npf.k33.set_data(data33)

@@ -31,6 +31,6 @@ flowfrac = pd.concat([flowfrac, pd.DataFrame({'Flowfrac' : flowfrac_ref, 'Realiz
 flowfrac.to_csv(os.path.join('..','Results',f'{modelname}','flowfrac.csv'))
 
 dist  = pd.DataFrame({'dist' : dist, 'Realization' : 'Realizations'})
-dist =pd.concat([dist, pd.DataFrame({'Flowfrac' : dist_ref, 'Realization' : 'Reference'}, index = list(range(len(dist_ref))))], ignore_index=True)
+dist =pd.concat([dist, pd.DataFrame({'dist' : dist_ref, 'Realization' : 'Reference'}, index = list(range(len(dist_ref))))], ignore_index=True)
 dist.to_csv(os.path.join('..','Results',f'{modelname}','TT_dist.csv'))
 
