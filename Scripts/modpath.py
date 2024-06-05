@@ -7,6 +7,7 @@ import nlmod
 
 modelname = snakemake.params.modelname
 layer = snakemake.params.layer
+Name = snakemake.params.name
 
 orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', 'Fitter')
 destFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', 'ModpathRuns')
