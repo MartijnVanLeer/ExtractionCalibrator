@@ -40,7 +40,7 @@ def run_modpath_ref_fw(modelname, sim, ds, npf, layer):
 def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
     flowfrac = []
     dist = []
-    for i in len(rds.index):
+    for i in range(len(rds.index)):
         npf.k = rds.sel(index = i).k.values
         npf.k33 = rds.sel(index = i).k.values
         npf.write()
