@@ -50,7 +50,7 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
         data[layno] = rds.sel(index = i).k.values
         npf.k.set_data(data)
         npf.write()
-        nlmod.sim.write_and_run(sim, ds, write_ds = False)
+        nlmod.sim.write_and_run(sim, ds, write_ds = False,, silent = True)
         dist.extend(run_fw(modelname, sim, ds, layer))
         flowfrac.append(run_bw(modelname,sim,ds,layer))
     return flowfrac, dist
@@ -70,7 +70,7 @@ def run_bw(modelname, sim, ds, layer):
     welnodes = nlmod.modpath.package_to_nodes(gwf, 'WEL', mpf_bw)
     pg_bw = nlmod.modpath.pg_from_fdt(welnodes, divisions = 10)
     mpsim = nlmod.modpath.sim(mpf_bw, pg_bw, "backward", gwf = gwf, weaksinkoption = 'stop_at', weaksourceoption= 'stop_at')
-    nlmod.modpath.write_and_run(mpf_bw)
+    nlmod.modpath.write_and_run(mpf_bw, silent = True)
     #Get fraction of endpoints through aquitard
     fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
@@ -90,7 +90,7 @@ def run_fw(modelname, sim, ds, layer):
     # pg = nlmod.modpath.pg_from_fdt(nodes, divisions = 3)
     pg = nlmod.modpath.pg_from_pd(layernodes, localx=0.5, localy=0.5, localz=0.1)
     mpsim = nlmod.modpath.sim(mpf, pg, "forward")
-    nlmod.modpath.write_and_run(mpf)
+    nlmod.modpath.write_and_run(mpf, silent = True)
 
     fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
