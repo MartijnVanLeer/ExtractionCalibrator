@@ -42,7 +42,7 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
     flowfrac = []
     dist = []
     layno = list(ds.layer).index(layer)
-    for i in tqdm(range(len(rds.index))):
+    for i in range(2)#tqdm(range(len(rds.index))):
         data33 = npf.k33.array
         data33[layno] = rds.isel(index = i).k.values
         npf.k33.set_data(data33)
