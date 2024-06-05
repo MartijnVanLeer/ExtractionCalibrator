@@ -2,6 +2,7 @@ import os
 import nlmod
 import flopy 
 import numpy as np
+from tqdm import tqdm
 
 #Load packages from transient model for calibrated k values
 def load_calibrated_npf(modelname):
@@ -40,7 +41,7 @@ def run_modpath_ref_fw(modelname, sim, ds, npf, layer):
 def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
     flowfrac = []
     dist = []
-    for i in range(len(rds.index)):
+    for i in tqdm(rds.index.values):
         npf.k = rds.sel(index = i).k.values
         npf.k33 = rds.sel(index = i).k.values
         npf.write()
