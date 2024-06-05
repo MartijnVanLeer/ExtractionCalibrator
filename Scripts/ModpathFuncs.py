@@ -41,9 +41,14 @@ def run_modpath_ref_fw(modelname, sim, ds, npf, layer):
 def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
     flowfrac = []
     dist = []
+    layno = list(ds.layer).index(layer)
     for i in tqdm(rds.index.values):
-        npf.k = rds.sel(index = i).k.values
-        npf.k33 = rds.sel(index = i).k.values
+        data33 = npf.k33.array
+        data33[layno] = rds.sel(index = i).k.values
+        npf.k33.set_data(data33)
+        data = npf.k.array
+        data[layno] = rds.sel(index = i).k.values
+        npf.k.set_data(data)
         npf.write()
         nlmod.sim.write_and_run(sim, ds, write_ds = False)
         dist.extend(run_fw(modelname, sim, ds, layer))
