@@ -26,23 +26,23 @@ def load_ss(destFolder,ds, npfk, npfk33):
     return sim, npf
 
 #run 'homogeneous' model with updated k values
-def run_modpath_ref_bw(modelname, sim, ds, npf, layer):
+def run_modpath_ref_bw(modelname, sim, ds, npf, layer,wellxy):
     npf.write()
     nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
-    flowfrac = run_bw(modelname, sim, ds, layer)
+    flowfrac = run_bw(modelname, sim, ds, layer,wellxy)
     return flowfrac
 
-def run_modpath_ref_fw(modelname, sim, ds, npf, layer):
+def run_modpath_ref_fw(modelname, sim, ds, npf, layer,wellxy):
     npf.write()
     nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
-    dist = run_fw(modelname, sim, ds, layer)
+    dist = run_fw(modelname, sim, ds, layer,wellxy)
     return dist
 
-def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
+def run_modpath_realizations(modelname,sim,ds,npf, rds, layer,wellxy):
     flowfrac = []
     dist = []
     layno = list(ds.layer).index(layer)
-    for i in tqdm(range(len(rds.index))):
+    for i in range(2):#tqdm(range(len(rds.index))):
         data33 = npf.k33.array
         data33[layno] = rds.isel(index = i).k.values
         npf.k33.set_data(data33)
@@ -51,23 +51,23 @@ def run_modpath_realizations(modelname,sim,ds,npf, rds, layer):
         npf.k.set_data(data)
         npf.write()
         nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
-        dist.extend(run_fw(modelname, sim, ds, layer))
-        flowfrac.append(run_bw(modelname,sim,ds,layer))
+        dist.extend(run_fw(modelname, sim, ds, layer, wellxy))
+        flowfrac.append(run_bw(modelname,sim,ds,layer,wellxy))
     return flowfrac, dist
 
 
 
-def run_bw(modelname, sim, ds, layer):
+def run_bw(modelname, sim, ds, layer, wellxy):
     gwf = sim.get_model()
     #BW tracking
 
     mpf_bw = nlmod.modpath.mpf(gwf)
     mpfbas = nlmod.modpath.bas(mpf_bw,)
-    layno = list(ds.layer).index(layer)-1
+    layno = list(ds.layer).index(layer)
     layernodes = []
-    for lay in range(layno+1):
+    for lay in range(layno-1):
         layernodes += nlmod.modpath.layer_to_nodes(mpf_bw, lay)
-    welnodes = nlmod.modpath.package_to_nodes(gwf, 'WEL', mpf_bw)
+    welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf_bw,ds,layer+1)
     pg_bw = nlmod.modpath.pg_from_fdt(welnodes, divisions = 10)
     mpsim = nlmod.modpath.sim(mpf_bw, pg_bw, "backward", gwf = gwf, weaksinkoption = 'stop_at', weaksourceoption= 'stop_at')
     nlmod.modpath.write_and_run(mpf_bw, silent = True)
@@ -81,12 +81,12 @@ def run_bw(modelname, sim, ds, layer):
     flowfrac =  sum(1/aquitard_epd.time)/sum(1/all_epd.time)
     return flowfrac
 
-def run_fw(modelname, sim, ds, layer):
-    layno = list(ds.layer).index(layer)-1
+def run_fw(modelname, sim, ds, layer, wellxy):
+    layno = list(ds.layer).index(layer)
     gwf = sim.get_model()
     mpf = nlmod.modpath.mpf(gwf)
     mpfbas = nlmod.modpath.bas(mpf,)
-    layernodes = nlmod.modpath.layer_to_nodes(mpf, layno)
+    layernodes = nlmod.modpath.layer_to_nodes(mpf, layno-1)
     # pg = nlmod.modpath.pg_from_fdt(nodes, divisions = 3)
     pg = nlmod.modpath.pg_from_pd(layernodes, localx=0.5, localy=0.5, localz=0.1)
     mpsim = nlmod.modpath.sim(mpf, pg, "forward")
@@ -94,7 +94,7 @@ def run_fw(modelname, sim, ds, layer):
 
     fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
-    welnodes = nlmod.modpath.package_to_nodes(gwf, 'WEL', mpf)
+    welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf,ds,layer+1)
     all_epd = e.get_destination_endpoint_data(dest_cells = welnodes)
     dist = all_epd.time/365
     return dist
