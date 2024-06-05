@@ -67,7 +67,7 @@ def run_bw(modelname, sim, ds, layer, wellxy):
     layernodes = []
     for lay in range(layno-1):
         layernodes += nlmod.modpath.layer_to_nodes(mpf_bw, lay)
-    welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf_bw,ds,layer+1)
+    welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf_bw,ds,layno+1)
     pg_bw = nlmod.modpath.pg_from_fdt(welnodes, divisions = 10)
     mpsim = nlmod.modpath.sim(mpf_bw, pg_bw, "backward", gwf = gwf, weaksinkoption = 'stop_at', weaksourceoption= 'stop_at')
     nlmod.modpath.write_and_run(mpf_bw, silent = True)
@@ -94,7 +94,7 @@ def run_fw(modelname, sim, ds, layer, wellxy):
 
     fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
-    welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf,ds,layer+1)
+    welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf,ds,layno+1)
     all_epd = e.get_destination_endpoint_data(dest_cells = welnodes)
     dist = all_epd.time/365
     return dist
