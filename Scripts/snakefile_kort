@@ -2,24 +2,27 @@ import os
 from snakemake.utils import Paramspace
 import pandas as pd
 #Settings steady state
-Name = 'Schijf' #puttenveld Budel, Schijf, Vlijmen
-modelname ='schijf'
+Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
+modelname ='kort'
 
 Range = 3200 #m Distance from grid border to centre of wells 3200
-GHBrange = 200 
+GHBrange = 1000 
 delr = 400
-refineranges = {800:2, 400:3,200:4}
-startdate = '2014-12-31 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
-enddate = '2018-06-01 00:00:00'         #laatste '2023-12-30 22:00:00'
+refineranges = {600:2, 100:4 }
+startdate = '2016-04-01 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
+enddate = '2016-07-01 00:00:00'         #laatste '2023-12-30 22:00:00'
 drainC = 1
+DeepestLayer = 'BRz1'
+ss = 0.00000001
 
 #Settings calibration
-SensLayers = ['PZWAz4', 'OOk1', 'OOz2','BRz1']
-CorLayers = {}
+SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
+CorLayers = {'KIz4' : 'KIz5'}
 ghbCal = 'SensLayers' # 'obs', 'Single', None
 KCal = True
 Weighted = False
-BadWells =[]#['B57E0082_4', 'B57E0646_1', 'B57E0647_1','B57F0554_1'] #Budel
+BadWells =['B57E0081_3','B57E0081_4']
+Lambda = 0.0005
 
 def get_paramspace(xcorlens,zcorlens,fracs):
     xl = []
@@ -34,12 +37,12 @@ def get_paramspace(xcorlens,zcorlens,fracs):
     return pd.DataFrame({'xcorlens': xl,'zcorlens' : zl, 'fracs' : fl})
 
 #Settings conditional simulation
-simlayer = 'OOk1'
-xcorlens = [100, 200,300, 400,500]
-zcorlens = [4,8,12,16]
+simlayer = 'KIk2'
+xcorlens = [200,300, 400, 500, 600,700]
+zcorlens = [4,8, 12,16]
 fracs = [0,0.05,0.1,0.15]
-CoreCorrection = [-1,-0.5,0,0.5, 1, 1.5]
-ens_no = 50
+CoreCorrection = [0,0.25, 0.5,0.75,1]
+ens_no = 40
 dx = 25
 df = get_paramspace(xcorlens,zcorlens, fracs)
 paramspace = Paramspace(df)
@@ -49,7 +52,10 @@ rule all:
         #expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns),
         # expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
-        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
+        os.path.join('..', 'Results', modelname, 'BestRealizations.nc'),
+        os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
+        os.path.join('..','Results',f'{modelname}','TT_dist.csv')
 
 rule Forward_Model_SS:
     input:
@@ -69,7 +75,9 @@ rule Forward_Model_SS:
         steady_state = True,
         startdate = startdate,
         enddate = enddate,
-        drainC = drainC
+        drainC = drainC,
+        DeepestLayer = DeepestLayer,
+        ss = ss
     script:
        'ForwardModelGen.py'
        
@@ -91,7 +99,9 @@ rule Forward_Model_T:
         steady_state = False,
         startdate = startdate,
         enddate = enddate,
-        drainC = drainC 
+        drainC = drainC,
+        DeepestLayer = DeepestLayer,
+        ss = ss
     script:
        'ForwardModelGen.py'
 
@@ -109,6 +119,7 @@ rule Calibration_SS:
         KCal = KCal,
         Weighted = Weighted,
         BadWells = BadWells,
+        Lambda = Lambda
     output:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
@@ -152,8 +163,6 @@ rule Cond_Simulator:
        'condsim.py',
        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'),
-       os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
-       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
        'Heterogeniteit.py'
     params:
         Name = Name,
@@ -207,6 +216,33 @@ rule Collector:
     input:
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
     output:
-        resultpath = os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
     shell:
         "cat {input} > {output}"
+
+rule Merge_Best:
+    input:
+       'MergeBest.py',
+       os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
+       os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'),
+    params:
+        modelname = modelname,
+    output:
+        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+    script:
+       'MergeBest.py'
+
+rule Modpath:
+    input:
+       'modpath.py',
+       'ModpathFuncs.py',
+       os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+    params:
+        modelname = modelname,
+        layer = simlayer,
+        name = Name
+    output:
+        os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
+        os.path.join('..','Results',f'{modelname}','TT_dist.csv')
+    script:
+       'modpath.py'
