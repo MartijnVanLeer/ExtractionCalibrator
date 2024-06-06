@@ -5,15 +5,15 @@ import pandas as pd
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
 modelname ='kort'
 
-Range = 3200 #m Distance from grid border to centre of wells 3200
-GHBrange = 1000 
-delr = 400
-refineranges = {600:2, 100:4 }
+Range = 4800 #m Distance from grid border to centre of wells 3200
+GHBrange = 2000 
+delr = 800
+refineranges = {2400:1, 600:2, 100:4 }
 startdate = '2016-04-01 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
 enddate = '2016-07-01 00:00:00'         #laatste '2023-12-30 22:00:00'
 drainC = 1
 DeepestLayer = 'BRz1'
-ss = 0.00000001
+ss = 0.00001
 
 #Settings calibration
 SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
