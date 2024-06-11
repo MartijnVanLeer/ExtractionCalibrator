@@ -101,6 +101,7 @@ rule Forward_Model_T:
         steady_state = False,
         startdate = startdate,
         enddate = enddate,
+        warmup = warmup,
         drainC = drainC,
         DeepestLayer = DeepestLayer,
         ss = ss
