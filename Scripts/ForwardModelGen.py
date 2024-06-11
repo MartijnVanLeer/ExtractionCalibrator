@@ -35,11 +35,10 @@ delr = delc = snakemake.params.delr
 refineranges = snakemake.params.refineranges
 drainC = snakemake.params.drainC
 DeepestLayer = snakemake.params.DeepestLayer
-
+warmup = snakemake.params.warmup
 steady_state = snakemake.params.steady_state
 ss = snakemake.params.ss
 
-warmup = False
 use_geotop = False
 NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
