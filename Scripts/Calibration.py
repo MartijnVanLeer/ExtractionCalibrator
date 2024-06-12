@@ -22,6 +22,7 @@ if "snakemake" not in globals():
 
 Location = snakemake.params.Name
 modelname = snakemake.params.modelname
+method = snakemake.params.method
 
 BestParams = pd.read_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'))
 BestK = BestParams[BestParams['Unnamed: 0'].str[-1] != 'b']
@@ -69,23 +70,27 @@ ghb = OptimisationFuncs.ghb_best_values(ghb,gwf, BestGhb, idx, CorLayers)
 #%%
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal = None, KCal = True, Transient= True)
 
-initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.5)
 
 
-NMoptions = {'adaptive': True,
-              'maxfev' :200,
-              'initial_simplex' : initsimplex,
-             'xatol' : 0.1, #both xatol and fatol needed for termination
-             'fatol' : 10
-              }
-options = {'options': NMoptions,} 
-
-
-
-
-fitter = lmfit.Minimizer(OptimisationFuncs.run_model_calibration_transient, params, fcn_args = (sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto), iter_cb=OptimisationFuncs.per_iteration)
-result = fitter.minimize('nelder-mead', **options)
-
+if method == 'NM':
+    initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.5)
+    NMoptions = {'adaptive': True,
+                'maxfev' :200,
+                'initial_simplex' : initsimplex,
+                'xatol' : 0.1, #both xatol and fatol needed for termination
+                'fatol' : 10
+                }
+    options = {'options': NMoptions,} 
+    fitter = lmfit.Minimizer(OptimisationFuncs.run_model_calibration_transient, params, fcn_args = (sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method), iter_cb=OptimisationFuncs.per_iteration)
+    result = fitter.minimize('nelder-mead', **options)
+elif method == 'LM':
+    LMoptions = {'ftol' : 0.1,
+                'xtol' : 0.1,
+                'xscale' : 'jac',
+                'max_nfev' : 1000}
+    options = {'options' : LMoptions}
+    fitter = lmfit.Minimizer(OptimisationFuncs.run_model_calibration_transient, params, fcn_args = (sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method), iter_cb=OptimisationFuncs.per_iteration)
+    result = fitter.minimize('least_squares',**options)
 print(lmfit.fit_report(result))
 
 #%%

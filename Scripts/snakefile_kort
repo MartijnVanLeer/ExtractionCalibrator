@@ -5,7 +5,7 @@ import pandas as pd
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
 modelname ='kort'
 
-Range = 4800 #m Distance from grid border to centre of wells 3200
+Range = 4000 #m Distance from grid border to centre of wells 3200
 GHBrange = 2000 
 delr = 800
 refineranges = {2400:1, 1200:2, 600:3, 300:4, 100: 5}
@@ -24,6 +24,8 @@ KCal = True
 Weighted = False
 BadWells =['B57E0081_3','B57E0081_4']
 Lambda = 0.0005
+methodss = 'LM' #'LM' of 'NM' 
+methodt = 'LM'  #'LM' of 'NM' 
 
 def get_paramspace(xcorlens,zcorlens,fracs):
     xl = []
@@ -122,7 +124,8 @@ rule Calibration_SS:
         KCal = KCal,
         Weighted = Weighted,
         BadWells = BadWells,
-        Lambda = Lambda
+        Lambda = Lambda,
+        method = methodss
     output:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
@@ -139,6 +142,7 @@ rule Calibration_T:
         Name = Name,
         modelname = modelname,
         CorLayers = CorLayers,
+        method = methodt
     output:
         os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
         os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),

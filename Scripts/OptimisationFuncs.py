@@ -159,7 +159,7 @@ def init_params(idx,CorLayers, ghbCal, KCal, Transient = False):
         params.add(name = 'SS', value = 0)
     return params
 
-def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal, Lambda):
+def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal, Lambda, method):
     #K
     if KCal:
         newk = npfk.copy()
@@ -221,14 +221,17 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
     residuals = residuals * Weights
     residuals =residuals.to_numpy()[0]
     residuals = residuals[~np.isnan(residuals)]
-    RMSE = np.sqrt(np.mean(residuals**2))
-    #Regularization
-    #get sum of values
-    parsum = 0
-    for par in p:
-        parsum += p[par]**2
-    #add reg term to RMSE (Ridge Regularization)
-    RMSEreg = np.sqrt(np.mean(residuals**2) + Lambda * parsum)
+    if method == 'NM':
+        RMSE = np.sqrt(np.mean(residuals**2))
+        #Regularization
+        #get sum of values
+        parsum = 0
+        for par in p:
+            parsum += p[par]**2
+        #add reg term to RMSE (Ridge Regularization)
+        RMSEreg = np.sqrt(np.mean(residuals**2) + Lambda * parsum)
+    else:
+        RMSEreg = residuals
     return RMSEreg 
 
 def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal,KCal):
@@ -349,7 +352,7 @@ def ghb_best_values(ghb, gwf, BestGhb, idx, CorLayers):
     ghb = flopy.mf6.ModflowGwfghb(gwf, stress_period_data=new_spd,save_flows=True,maxbound = len(new_spd))
     ghb.write()
     
-def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto):
+def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method):
     newk = npfk.copy()
     newk33 = npfk33.copy()
     
@@ -381,7 +384,10 @@ def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers,
 
     residuals = residuals.to_numpy().flatten()
     residuals = residuals[~np.isnan(residuals)]
-    RMSE = np.sqrt(np.mean(residuals**2))
+    if method == 'NM':
+        RMSE = np.sqrt(np.mean(residuals**2))
+    else:
+        RMSE = residuals
     return RMSE
 
 def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto):

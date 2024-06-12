@@ -35,6 +35,7 @@ KCal = snakemake.params.KCal
 Weighted = snakemake.params.Weighted
 BadWells =snakemake.params.BadWells # alleen begin'B57E0082_7','B57E0147_4'
 Lambda = snakemake.params.Lambda
+method = snakemake.params.method
 
 
 #%% Load model and dataset
@@ -104,20 +105,28 @@ Those are determined by the min/max
 '''
 
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal)   
-       
-initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)
 
-
-NMoptions = {'adaptive': True,
-             'maxfev' :1000,
-              'initial_simplex' : initsimplex,
-             'xatol' : 0.1, #both xatol and fatol needed for termination
-             'fatol' : 0.1
-              }
-options = {'options': NMoptions,} 
-fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
-                         fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal,Lambda), iter_cb=OptimisationFuncs.per_iteration)
-result = fitter.minimize('Nelder-Mead',**options)
+if method == 'NM':
+    initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)
+    NMoptions = {'adaptive': True,
+                'maxfev' :1000,
+                'initial_simplex' : initsimplex,
+                'xatol' : 0.1, #both xatol and fatol needed for termination
+                'fatol' : 0.1
+                }
+    options = {'options': NMoptions,} 
+    fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
+                            fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal,Lambda, method), iter_cb=OptimisationFuncs.per_iteration)
+    result = fitter.minimize('Nelder-Mead',**options)
+elif method == 'LM':
+    LMoptions = {'ftol' : 0.1,
+                 'xtol' : 0.1,
+                 'xscale' : 'jac',
+                 'max_nfev' : 1000}
+    options = {'options' : LMoptions}
+    fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
+                            fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal,Lambda, method), iter_cb=OptimisationFuncs.per_iteration)
+    result = fitter.minimize('least_squares',**options)
 
 print(lmfit.fit_report(result))
 #%% Run with best fit for residuals
