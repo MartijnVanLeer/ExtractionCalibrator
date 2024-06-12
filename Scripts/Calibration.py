@@ -87,8 +87,7 @@ elif method == 'LM':
     LMoptions = {'ftol' : 1e-8,
                 'xtol' : 1e-8,
                 'max_nfev' : 1000,
-                'epsfcn' : 1.05,
-                'factor' : 50}
+                'factor' : 5}
     fitter = lmfit.Minimizer(OptimisationFuncs.run_model_calibration_transient, params, fcn_args = (sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method), iter_cb=OptimisationFuncs.per_iteration)
     result = fitter.minimize('leastsq',**LMoptions)
 print(lmfit.fit_report(result))
