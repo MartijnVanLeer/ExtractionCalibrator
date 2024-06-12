@@ -293,7 +293,7 @@ def per_iteration(pars, iteration, resid, *args, **kws):
     if type(resid) == 'float':
         print(" Iteration:  ", iteration, [f"{p.name} = {p.value:.2f}" for p in pars.values()], round(resid,5))
     else:
-        RMSE = np.sqrt(np.mean(resid**2)
+        RMSE = np.sqrt(np.mean(resid**2))
         print(" Iteration:  ", iteration, [f"{p.name} = {p.value:.2f}" for p in pars.values()], round(RMSE,5))
 
     
