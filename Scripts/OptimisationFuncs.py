@@ -290,7 +290,12 @@ def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,Ob
     ObsWells['ModHead'] = df.values[0]
     return ObsWells
 def per_iteration(pars, iteration, resid, *args, **kws):
-    print(" Iteration:  ", iteration, [f"{p.name} = {p.value:.2f}" for p in pars.values()], round(resid,5))
+    if type(resid) == 'float':
+        print(" Iteration:  ", iteration, [f"{p.name} = {p.value:.2f}" for p in pars.values()], round(resid,5))
+    else:
+        RMSE = np.sqrt(np.mean(resid**2)
+        print(" Iteration:  ", iteration, [f"{p.name} = {p.value:.2f}" for p in pars.values()], round(RMSE,5))
+
     
 def invdict(dic, search_item):
     for key, item in dic.items():
