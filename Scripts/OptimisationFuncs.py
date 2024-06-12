@@ -144,19 +144,20 @@ def run_model(X, sim , idx ,npf, npfk,npfk33, ObsWells,ds):
         result.append(obsheads.values[0])
     return result
 
-def init_params(idx,CorLayers, ghbCal, KCal, Transient = False):
+def init_params(idx,CorLayers, ghbCal, KCal, method, Transient = False):
     params = lmfit.Parameters()
+    initvalue = 0 if method == 'NM' else 0.001
     for index, lay in idx.iterrows():
         if lay['SensLayers'] not in CorLayers.values():
             if KCal:
-                params.add(name = lay['SensLayers'], value = 0)# min  = -1, max = 1)
+                params.add(name = lay['SensLayers'], value = initvalue)# min  = -1, max = 1)
             if ghbCal == 'SensLayers':
                 if 'z' in lay['SensLayers'][-2:]:
-                    params.add(name = lay['SensLayers'] + "_ghb", value = 0)
+                    params.add(name = lay['SensLayers'] + "_ghb", value = initvalue)
     if ghbCal == 'Single':
-        params.add(name = "ghb", value = 0)   
+        params.add(name = "ghb", value = initvalue)   
     if Transient:
-        params.add(name = 'SS', value = 0)
+        params.add(name = 'SS', value = initvalue)
     return params
 
 def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal, Lambda, method):
