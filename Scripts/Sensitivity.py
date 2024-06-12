@@ -104,7 +104,7 @@ Initital simplex contains fac, -fac, 0
 Those are determined by the min/max
 '''
 
-params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal)   
+params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal, method)   
 
 if method == 'NM':
     initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.1)

@@ -68,7 +68,7 @@ ghb = OptimisationFuncs.ghb_best_values(ghb,gwf, BestGhb, idx, CorLayers)
 
 
 #%%
-params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal = None, KCal = True, Transient= True)
+params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal = None, KCal = True, method = method,Transient= True)
 
 
 
