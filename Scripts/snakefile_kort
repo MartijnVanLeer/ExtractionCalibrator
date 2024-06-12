@@ -5,7 +5,7 @@ import pandas as pd
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
 modelname ='kort'
 
-Range = 4000 #m Distance from grid border to centre of wells 3200
+Range = 3200 #m Distance from grid border to centre of wells 3200
 GHBrange = 2000 
 delr = 800
 refineranges = {2400:1, 1200:2, 600:3, 300:4, 100: 5}
