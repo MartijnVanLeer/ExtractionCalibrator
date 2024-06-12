@@ -146,7 +146,7 @@ def run_model(X, sim , idx ,npf, npfk,npfk33, ObsWells,ds):
 
 def init_params(idx,CorLayers, ghbCal, KCal, method, Transient = False):
     params = lmfit.Parameters()
-    initvalue = 0 if method == 'NM' else 0.001
+    initvalue = 0 if method == 'NM' else 0.01
     for index, lay in idx.iterrows():
         if lay['SensLayers'] not in CorLayers.values():
             if KCal:
