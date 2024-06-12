@@ -24,8 +24,8 @@ KCal = True
 Weighted = False
 BadWells =['B57E0081_3','B57E0081_4']
 Lambda = 0.0005
-methodss = 'LM' #'LM' of 'NM' 
-methodt = 'LM'  #'LM' of 'NM' 
+methodss = 'NM' #'LM' of 'NM' 
+methodt = 'NM'  #'LM' of 'NM' 
 
 def get_paramspace(xcorlens,zcorlens,fracs):
     xl = []
