@@ -89,7 +89,7 @@ elif method == 'LM':
                 'x_scale' : 'jac',
                 'max_nfev' : 1000,
                 'diff_step' : 10,
-                'method' : : 'lm'}
+                'method' : 'lm'}
     fitter = lmfit.Minimizer(OptimisationFuncs.run_model_calibration_transient, params, fcn_args = (sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method), iter_cb=OptimisationFuncs.per_iteration)
     result = fitter.minimize('least_squares',**LMoptions)
 print(lmfit.fit_report(result))
