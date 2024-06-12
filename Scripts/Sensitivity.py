@@ -123,11 +123,10 @@ elif method == 'LM':
                  'xtol' : 1e-8,
                  'x_scale' : 'jac',
                  'max_nfev' : 1000,
-                 'diff_step' : 10,
-                'method' : 'lm'}
+                 'diff_step' : 10}
     fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
                             fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal,Lambda, method), iter_cb=OptimisationFuncs.per_iteration)
-    result = fitter.minimize('least_squares',**LMoptions)
+    result = fitter.minimize('leastsq',**LMoptions)
 
 print(lmfit.fit_report(result))
 #%% Run with best fit for residuals
