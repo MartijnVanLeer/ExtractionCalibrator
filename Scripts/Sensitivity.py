@@ -121,9 +121,8 @@ if method == 'NM':
 elif method == 'LM':
     LMoptions = {'ftol' : 0.1,
                  'xtol' : 0.1,
-                 'xscale' : 'jac',
+                 'x_scale' : 'jac',
                  'max_nfev' : 1000}
-    options = {'options' : LMoptions}
     fitter = lmfit.Minimizer(OptimisationFuncs.run_calibration_ss, params,
                             fcn_args = (sim,gwf, idx ,npf,npfk, npfk33, ghb,ghb_spd, ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal,Lambda, method), iter_cb=OptimisationFuncs.per_iteration)
     result = fitter.minimize('least_squares',**LMoptions)
