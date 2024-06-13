@@ -78,7 +78,7 @@ if method == 'NM':
                 'maxfev' :1000,
                 'initial_simplex' : initsimplex,
                 'xatol' : 0.1, #both xatol and fatol needed for termination
-                'fatol' : 0.001
+                'fatol' : 0.005
                 }
     options = {'options': NMoptions,} 
     fitter = lmfit.Minimizer(OptimisationFuncs.run_model_calibration_transient, params, fcn_args = (sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method), iter_cb=OptimisationFuncs.per_iteration)
