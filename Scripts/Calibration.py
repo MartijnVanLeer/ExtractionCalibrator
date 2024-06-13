@@ -113,12 +113,18 @@ for lay in idx[idx.laytype =='z'].idx.values:
 
     fig, axes = plt.subplots(nrows=len(dfsel.columns), ncols=1, figsize=(10, 2 * (len(dfsel.columns))))
     fig.set_dpi(600)
-    for i, column in enumerate(dfsel.columns):  # Exclude the timestamp column
-        ax = axes[i]
+    
+    for i, column in enumerate(dfsel.columns):
+        if len(dfsel.columns) > 1:  # Exclude the timestamp column
+            ax = axes[i]
+        else:
+            ax = axes
         ax.plot(dfsel.index, dfsel[column], label='Mod')
         ax.plot(obssel.index, obssel[column], label='Obs')
         ax.set_title(column)
         ax.legend()
+
+
         
     fig.suptitle(lay)
     
