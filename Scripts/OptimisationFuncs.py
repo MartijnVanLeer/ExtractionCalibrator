@@ -461,9 +461,9 @@ def kling_gupta_efficiency(observed, simulated,col):
     # Calculate the KGE
     kge = 1 - np.sqrt((r - 1)**2 + (alpha - 1)**2 + (beta - 1)**2)
     
-    return pd.DataFrame({
+    return pd.DataFrame([{
         'Well' : col,
         'KGE': kge,
         'r': r,
         'alpha': alpha,
-        'beta': beta})
+        'beta': beta}])
