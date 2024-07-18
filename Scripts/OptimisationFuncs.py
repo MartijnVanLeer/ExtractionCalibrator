@@ -434,7 +434,7 @@ def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk,
     res = residuals[~np.isnan(residuals)]
     RMSE = np.sqrt(np.mean(residuals**2))
     results['RMSE'] = RMSE
-    results = pd.concat(results, results.describe())
+    results = pd.concat([results, results.describe()])
     return residuals, df, ObsHeads, results
 
 def kling_gupta_efficiency(observed, simulated,col):
