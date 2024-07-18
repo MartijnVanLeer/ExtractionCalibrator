@@ -426,4 +426,44 @@ def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk,
     
     residuals = df - ObsHeads
 
-    return residuals, df, ObsHeads
+    results = pd.DataFrame()
+    for col, simulated in df.items():
+        kge = kling_gupta_efficiency(residuals[col], simulated, col)
+        results = pd.concat([results, kge])
+    res = residuals.to_numpy().flatten()
+    res = residuals[~np.isnan(residuals)]
+    RMSE = np.sqrt(np.mean(residuals**2))
+    results['RMSE'] = RMSE
+    results = pd.concat(results, results.describe())
+    return residuals, df, ObsHeads, results
+
+def kling_gupta_efficiency(observed, simulated,col):
+    """
+    Calculate the Kling-Gupta Efficiency (KGE) and its components.
+    
+    Parameters:
+    observed (pd.Series): Observed time series data.
+    simulated (pd.Series): Simulated time series data.
+    
+    Returns:
+    DataFrame: A DataFrame containing the KGE and its components.
+    """
+    min_val = np.min([np.min(observed),np.min(simulated)])
+    max_val = np.max([np.min(observed),np.min(simulated)])
+    normalized_observed = (observed - min_val) / (max_val - min_val)
+    normalized_simulated = (simulated - min_val) / (max_val - min_val)
+    
+    # Calculate the components
+    r = observed.corr(simulated)
+    alpha = simulated.std() / observed.std()
+    beta = normalized_simulated.mean() / normalized_observed.mean()
+    
+    # Calculate the KGE
+    kge = 1 - np.sqrt((r - 1)**2 + (alpha - 1)**2 + (beta - 1)**2)
+    
+    return pd.DataFrame({
+        'Well' : col,
+        'KGE': kge,
+        'r': r,
+        'alpha': alpha,
+        'beta': beta})

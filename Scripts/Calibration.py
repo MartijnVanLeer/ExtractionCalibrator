@@ -97,12 +97,13 @@ best_params_t = {}
 for x in range(len(result.x)):
     best_params_t[result.var_names[x]] = result.x[x]
     
-residuals, df, ObsHeads = OptimisationFuncs.run_best_result_transient(best_params_t,sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto)
+residuals, df, ObsHeads, results = OptimisationFuncs.run_best_result_transient(best_params_t,sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto)
 
 
 df.to_csv(os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'))
 ObsHeads.to_csv(os.path.join('..','Results',f'{modelname}',f'ObsHead_{modelname}.csv'))
 residuals.to_csv(os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'))
+results.to_csv(os.path.join('..','Results',f'{modelname}',f'Calibration_Performance_{modelname}.csv'))
 best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns = ['Value'])
 best_paramdf.to_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
 
