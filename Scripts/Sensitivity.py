@@ -109,7 +109,7 @@ params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal, method)
 if method == 'NM':
     initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.3)
     NMoptions = {'adaptive': True,
-                'maxfev' :100,
+                'maxfev' :1000,
                 'initial_simplex' : initsimplex,
                 'xatol' : 0.1, #both xatol and fatol needed for termination
                 'fatol' : 0.01
