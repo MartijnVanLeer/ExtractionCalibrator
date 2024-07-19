@@ -362,7 +362,7 @@ def ghb_best_values(ghb, gwf, BestGhb, idx, CorLayers):
 def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto, method):
     newk = npfk.copy()
     newk33 = npfk33.copy()
-    
+    newstoss = stoss.copy()
     for i,layer in idx.iterrows():
         if layer.SensLayers not in CorLayers.values():
             newk[layer.idx] =npfk[layer.idx] * 2**p[layer.SensLayers]
@@ -373,13 +373,13 @@ def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers,
             newk33[layno] = npfk33[layno] * 2**p[layer.SensLayers]
 
     for lay in idx[idx.laytype =='z'].idx.values:
-        stoss[lay] = stoss[lay] * 10**p['SSz']
+        newstoss[lay] = newstoss[lay] * 10**p['SSz']
     for lay in idx[idx.laytype =='k'].idx.values:
-        stoss[lay] = stoss[lay] * 10**p['SSk']        
+        newstoss[lay] = newstoss[lay] * 10**p['SSk']        
     npf.k = newk
     npf.k33 = newk33
     npf.write()
-    sto.ss = stoss 
+    sto.ss = newstoss 
     sto.write()
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
