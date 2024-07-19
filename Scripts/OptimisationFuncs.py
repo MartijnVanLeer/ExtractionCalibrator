@@ -371,11 +371,15 @@ def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers,
             layno = idx[idx['SensLayers'] == CorLayers[layer.SensLayers]].idx.values[0]
             newk[layno] = npfk[layno] * 2**p[layer.SensLayers]
             newk33[layno] = npfk33[layno] * 2**p[layer.SensLayers]
-            
+
+    for lay in idx[idx.laytype =='z'].idx.values:
+        stoss[lay] = stoss[lay] * 10**p['SSz']
+    for lay in idx[idx.laytype =='k'].idx.values:
+        stoss[lay] = stoss[lay] * 10**p['SSk']        
     npf.k = newk
     npf.k33 = newk33
     npf.write()
-    sto.ss = stoss * 10**p['SS']
+    sto.ss = stoss 
     sto.write()
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
