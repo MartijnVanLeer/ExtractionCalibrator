@@ -157,7 +157,8 @@ def init_params(idx,CorLayers, ghbCal, KCal, method, Transient = False):
     if ghbCal == 'Single':
         params.add(name = "ghb", value = initvalue)   
     if Transient:
-        params.add(name = 'SS', value = initvalue)
+        params.add(name = 'SSz', value = initvalue)
+        params.add(name = 'SSk', value = initvalue)
     return params
 
 def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells, ObsHeads,ds,CorLayers,ghbCal, KCal, Lambda, method):
@@ -408,11 +409,14 @@ def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk,
             layno = idx[idx['SensLayers'] == CorLayers[layer.SensLayers]].idx.values[0]
             newk[layno] = npfk[layno] * 2**p[layer.SensLayers]
             newk33[layno] = npfk33[layno] * 2**p[layer.SensLayers]
-            
+    for lay in idx[idx.laytype =='z'].idx.values:
+        stoss[lay] = stoss[lay] * 10**p['SSz']
+    for lay in idx[idx.laytype =='k'].idx.values:
+        stoss[lay] = stoss[lay] * 10**p['SSk']
     npf.k = newk
     npf.k33 = newk33
     npf.write()
-    sto.ss = stoss * 10**p['SS']
+    sto.ss = stoss 
     sto.write()
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
@@ -450,13 +454,11 @@ def kling_gupta_efficiency(observed, simulated,col):
     """
     min_val = np.min([np.min(observed),np.min(simulated)])
     max_val = np.max([np.min(observed),np.min(simulated)])
-    normalized_observed = (observed - min_val) / (max_val - min_val)
-    normalized_simulated = (simulated - min_val) / (max_val - min_val)
     
     # Calculate the components
     r = observed.corr(simulated)
     alpha = simulated.std() / observed.std()
-    beta = normalized_simulated.mean() / normalized_observed.mean()
+    beta = simulated.mean() / observed.mean()
     
     # Calculate the KGE
     kge = 1 - np.sqrt((r - 1)**2 + (alpha - 1)**2 + (beta - 1)**2)
