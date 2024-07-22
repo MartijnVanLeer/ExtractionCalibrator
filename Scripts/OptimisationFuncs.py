@@ -404,7 +404,7 @@ def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers,
 def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk, npfk33, stoss, npf, sto):
     newk = npfk.copy()
     newk33 = npfk33.copy()
-    
+    newstoss = stoss.copy()
     for i,layer in idx.iterrows():
         if layer.SensLayers not in CorLayers.values():
             newk[layer.idx] =npfk[layer.idx] * 2**p[layer.SensLayers]
@@ -414,13 +414,13 @@ def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk,
             newk[layno] = npfk[layno] * 2**p[layer.SensLayers]
             newk33[layno] = npfk33[layno] * 2**p[layer.SensLayers]
     for lay in idx[idx.laytype =='z'].idx.values:
-        stoss[lay] = stoss[lay] * 10**p['SSz']
+        newstoss[lay] = newstoss[lay] * 10**p['SSz']
     for lay in idx[idx.laytype =='k'].idx.values:
-        stoss[lay] = stoss[lay] * 10**p['SSk']
+        newstoss[lay] = newstoss[lay] * 10**p['SSk']
     npf.k = newk
     npf.k33 = newk33
     npf.write()
-    sto.ss = stoss 
+    sto.ss = newstoss 
     sto.write()
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
@@ -456,14 +456,15 @@ def kling_gupta_efficiency(observed, simulated,col):
     Returns:
     DataFrame: A DataFrame containing the KGE and its components.
     """
-    min_val = np.min([np.min(observed),np.min(simulated)])
-    max_val = np.max([np.min(observed),np.min(simulated)])
     
     # Calculate the components
     r = observed.corr(simulated)
     alpha = simulated.std() / observed.std()
     beta = simulated.mean() / observed.mean()
-    
+    print(f'simulated mean: {simulated.mean()}')
+    print(f'observed mean: {observed.mean()}')
+    print(f'simulated len: {len(simulated)}')
+    print(f'observed len: {len(observed)}')
     # Calculate the KGE
     kge = 1 - np.sqrt((r - 1)**2 + (alpha - 1)**2 + (beta - 1)**2)
     
