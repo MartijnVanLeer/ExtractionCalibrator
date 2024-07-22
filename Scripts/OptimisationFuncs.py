@@ -436,7 +436,7 @@ def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk,
 
     results = pd.DataFrame()
     for col, simulated in df.items():
-        kge = kling_gupta_efficiency(residuals[col], simulated, col)
+        kge = kling_gupta_efficiency(ObsHeads[col], simulated, col)
         results = pd.concat([results, kge])
     res = residuals.to_numpy().flatten()
     res = residuals[~np.isnan(residuals)]
@@ -461,10 +461,7 @@ def kling_gupta_efficiency(observed, simulated,col):
     r = observed.corr(simulated)
     alpha = simulated.std() / observed.std()
     beta = simulated.mean() / observed.mean()
-    print(f'simulated mean: {simulated.mean()}')
-    print(f'observed mean: {observed.mean()}')
-    print(f'simulated len: {len(simulated)}')
-    print(f'observed len: {len(observed)}')
+
     # Calculate the KGE
     kge = 1 - np.sqrt((r - 1)**2 + (alpha - 1)**2 + (beta - 1)**2)
     
