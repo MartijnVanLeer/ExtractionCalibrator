@@ -460,7 +460,7 @@ def kling_gupta_efficiency(observed, simulated,col):
     # Calculate the components
     r = observed.corr(simulated)
     alpha = simulated.std() / observed.std()
-    beta = simulated.mean() / observed.mean()
+    beta = (10 - abs(simulated.mean() - observed.mean()))/10
 
     # Calculate the KGE
     kge = 1 - np.sqrt((r - 1)**2 + (alpha - 1)**2 + (beta - 1)**2)
