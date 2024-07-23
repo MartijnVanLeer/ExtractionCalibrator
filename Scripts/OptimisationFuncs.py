@@ -467,7 +467,7 @@ def kling_gupta_efficiency(observed, simulated,col):
     
     return pd.DataFrame([{
         'Well' : col,
-        'KGE': kge,
-        'r': r,
-        'alpha': alpha,
-        'beta': beta}])
+        'KGE': round(kge,3),
+        'r': round(r,3),
+        'alpha': round(alpha,3),
+        'beta': round(beta,3)}])
