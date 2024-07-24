@@ -108,6 +108,7 @@ best_paramdf = pd.DataFrame.from_dict(best_params_t, orient = 'index', columns =
 best_paramdf.to_csv(os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'))
 
 #%%plot 
+no = 1
 for lay in idx[idx.laytype =='z'].idx.values:
     dfsel = df[ObsWells[ObsWells['Layno'] == lay].putcode]
     obssel = ObsHeads[ObsWells[ObsWells['Layno'] == lay].putcode]
@@ -130,7 +131,9 @@ for lay in idx[idx.laytype =='z'].idx.values:
     fig.suptitle(lay)
     
     plt.tight_layout()
-    fig.savefig(os.path.join('..','Results',f'{modelname}',f'{lay}_Obs_Mod_heads.png'))
+    
+    fig.savefig(os.path.join('..','Results',f'{modelname}',f'{no}_Obs_Mod_heads.png'))
+    no +=1
 #%%
 
 fig = plt.figure(figsize=(30,10))    
