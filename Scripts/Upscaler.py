@@ -30,9 +30,6 @@ df = pd.read_hdf(filename, key = 'c')
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
-orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t','Fitter','')
-sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = mds.exe_name)
-gwf = sim.get_model()
 
 #init result xarray
 ids = mds.icell2d.values
