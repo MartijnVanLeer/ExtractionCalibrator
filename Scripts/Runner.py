@@ -43,6 +43,10 @@ thickness = mds.isel(layer = layno-1).botm-mds.sel(layer = Layer).botm
 RMSE = []
 cc_ls = []
 simno_ls = []
+KGE_a = []
+KGE_r = []
+KGE_b = []
+KGE = []
 for simno in tqdm(ds.sim.values):
     for corfac in ds.cc.values: 
         data33 = npf.k33.array
@@ -65,14 +69,27 @@ for simno in tqdm(ds.sim.values):
             residuals = residuals[~np.isnan(residuals)]
             residuals = np.mean(residuals**2)
             RMSE.append(np.sqrt(residuals))
+
+            results = pd.DataFrame()
+            for col, simulated in df.items():
+                kge = OptimisationFuncs.kling_gupta_efficiency(ObsHeads[col], simulated, col)
+                results = pd.concat([results, kge])
+            KGE_a.append(results.alpha.mean().values)
+            KGE_b.append(results.beta.mean().values)
+            KGE_r.append(results.r.mean().values)
+            KGE.append(results.KGE.mean().values)
         else:
             RMSE.append(np.nan)
+            KGE_a.append(np.nan)
+            KGE_b.append(np.nan)
+            KGE_r.append(np.nan)
+            KGE.append(np.nan)
             print('Modflow crashed')
         cc_ls.append(corfac)
         simno_ls.append(simno)
 
 
-RMSEdf = pd.DataFrame({'sim' : simno_ls, 'RMSE' : RMSE, 'xcorlen' : xcorlens, 'zcorlen' : zcorlens, 'frac' : fracs, 'cc' : cc_ls})
+RMSEdf = pd.DataFrame({'sim' : simno_ls, 'RMSE' : RMSE, 'KGE' : KGE, 'alpha' : KGE_a, 'beta' :KGE_b, 'r' : KGE_r, 'xcorlen' : xcorlens, 'zcorlen' : zcorlens, 'frac' : fracs, 'cc' : cc_ls})
 RMSEdf.to_csv(snakemake.output[0], header = False)
 
 

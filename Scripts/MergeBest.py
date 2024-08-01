@@ -6,14 +6,14 @@ import numpy as np
 modelname = snakemake.params.modelname
 
 #read csv
-results = pd.read_csv(os.path.join('..', 'Results', modelname, 'RMSE_all.csv'), names = ['sim', 'RMSE', 'xcorlen', 'zcorlen','frac', 'cc'])
+results = pd.read_csv(os.path.join('..', 'Results', modelname, 'RMSE_all.csv'), names = ['sim', 'RMSE', 'KGE', 'alpha', 'beta', 'r','xcorlen', 'zcorlen','frac', 'cc'])
 ResidualsBest = pd.read_csv(os.path.join('..', 'Results', modelname,f'Residuals_{modelname}.csv'), index_col = "Time")
-#calc RMSE
-residuals =ResidualsBest.to_numpy()
-residuals = residuals[~np.isnan(residuals)]
-RMSE = np.sqrt(np.mean(residuals**2))
+cal_results = pd.read_csv(os.path.join('..', 'Results', modelname, f'Calibration_Performance_{modelname}.csv'))
+RMSE = cal_results.loc['RMSE'].values[0]
+KGE = cal_results['KGE'].values[-7]
+
 #select best and make xr ds
-Best = results[results.RMSE < RMSE]
+Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
 realizations = xr.Dataset.from_dataframe(Best.reset_index())
 
 #add cellid as dim
