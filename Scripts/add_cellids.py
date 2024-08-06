@@ -39,7 +39,7 @@ def add_cellid(Kfields,gwf):
 
 df = pd.DataFrame({'x' :xnew, 'y' : ynew})
 cellids = [] 
-for index, row in tqdm(df.iterrows(),'Intersecting grid..', miniters = 100, mininterval = 20):
+for index, row in tqdm(df.iterrows(),'Intersecting grid..', mininterval = 20, total = df.shape[0]):
     cellid = gwf.modelgrid.intersect(row.x,row.y)
     cellids.append(cellid)
 df['cellid'] = cellids
