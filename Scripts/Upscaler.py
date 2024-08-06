@@ -24,9 +24,10 @@ real_dx = snakemake.params.dx
 ws = snakemake.params.ws
 cc = snakemake.params.cc
 
-#load k realizations and move to ds
+#load k realizations and cellids
 df = pd.read_hdf(filename, key = 'c')
-# xdf = xr.Dataset.from_dataframe(df)
+cellids = pd.read_csv(os.path.join('..','Results',f'{modelname}','cellids.csv'))
+
 
 #load model ds
 mds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
@@ -35,8 +36,11 @@ mds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_
 ids = mds.icell2d.values
 result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d','cc'], np.zeros((ens_no, len(ids), len(cc))))), coords =  dict(sim = range(ens_no), icell2d = ids, cc = cc))
 
-
+#add cellids to df
 df.set_index(['x', 'y', 'z'], inplace = True)
+cellids.set_index(['x','y'], inplace = True)
+df = df.merge(cellids, left_index=True, right_index=True, how = 'outer')
+print (df.head(5))
 
 #run modflow for modelcell for all realizations
 for cellid in tqdm(ids):

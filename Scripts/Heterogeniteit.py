@@ -206,7 +206,7 @@ class boringen():
     
     def add_k(self, res, ens_no, cc):
         rng = np.random.default_rng()
-        Kfield = res[['x','y','z','cellid']]
+        Kfield = res[['x','y','z']]
         for corfac in cc:
             K1 = rng.normal(self.mu1 + corfac,self.std1, len(res))
             K2 = rng.normal(self.mu2,self.std2, len(res))
@@ -297,13 +297,7 @@ def trim(Kfields,ds, Layer):
     Kfields['cellid'] = cellids
     return Kfields[Kfields.keep==True] 
 
-def add_cellid(Kfields,gwf):
-    cellids = [] 
-    for index, row in Kfields.iterrows():
-        cellid = gwf.modelgrid.intersect(row.x,row.y)
-        cellids.append(cellid)
-    Kfields['cellid'] = cellids
-    return Kfields
+
     
     
     

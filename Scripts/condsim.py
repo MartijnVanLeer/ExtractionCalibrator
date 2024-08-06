@@ -67,6 +67,5 @@ orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t')
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = ds.exe_name)
 gwf = sim.get_model()
 
-res = Heterogeniteit.add_cellid(res,gwf)
 Kfields = boringen.add_k(res, ens_no,cc)
 Kfields.to_hdf(snakemake.output[0], key = 'c', complevel = 9, mode = 'w')
