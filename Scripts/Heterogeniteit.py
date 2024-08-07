@@ -212,6 +212,7 @@ class boringen():
             K2 = rng.normal(self.mu2,self.std2, len(res))
             for x in range(ens_no):
                 Kfield.loc[:,f"K_{x+1}_{corfac}"] = np.where(res[f'sim{x+1}'] == 1, K1,K2)
+                Kfield = Kfield.copy()
                 np.random.shuffle(K1)
                 np.random.shuffle(K2)
         return Kfield
