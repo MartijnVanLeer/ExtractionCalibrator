@@ -61,7 +61,7 @@ res = SISIM_R.Cond_SISIM(boringen.list[['x','y','z','i']],
             dx =dx,dy =dy,dz =1,
             xcorlen =xcorlens, zcorlen = zcorlens,
             ens_no = ens_no, frac =fracs, 
-            nmax = 100, seed = xcorlens*zcorlens*frac)
+            nmax = 50, seed = xcorlens*zcorlens*frac)
 
 orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t')
 sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = orgFolder, exe_name = ds.exe_name)
