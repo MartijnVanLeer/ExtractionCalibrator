@@ -43,7 +43,7 @@ for index, row in tqdm(df.iterrows(),'Intersecting grid..', mininterval = 20, to
     cellid = gwf.modelgrid.intersect(row.x,row.y)
     cellids.append(cellid)
 df['cellid'] = cellids
-df.to_csv(os.path.join('..','Results',f'{modelname}','cellids.csv')), index = False)
+df.to_csv(os.path.join('..','Results',f'{modelname}','cellids.csv'), index = False)
 
 
 
