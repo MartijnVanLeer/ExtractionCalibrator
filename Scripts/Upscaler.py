@@ -40,7 +40,6 @@ result = xr.Dataset(data_vars=dict( k = (['sim', 'icell2d','cc'], np.zeros((ens_
 df.set_index(['x', 'y', 'z'], inplace = True)
 cellids.set_index(['x','y'], inplace = True)
 df = df.merge(cellids, left_index=True, right_index=True, how = 'outer')
-print (df.head(5))
 
 #run modflow for modelcell for all realizations
 for cellid in tqdm(ids):
