@@ -74,10 +74,10 @@ for simno in tqdm(ds.sim.values):
             for col, simulated in df.items():
                 kge = OptimisationFuncs.kling_gupta_efficiency(ObsHeads[col], simulated, col)
                 results = pd.concat([results, kge])
-            KGE_a.append(results.alpha.mean().values)
-            KGE_b.append(results.beta.mean().values)
-            KGE_r.append(results.r.mean().values)
-            KGE.append(results.KGE.mean().values)
+            KGE_a.append(results.alpha.mean())
+            KGE_b.append(results.beta.mean())
+            KGE_r.append(results.r.mean())
+            KGE.append(results.KGE.mean())
         else:
             RMSE.append(np.nan)
             KGE_a.append(np.nan)
