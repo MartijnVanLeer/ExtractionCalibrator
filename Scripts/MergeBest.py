@@ -9,7 +9,7 @@ modelname = snakemake.params.modelname
 results = pd.read_csv(os.path.join('..', 'Results', modelname, 'RMSE_all.csv'), names = ['sim', 'RMSE', 'KGE', 'alpha', 'beta', 'r','xcorlen', 'zcorlen','frac', 'cc'])
 ResidualsBest = pd.read_csv(os.path.join('..', 'Results', modelname,f'Residuals_{modelname}.csv'), index_col = "Time")
 cal_results = pd.read_csv(os.path.join('..', 'Results', modelname, f'Calibration_Performance_{modelname}.csv'))
-RMSE = cal_results.loc['RMSE'].values[0]
+RMSE = cal_results['RMSE'].values[-1]
 KGE = cal_results['KGE'].values[-7]
 
 #select best and make xr ds
