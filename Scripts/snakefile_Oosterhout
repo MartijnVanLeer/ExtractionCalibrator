@@ -2,7 +2,7 @@ import os
 from snakemake.utils import Paramspace
 import pandas as pd
 #Settings steady state
-Name = 'Oosterhout' #puttenveld Budel, Schijf, Vlijmen
+Name = 'Oosterhout_test' #puttenveld Budel, Schijf, Vlijmen
 modelname ='Oosterhout'
 
 Range = 4800 #m Distance from grid border to centre of wells 3200
