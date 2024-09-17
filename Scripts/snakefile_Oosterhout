@@ -1,0 +1,268 @@
+import os
+from snakemake.utils import Paramspace
+import pandas as pd
+#Settings steady state
+Name = 'Oosterhout' #puttenveld Budel, Schijf, Vlijmen
+modelname ='Oosterhout'
+
+Range = 3200 #m Distance from grid border to centre of wells 3200
+GHBrange = 5000 
+delr = 800
+refineranges = {1600:1, 800:2, 400:3, 200:4, 100 :5,}
+startdate = '2016-04-01 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
+enddate = '2016-08-01 00:00:00'         #laatste '2023-12-30 22:00:00'
+warmup = False
+drainC = 1
+DeepestLayer = 'BRz1'
+ss = 0.00001
+
+#Settings calibration
+SensLayers = ['OOz1', 'OOk1','OOz2', 'OOc', 'BRz1']
+CorLayers = {}
+ghbCal = 'SensLayers' # 'obs', 'Single', None
+KCal = True
+Weighted = False
+BadWells =  []
+Lambda = 0.0005
+methodss = 'NM' #'LM' of 'NM' 
+methodt = 'NM'  #'LM' of 'NM' 
+
+def get_paramspace(xcorlens,zcorlens,fracs):
+    xl = []
+    zl = []
+    fl = []
+    for x in xcorlens:
+        for z in zcorlens:
+            for f in fracs:
+                xl.append(x)
+                zl.append(z)
+                fl.append(f)
+    return pd.DataFrame({'xcorlens': xl,'zcorlens' : zl, 'fracs' : fl})
+
+#Settings conditional simulation
+simlayer = 'KIk2'
+xcorlens = [100,150,200,250, 300, 400, 500,]
+zcorlens = [4,8, 12,16]
+fracs = [0,0.05,0.1,0.15]
+CoreCorrection = [0, 0.5,1,1.5]
+ens_no = 50
+dx = 25
+df = get_paramspace(xcorlens,zcorlens, fracs)
+paramspace = Paramspace(df)
+
+rule all: 
+    input:
+        #expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','k.csv'), params = paramspace.instance_patterns),
+        # expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','UpscaledK.nc'),params = paramspace.instance_patterns),
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
+        os.path.join('..', 'Results', modelname, 'BestRealizations.nc'),
+        os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
+        os.path.join('..','Results',f'{modelname}','TT_dist.csv')
+
+rule Forward_Model_SS:
+    input:
+        'ForwardModelGen.py',
+        'Helper.py'
+    output:
+        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
+        directory(os.path.join('..','Results',modelname, f'{modelname}_ss')),
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_ss',f'{modelname}_ss.nc'),
+    params:
+        Name = Name,
+        modelname = modelname,
+        Range = Range,
+        GHBrange = GHBrange,
+        delr = delr,
+        refineranges = refineranges,
+        steady_state = True,
+        startdate = startdate,
+        enddate = enddate,
+        warmup = warmup,
+        drainC = drainC,
+        DeepestLayer = DeepestLayer,
+        ss = ss
+    script:
+       'ForwardModelGen.py'
+       
+rule Forward_Model_T:
+    input:
+        'ForwardModelGen.py',
+        'Helper.py'
+    output:
+        os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
+        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
+    params:
+        Name = Name ,
+        modelname = modelname,
+        Range = Range,
+        GHBrange = GHBrange,
+        delr = delr,
+        refineranges = refineranges,
+        steady_state = False,
+        startdate = startdate,
+        enddate = enddate,
+        warmup = warmup,
+        drainC = drainC,
+        DeepestLayer = DeepestLayer,
+        ss = ss
+    script:
+       'ForwardModelGen.py'
+
+rule Calibration_SS:
+    input:
+       os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
+       'Sensitivity.py',
+       'OptimisationFuncs.py'
+    params:
+        Name = Name,
+        modelname = modelname,
+        SensLayers = SensLayers,
+        CorLayers = CorLayers,
+        ghbCal = ghbCal,
+        KCal = KCal,
+        Weighted = Weighted,
+        BadWells = BadWells,
+        Lambda = Lambda,
+        method = methodss
+    output:
+       os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
+       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
+    script:
+       'Sensitivity.py'
+
+rule Calibration_T:
+    input:
+       'Calibration.py',
+       os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
+       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
+       'OptimisationFuncs.py'
+    params:
+        Name = Name,
+        modelname = modelname,
+        CorLayers = CorLayers,
+        method = methodt
+    output:
+        os.path.join('..','Results',f'{modelname}',f'BestParams_t_{modelname}.csv'),
+        os.path.join('..','Results',f'{modelname}',f'ModHead_{modelname}.csv'),
+        os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'),
+        os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
+    script:
+       'Calibration.py'
+       
+rule Prep_Boreholes:
+    input:
+        'prep_boringen.py',
+        os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
+        'Heterogeniteit.py'
+    params:
+        modelname = modelname,
+        Name = Name,
+        simlayer = simlayer
+    output:
+        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl')
+    script:
+        'prep_boringen.py'
+
+rule Add_Cellids:
+    input:
+        'add_cellids.py',
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
+    params:
+        modelname = modelname,
+        dx = dx
+    output:
+        os.path.join('..','Results',f'{modelname}','cellids.csv')
+    script:
+        'add_cellids.py'
+
+rule Cond_Simulator:
+    input:
+        'condsim.py',
+        os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
+        os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'),
+        'Heterogeniteit.py'
+    params:
+        Name = Name,
+        modelname = modelname,
+        simlayer = simlayer,
+        simulation = paramspace.instance,
+        ens_no = ens_no,
+        dx = dx,
+        cc = CoreCorrection
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.h5'),
+    script:
+       'condsim.py'
+
+rule Upscaler:
+    input:
+        'Upscaler.py',
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.h5'),
+        os.path.join('..','Results',f'{modelname}','cellids.csv'),
+        'Upscale_funcs.py'
+    params:
+        Name = Name,
+        modelname = modelname,
+        simlayer = simlayer,
+        ens_no = ens_no,
+        dx = dx,
+        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Upscaler'),
+        cc = CoreCorrection
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
+    script:
+       'Upscaler.py'
+
+rule Runner:
+    input:
+       'Runner.py',
+       os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','UpscaledK.nc'),
+       os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
+    params:
+        modelname = modelname,
+        simlayer = simlayer,
+        ens_no = ens_no,
+        ws = os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','Runner'),
+        simulation = paramspace.instance,
+        cc = CoreCorrection
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','RMSE.csv'),
+    script:
+       'Runner.py'
+
+rule Collector:
+    input:
+        expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
+    output:
+        os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv')
+    shell:
+        "cat {input} > {output}"
+
+rule Merge_Best:
+    input:
+       'MergeBest.py',
+       os.path.join('..' ,'Results',f'{modelname}','RMSE_all.csv'),
+       os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'),
+    params:
+        modelname = modelname,
+    output:
+        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+    script:
+       'MergeBest.py'
+
+rule Modpath:
+    input:
+       'modpath.py',
+       'ModpathFuncs.py',
+       os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
+    params:
+        modelname = modelname,
+        layer = simlayer,
+        name = Name
+    output:
+        os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
+        os.path.join('..','Results',f'{modelname}','TT_dist.csv')
+    script:
+       'modpath.py'
