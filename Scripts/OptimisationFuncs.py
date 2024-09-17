@@ -177,10 +177,10 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
                 
         npf.k = newk
         npf.k33 = newk33
-        while True:
-            if os.access(os.path.join(sim.sim_path,npf.path[0] + '.' + npf.path[1]), os.W_OK):
-                npf.write()
-                break
+        # while True:
+            # if os.access(os.path.join(sim.sim_path,npf.path[0] + '.' + npf.path[1]), os.W_OK):
+        npf.write()
+                # break
     #ghb
 
     if ghbCal != None:
