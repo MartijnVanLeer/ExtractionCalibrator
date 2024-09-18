@@ -157,7 +157,7 @@ def layermodel(extent, NLzuid,DeepestLayer,nlzuidpad = os.path.join('..','Data',
         # layer_model.transpose('layer', 'y', 'x')
     else:
         layer_model = nlmod.read.regis.get_combined_layer_models(extent,use_geotop=False)
-        layer_model = layer_model_sel.dropna(dim = 'layer', how = 'all')
+        layer_model = layer_model.dropna(dim = 'layer', how = 'all')
     return layer_model
 
 def refiner(ds, refineranges, WellGdf):
