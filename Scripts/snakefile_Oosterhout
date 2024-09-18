@@ -5,8 +5,8 @@ import pandas as pd
 Name = 'Oosterhout' #puttenveld Budel, Schijf, Vlijmen
 modelname ='Oosterhout'
 
-Range = 6400 #m Distance from grid border to centre of wells 3200
-GHBrange = 5000 
+Range = 4800 #m Distance from grid border to centre of wells 3200
+GHBrange = 1000 
 delr = 1600
 refineranges = {3200:1,1600:2, 800:3, 400:4, 200:5, 100 :6}
 startdate = '2016-04-01 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
