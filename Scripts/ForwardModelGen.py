@@ -41,7 +41,7 @@ ss = snakemake.params.ss
 riv = snakemake.params.riv
 
 use_geotop = False
-NLzuid = False if Name == 'Vlijmen' else True
+NLzuid = True if Name == 'Budel' else True
 use_ahn = False #True if Name == 'Budel' else False
 use_knmi = True
 cachedir = None
