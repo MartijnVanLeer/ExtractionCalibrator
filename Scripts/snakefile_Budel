@@ -82,7 +82,8 @@ rule Forward_Model_SS:
         warmup = warmup,
         drainC = drainC,
         DeepestLayer = DeepestLayer,
-        ss = ss
+        ss = ss,
+        riv = riv
     script:
        'ForwardModelGen.py'
        
@@ -107,7 +108,8 @@ rule Forward_Model_T:
         warmup = warmup,
         drainC = drainC,
         DeepestLayer = DeepestLayer,
-        ss = ss
+        ss = ss,
+        riv = riv
     script:
        'ForwardModelGen.py'
 
