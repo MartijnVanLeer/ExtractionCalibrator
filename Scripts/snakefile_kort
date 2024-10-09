@@ -65,7 +65,7 @@ rule Forward_Model_SS:
         'ForwardModelGen.py',
         'Helper.py'
     output:
-        os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
+        os.path.join('..','Results',modelname, f'{modelname}_ss',f'{modelname}_ss.hds'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_ss')),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_ss',f'{modelname}_ss.nc'),
     params:
@@ -90,7 +90,7 @@ rule Forward_Model_T:
         'ForwardModelGen.py',
         'Helper.py'
     output:
-        os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
+        os.path.join('..','Results',modelname, f'{modelname}_t',f'{modelname}_t.nam'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
     params:
@@ -112,7 +112,7 @@ rule Forward_Model_T:
 
 rule Calibration_SS:
     input:
-       os.path.join('..','Results',modelname, f'{modelname}_ss/{modelname}_ss.hds'),
+       os.path.join('..','Results',modelname, f'{modelname}_ss',f'{modelname}_ss.hds'),
        'Sensitivity.py',
        'OptimisationFuncs.py'
     params:
@@ -136,7 +136,7 @@ rule Calibration_T:
     input:
        'Calibration.py',
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
-       os.path.join('..','Results',modelname, f'{modelname}_t/{modelname}_t.nam'),
+       os.path.join('..','Results',modelname, f'{modelname}_t',f'{modelname}_t.nam'),
        'OptimisationFuncs.py'
     params:
         Name = Name,
