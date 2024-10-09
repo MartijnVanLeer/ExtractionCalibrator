@@ -177,12 +177,10 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
                 
         npf.k = newk
         npf.k33 = newk33
-        while True:
-            if os.access(os.path.join(sim.sim_path,npf.path[0] + '.' + npf.path[1]), os.W_OK):
-                npf.write()
-                break
-            else:
-                print('No access to NPF file')
+        # while True:
+            # if os.access(os.path.join(sim.sim_path,npf.path[0] + '.' + npf.path[1]), os.W_OK):
+        npf.write()
+                # break
     #ghb
 
     if ghbCal != None:
@@ -201,13 +199,11 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
                 else: 
                     new_spd.append([row[0], row[1], row[2]])
         gwf.remove_package('GHB')
-        ghb = flopy.mf6.ModflowGwfghb(gwf, stress_period_data=new_spd,save_flows=True,maxbound = len(new_spd))
-        while True:
-            if os.access(os.path.join(sim.sim_path,ghb.path[0] + '.' + ghb.path[1]), os.W_OK):
-                ghb.write()
-                break
-            else:
-                print('No access to NPF file')
+        ghb = flopy.mf6.ModflowGwfghb(gwf, stress_period_data=new_spd,save_flows=False,maxbound = len(new_spd))
+        # while True:
+        #     if os.access(os.path.join(sim.sim_path,ghb.path[0] + '.' + ghb.path[1]), os.W_OK):
+        ghb.write()
+                # break
     
     #run        
     sim.run_simulation(silent = True)
