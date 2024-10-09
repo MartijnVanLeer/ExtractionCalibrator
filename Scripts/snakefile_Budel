@@ -16,6 +16,7 @@ drainC = 1
 riv = False
 DeepestLayer = 'BRz1'
 ss = 0.00001
+NLzuid = True
 
 #Settings calibration
 SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
@@ -24,7 +25,7 @@ ghbCal = 'SensLayers' # 'obs', 'Single', None
 KCal = True
 Weighted = False
 BadWells =  ['B57E0081_3','B57E0081_4']
-Lambda = 0.0005
+Lambda = 0.005
 methodss = 'NM' #'LM' of 'NM' 
 methodt = 'NM'  #'LM' of 'NM' 
 
@@ -83,7 +84,8 @@ rule Forward_Model_SS:
         drainC = drainC,
         DeepestLayer = DeepestLayer,
         ss = ss,
-        riv = riv
+        riv = riv,
+        NLzuid = NLzuid
     script:
        'ForwardModelGen.py'
        
@@ -109,7 +111,8 @@ rule Forward_Model_T:
         drainC = drainC,
         DeepestLayer = DeepestLayer,
         ss = ss,
-        riv = riv
+        riv = riv,
+        NLzuid = NLzuid
     script:
        'ForwardModelGen.py'
 
