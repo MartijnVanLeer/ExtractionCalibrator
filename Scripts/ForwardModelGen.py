@@ -40,7 +40,7 @@ steady_state = snakemake.params.steady_state
 ss = snakemake.params.ss
 
 use_geotop = False
-NLzuid = False if Name == 'Vlijmen' else True
+NLzuid = True
 use_ahn = False #True if Name == 'Budel' else False
 use_knmi = True
 cachedir = None
