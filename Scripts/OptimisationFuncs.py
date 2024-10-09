@@ -180,7 +180,7 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
         # while True:
         #     if os.access(os.path.join(sim.sim_path,npf.path[0] + '.' + npf.path[1]), os.W_OK):
         npf.write()
-        break
+        # break
             
     #ghb
 
@@ -204,7 +204,7 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
         # while True:
         #     if os.access(os.path.join(sim.sim_path,ghb.path[0] + '.' + ghb.path[1]), os.W_OK):
         ghb.write()
-        break
+        # break
     
     #run        
     sim.run_simulation(silent = True)
