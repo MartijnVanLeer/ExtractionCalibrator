@@ -107,7 +107,7 @@ Those are determined by the min/max
 params = OptimisationFuncs.init_params(idx,CorLayers, ghbCal, KCal, method)   
 
 if method == 'NM':
-    initsimplex = OptimisationFuncs.initsimplex(params, fac = 0.3)
+    initsimplex = OptimisationFuncs.initsimplex(params, fac = 1)
     NMoptions = {'adaptive': True,
                 'maxfev' :1000,
                 'initial_simplex' : initsimplex,
