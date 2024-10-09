@@ -39,9 +39,9 @@ warmup = snakemake.params.warmup
 steady_state = snakemake.params.steady_state
 ss = snakemake.params.ss
 riv = snakemake.params.riv
+NLzuid = snakemake.params.NLzuid
 
 use_geotop = False
-NLzuid = True if Name == 'Budel' else False
 use_ahn = False #True if Name == 'Budel' else False
 use_knmi = True
 cachedir = None
