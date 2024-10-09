@@ -13,10 +13,8 @@ startdate = '2016-04-01 00:00:00'         #eerste is '2014-12-31 00:00:00', '201
 enddate = '2016-08-01 00:00:00'         #laatste '2023-12-30 22:00:00'
 warmup = False
 drainC = 1
-riv = True
 DeepestLayer = 'BRz1'
 ss = 0.00001
-NLzuid = True
 
 #Settings calibration
 SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
@@ -84,8 +82,6 @@ rule Forward_Model_SS:
         drainC = drainC,
         DeepestLayer = DeepestLayer,
         ss = ss,
-        riv = riv,
-        NLzuid = NLzuid
     script:
        'ForwardModelGen.py'
        
@@ -111,8 +107,6 @@ rule Forward_Model_T:
         drainC = drainC,
         DeepestLayer = DeepestLayer,
         ss = ss,
-        riv = riv,
-        NLzuid = NLzuid
     script:
        'ForwardModelGen.py'
 
