@@ -38,9 +38,10 @@ DeepestLayer = snakemake.params.DeepestLayer
 warmup = snakemake.params.warmup
 steady_state = snakemake.params.steady_state
 ss = snakemake.params.ss
+riv = snakemake.params.riv
+NLzuid = snakemake.params.NLzuid
 
 use_geotop = False
-NLzuid = False if Name == 'Vlijmen' else True
 use_ahn = False #True if Name == 'Budel' else False
 use_knmi = True
 cachedir = None
@@ -192,7 +193,8 @@ ghb = Helper.ghb(ds, gwf,cachedir,NLzuid, GHBrange, lhmpath = lhmpath, delr = de
 #Create drain packakge
 drn = nlmod.gwf.surface_drain_from_ds(ds, gwf, resistance=drainC, elev = 'top')
 
-riv = Helper.riv(ds,gwf)
+if riv:
+    riv = Helper.riv(ds,gwf)
 
 print('WEL package..')
 #Create recharge packagefrom KNMI
