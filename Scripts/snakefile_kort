@@ -3,7 +3,7 @@ from snakemake.utils import Paramspace
 import pandas as pd
 #Settings steady state
 Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
-modelname ='Poging2'
+modelname ='Poging'
 
 Range = 3200 #m Distance from grid border to centre of wells 3200
 GHBrange = 5000 
