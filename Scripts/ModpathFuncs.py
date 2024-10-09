@@ -10,8 +10,8 @@ def load_calibrated_npf(modelname):
     tmod = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = tfolder)
     gwft = tmod.get_model()
     npft = gwft.get_package('NPF')
-    npfk = npft.k.array
-    npfk33 = npft.k33.array
+    npfk = npft.k.data
+    npfk33 = npft.k33.data
     return npfk, npfk33
 
 
@@ -20,19 +20,20 @@ def load_ss(destFolder,ds, npfk, npfk33):
     sim = flopy.mf6.mfsimulation.MFSimulation.load('mfsim', sim_ws = destFolder, exe_name =ds.exe_name)
     gwf = sim.get_model()
     npf = gwf.get_package('NPF')
-    npf.k.set_data(npfk)
-    npf.k33.set_data(npfk33)
+    npf.k = npfk
+    npf.k33 = npfk33
     npf.save_flows = True
-    npf.write()
     return sim, npf
 
 #run 'homogeneous' model with updated k values
 def run_modpath_ref_bw(modelname, sim, ds, npf, layer,wellxy):
+    npf.write()
     nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
     flowfrac = run_bw(modelname, sim, ds, layer,wellxy)
     return flowfrac
 
 def run_modpath_ref_fw(modelname, sim, ds, npf, layer,wellxy):
+    npf.write()
     nlmod.sim.write_and_run(sim, ds, write_ds = False, silent = True)
     dist = run_fw(modelname, sim, ds, layer,wellxy)
     return dist
