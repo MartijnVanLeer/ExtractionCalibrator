@@ -49,13 +49,13 @@ def run_mf(sim, Kfield,mds, ws):
     npf.k33.set_data(Kfield.transpose(2,0,1))
     npf.write()
     success, buff = sim.run_simulation(silent = True)
-    cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
-    qs = cbb.get_data(text='DATA-SPDIS')[0]
-    qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
-    K = abs(qz[:, :,:].mean())
     if not success:
-        print(Kfield)
         print('Modflow crashed')
         K = np.nan
+    else:
+        cbb = flopy.utils.CellBudgetFile(os.path.join(ws, f"{gwf.name}.cbc"))
+        qs = cbb.get_data(text='DATA-SPDIS')[0]
+        qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(qs, gwf)
+        K = abs(qz[:, :,:].mean())
     return K
     
