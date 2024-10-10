@@ -379,9 +379,8 @@ def run_model_calibration_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers,
         newstoss[lay] = newstoss[lay] * 10**p['SSk']        
     npf.k = newk
     npf.k33 = newk33
-    npf.write()
     sto.ss = newstoss 
-    sto.write()
+    sim.write_simulation(silent = True) 
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
@@ -420,9 +419,8 @@ def run_best_result_transient(p, sim, idx,ObsWells,ObsHeads,ds, CorLayers, npfk,
         newstoss[lay] = newstoss[lay] * 10**p['SSk']
     npf.k = newk
     npf.k33 = newk33
-    npf.write()
     sto.ss = newstoss 
-    sto.write()
+    sim.write_simulation(silent = True) 
     sim.run_simulation(silent = True)
     head = nlmod.gwf.get_heads_da(ds)
     df = pd.DataFrame(index = pd.DatetimeIndex(ObsHeads.index))
