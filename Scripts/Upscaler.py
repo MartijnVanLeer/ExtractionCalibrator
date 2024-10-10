@@ -54,7 +54,7 @@ for cellid in tqdm(ids):
                 print(f'Nans spotted, cellid = {cellid}')
                 raise Exception(f'Nan gevonden in cellid {cellid}')
             if (k.shape[0]) == 1 or (k.shape[1] == 1):
-                result.loc[dict(icell2d = cellid, sim = sim)] = hmean(10**(k))
+                result.loc[dict(icell2d = cellid, sim = sim)] = hmean(10**(k), axis = 0)
             else:
                 fieldK = uf.Run_MF_WholeField(10**(k),
                                 Lx = k.shape[0] *real_dx,
