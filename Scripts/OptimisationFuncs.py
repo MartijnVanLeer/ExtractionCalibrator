@@ -179,7 +179,7 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
         npf.k33 = newk33
         # while True:
             # if os.access(os.path.join(sim.sim_path,npf.path[0] + '.' + npf.path[1]), os.W_OK):
-        # npf.write()
+        npf.write_file(check = False)
                 # break
     #ghb
 
@@ -202,11 +202,11 @@ def run_calibration_ss(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,ObsWells,
         ghb = flopy.mf6.ModflowGwfghb(gwf, stress_period_data=new_spd,save_flows=False,maxbound = len(new_spd))
         # while True:
         #     if os.access(os.path.join(sim.sim_path,ghb.path[0] + '.' + ghb.path[1]), os.W_OK):
-        # ghb.write()
+        ghb.write_file(check  = False)
                 # break
     
     #run  
-    sim.write_simulation(silent = True)      
+    # sim.write_simulation(silent = True)      
     sim.run_simulation(silent = True)
     
     #results
@@ -255,7 +255,7 @@ def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,Ob
                 
         npf.k = newk
         npf.k33 = newk33
-        npf.write()
+        npf.write_file(check = False)
     #ghb
 
     if ghbCal != None:
@@ -275,7 +275,7 @@ def run_calibration_ss_result(p, sim ,gwf, idx ,npf, npfk,npfk33, ghb,ghb_spd,Ob
                     new_spd.append([row[0], row[1], row[2]])
         gwf.remove_package('GHB')
         ghb = flopy.mf6.ModflowGwfghb(gwf, stress_period_data=new_spd,save_flows=True,maxbound = len(new_spd))
-        ghb.write()
+        ghb.write_file(check=False)
     
             
     sim.run_simulation(silent = True)
