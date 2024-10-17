@@ -6,7 +6,7 @@ import os
 import nlmod
 import numpy as np
 from tqdm import tqdm
-import shutil 
+from shutil import copytree
 modelname = snakemake.params.modelname
 ds = xr.open_dataset(snakemake.input[1])
 Layer = snakemake.params.simlayer
@@ -30,7 +30,7 @@ layno = idx[idx.SensLayers == Layer].idx.values[0]
 mds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'))
 
 orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_t','Fitter','')
-OptimisationFuncs.copyOriginalFolder(modelname + '_t', orgFolder ,destFolder , 'Runner\\' )
+copytree(orgFolder ,destFolder, dirs_exist_ok = True)
 mds.attrs['model_ws'] = destFolder
 
 
