@@ -16,7 +16,7 @@ KGE = cal_results['KGE'].values[-7]
 Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
 if len(Best) == 0:
     print('No improved realizations')
-    print(f'min RMSE = {results.RMSE.min())}')
+    print(f'min RMSE = {results.RMSE.min()}')
     print(f'max KGE = {results.KGE.max()}')
     Best = results.nsmallest(500, 'RMSE')
 
