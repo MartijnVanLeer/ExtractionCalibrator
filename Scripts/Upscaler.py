@@ -6,15 +6,11 @@ Created on Tue Nov  7 14:08:46 2023
 """
 
 import xarray as xr
-import glob
 import os
 import pandas as pd
 import numpy as np
 import Upscale_funcs as uf
-import nlmod
-from nlmod.dims.grid import xyz_to_cid
 from tqdm import tqdm
-import flopy 
 from scipy.stats import hmean
 
 filename = snakemake.input[1]
