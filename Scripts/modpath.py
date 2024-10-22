@@ -1,17 +1,16 @@
 import os 
-import OptimisationFuncs
 import ModpathFuncs as mf
 import xarray as xr
 import pandas as pd
 import nlmod
-
+from shutil import copytree
 modelname = snakemake.params.modelname
 layer = snakemake.params.layer
 Name = snakemake.params.name
 
 orgFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', 'Fitter')
 destFolder = os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', 'ModpathRuns')
-OptimisationFuncs.copyOriginalFolder(modelname + '_ss', orgFolder ,destFolder , 'Fitter\\' )
+copytree(orgFolder ,destFolder, dirs_exist_ok = True)
 
 #Load model and ds
 ds = xr.open_dataset(os.path.join('..','Results',f'{modelname}', f'{modelname}_ss', f'{modelname}_ss.nc'))
