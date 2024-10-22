@@ -72,7 +72,7 @@ def run_bw(modelname, sim, ds, layer, wellxy):
     mpsim = nlmod.modpath.sim(mpf_bw, pg_bw, "backward", gwf = gwf, weaksinkoption = 'stop_at', weaksourceoption= 'stop_at')
     nlmod.modpath.write_and_run(mpf_bw, silent = True)
     #Get fraction of endpoints through aquitard
-    fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
+    fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname.lower()}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
     aquitard_epd = e.get_destination_endpoint_data(dest_cells = layernodes)
     aquitard_epd = aquitard_epd[np.isin(aquitard_epd.initialcellface, [1,2,3,4])]
@@ -92,7 +92,7 @@ def run_fw(modelname, sim, ds, layer, wellxy):
     mpsim = nlmod.modpath.sim(mpf, pg, "forward")
     nlmod.modpath.write_and_run(mpf, silent = True)
 
-    fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname}_ss.mpend")
+    fpth = os.path.join(ds.model_ws, 'modpath', f"mp7_{modelname.lower()}_ss.mpend")
     e = flopy.utils.EndpointFile(fpth)
     welnodes = nlmod.modpath.xy_to_nodes(wellxy,mpf,ds,layno+1)
     all_epd = e.get_destination_endpoint_data(dest_cells = welnodes)
