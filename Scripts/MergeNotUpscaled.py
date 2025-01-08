@@ -10,7 +10,7 @@ KGE = cal_results['KGE'].values[-7]
 Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
 Best.reset_index(inplace = True)
 
-realizations = xr.Dataset.from_dataframe(Best))
+realizations = xr.Dataset.from_dataframe(Best)
 row = Best[0]
 df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
 realizations = realizations.expand_dims({'x' : df.x.unique(), 'y' : df.y.unique()})
