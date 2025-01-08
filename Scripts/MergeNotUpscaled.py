@@ -15,7 +15,7 @@ realizations = xr.Dataset.from_dataframe(Best)
 row = Best.iloc[0]
 df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
 realizations = realizations.expand_dims({'x' : df.x.unique(), 'y' : df.y.unique()})
-realizations['k'] = xr.DataArray(coords = (realizations.index, realizations.x, realizations.y))
+realizations['k'] = xr.DataArray(coords = (Best.index.values, realizations.x, realizations.y))
 def harmonic_mean_func(values, dim):
     return values.count(dim=dim) / (1 / values).sum(dim=dim)
 
@@ -31,7 +31,7 @@ for index, row in tqdm(Best.iterrows(), total=Best.shape[0]):
     harmonic_mean_df = Vals.groupby(['x', 'y'])['k'].apply(lambda group: harmonic_mean(group)).reset_index()
     harmonic_mean_df = harmonic_mean_df.set_index(['x', 'y'], drop = True)
     harmonic_mean_xr = xr.Dataset.from_dataframe(harmonic_mean_df)
-    realizations['k'].iloc[index] = harmonic_mean_xr.k
+    realizations['k'].loc[index] = harmonic_mean_xr.k
 
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'OriginalBestRealizations.nc'))
