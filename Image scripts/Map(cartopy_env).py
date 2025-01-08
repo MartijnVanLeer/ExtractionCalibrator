@@ -96,7 +96,7 @@ ax.add_feature(cartopy.feature.OCEAN)
 ax, Location = plot_loc(ax, crs, Loc)
 
 #plot scalebar
-ax = plot_scalebar(ax)
+# ax = plot_scalebar(ax)
 
 #plot borders
 gdf.plot(ax = ax, zorder = 3, color = 'black', linestyle = '--', linewidth = 1, alpha = 0.6)
@@ -117,7 +117,7 @@ ax.annotate('Germany', xy = (0.8,0.3), xycoords = 'axes fraction', zorder = 11, 
 ax.annotate('Belgium', xy = (0.4,0.1), xycoords = 'axes fraction', zorder = 12, fontweight = 'light')
 
 #add legend
-ax.legend(loc = 'lower right', fancybox = True, framealpha = 0.8, title = '$\\bf{Legend}$')
+ax.legend(loc = 'upper left', fancybox = True, framealpha = 0.8, title = '$\\bf{Legend}$')
 
 #settings for marking the inset location
 # box, c1, c2 = mark_inset(ax, axins, loc1=3, loc2=4, fc="none", ec="0.0") 
