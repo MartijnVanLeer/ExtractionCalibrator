@@ -31,7 +31,7 @@ for index, row in tqdm(Best.iterrows(), total=Best.shape[0]):
     harmonic_mean_df = Vals.groupby(['x', 'y'])['k'].apply(lambda group: harmonic_mean(group)).reset_index()
     harmonic_mean_df = harmonic_mean_df.set_index(['x', 'y'], drop = True)
     harmonic_mean_xr = xr.Dataset.from_dataframe(harmonic_mean_df)
-    realizations['k'].loc[index] = harmonic_mean_xr
+    realizations['k'].loc[index] = harmonic_mean_xr.k.values
 
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'OriginalBestRealizations.nc'))
