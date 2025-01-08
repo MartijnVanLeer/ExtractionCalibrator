@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import xarray as xr 
 import numpy as np
+from tqdm import tqdm
 modelname = 'Vlen'
 results = pd.read_csv(os.path.join('..', 'Results', 'Vlen', 'RMSE_all.csv'), names = ['sim', 'RMSE', 'KGE', 'alpha', 'beta', 'r','xcorlen', 'zcorlen','frac', 'cc'])
 cal_results = pd.read_csv(os.path.join('..', 'Results', modelname, f'Calibration_Performance_{modelname}.csv'))
@@ -18,16 +19,17 @@ realizations = realizations.expand_dims({'x' : df.x.unique(), 'y' : df.y.unique(
 def harmonic_mean_func(values, dim):
     return values.count(dim=dim) / (1 / values).sum(dim=dim)
 
-for index, row in Best.iterrows():
+def harmonic_mean(group):
+    return len(group) / (1 / group).sum()
+
+for index, row in tqdm(Best.iterrows()):
     df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
     Vals = df[['x', 'y', 'z']]
     Vals['k'] =  10**df[f'K_{int(row.sim+1)}_{row.cc}']
-    ds = Vals.set_index(['x', 'y', 'z'], append = True).to_xarray()
-    harmonic_mean = xr.apply_ufunc(
-        harmonic_mean_func, ds['k'],
-        input_core_dims=[['z']],
-        kwargs={'dim': 'z'})
-    realizations['k'] = harmonic_mean
+    harmonic_mean_df = Vals.groupby(['index', 'x', 'y'])['k'].apply(harmonic_mean).reset_index()
+    harmonic_mean_df = harmonic_mean_df.set_index(['index', 'x', 'y'])
+    ds = harmonic_mean_df.to_xarray()
+    realizations['k'] = ds
 
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'OriginalBestRealizations.nc'))
