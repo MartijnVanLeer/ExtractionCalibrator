@@ -22,7 +22,7 @@ for index, row in Best.iterrows():
     df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
     Vals = df[['x', 'y', 'z']]
     Vals['k'] =  10**df[f'K_{int(row.sim+1)}_{row.cc}']
-    ds = Vals.set_index(['index', 'x', 'y', 'z']).to_xarray()
+    ds = Vals.set_index(['x', 'y', 'z', append = True]).to_xarray()
     harmonic_mean = xr.apply_ufunc(
         harmonic_mean_func, ds['k'],
         input_core_dims=[['z']],
