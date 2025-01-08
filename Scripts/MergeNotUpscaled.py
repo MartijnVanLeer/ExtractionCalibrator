@@ -26,12 +26,12 @@ for index, row in tqdm(Best.iterrows()):
     df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
     Vals = df[['x', 'y', 'z']]
     Vals.index.name = 'index'
-    Vals['k'] =  10**df[f'K_{int(row.sim+1)}_{row.cc}']
-    Vals = Vals.set_index(['x', 'y','z'], append = True)
-    harmonic_mean_df = Vals.groupby(['index', 'x', 'y'])['k'].apply(lambda group: harmonic_mean(group)).reset_index()
-    harmonic_mean_df = harmonic_mean_df.set_index(['index', 'x', 'y'])
-    ds = harmonic_mean_df.to_xarray()
-    realizations['k'] = ds
+    Vals.loc[:,'k'] =  10**df[f'K_{int(row.sim+1)}_{row.cc}']
+    Vals = Vals.set_index(['x', 'y','z'])
+    harmonic_mean_df = Vals.groupby(['x', 'y'])['k'].apply(lambda group: harmonic_mean(group)).reset_index()
+    harmonic_mean_df = harmonic_mean_df.set_index(['x', 'y'], drop = True)
+    harmonic_mean_xr = xr.Dataset.from_dataframe(harmonic_mean_df)
+    realizations['k'].loc[index] = ds
 
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'OriginalBestRealizations.nc'))
