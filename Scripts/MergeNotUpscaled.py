@@ -9,8 +9,8 @@ cal_results = pd.read_csv(os.path.join('..', 'Results', modelname, f'Calibration
 RMSE = cal_results['RMSE'].values[-1]
 KGE = cal_results['KGE'].values[-7]
 Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
-Best.reset_index(inplace = True)
-
+Best.reset_index(inplace = True, drop = True)
+Best.index.name = 'index'
 realizations = xr.Dataset.from_dataframe(Best)
 row = Best.iloc[0]
 df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
@@ -31,7 +31,7 @@ for index, row in tqdm(Best.iterrows(), total=Best.shape[0]):
     harmonic_mean_df = Vals.groupby(['x', 'y'])['k'].apply(lambda group: harmonic_mean(group)).reset_index()
     harmonic_mean_df = harmonic_mean_df.set_index(['x', 'y'], drop = True)
     harmonic_mean_xr = xr.Dataset.from_dataframe(harmonic_mean_df)
-    realizations['k'].loc[index] = harmonic_mean_xr.k.values
+    realizations['k'].iloc[index] = harmonic_mean_xr.k
 
 
 realizations.to_netcdf(os.path.join('..', 'Results', modelname, 'OriginalBestRealizations.nc'))
