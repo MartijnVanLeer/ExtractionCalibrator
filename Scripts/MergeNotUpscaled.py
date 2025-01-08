@@ -25,7 +25,9 @@ def harmonic_mean(group):
 for index, row in tqdm(Best.iterrows()):
     df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
     Vals = df[['x', 'y', 'z']]
+    Vals.index.name = 'index'
     Vals['k'] =  10**df[f'K_{int(row.sim+1)}_{row.cc}']
+    Vals = Vals.set_index(['x', 'y'], append = True)
     harmonic_mean_df = Vals.groupby(['index', 'x', 'y'])['k'].apply(harmonic_mean).reset_index()
     harmonic_mean_df = harmonic_mean_df.set_index(['index', 'x', 'y'])
     ds = harmonic_mean_df.to_xarray()
