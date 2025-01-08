@@ -22,7 +22,7 @@ def harmonic_mean_func(values, dim):
 def harmonic_mean(group):
     return len(group) / (1 / group).sum()
 
-for index, row in tqdm(Best.iterrows(),, total=Best.shape[0]):
+for index, row in tqdm(Best.iterrows(), total=Best.shape[0]):
     df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
     Vals = df[['x', 'y', 'z']]
     Vals.index.name = 'index'
