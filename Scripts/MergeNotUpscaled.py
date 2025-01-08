@@ -28,7 +28,7 @@ for index, row in tqdm(Best.iterrows()):
     Vals.index.name = 'index'
     Vals['k'] =  10**df[f'K_{int(row.sim+1)}_{row.cc}']
     Vals = Vals.set_index(['x', 'y','z'], append = True)
-    harmonic_mean_df = Vals.groupby(['index', 'x', 'y'])['k'].apply(harmonic_mean).reset_index()
+    harmonic_mean_df = Vals.groupby(['index', 'x', 'y'])['k'].apply(lambda group: harmonic_mean(group)).reset_index()
     harmonic_mean_df = harmonic_mean_df.set_index(['index', 'x', 'y'])
     ds = harmonic_mean_df.to_xarray()
     realizations['k'] = ds
