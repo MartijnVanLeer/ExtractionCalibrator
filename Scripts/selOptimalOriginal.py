@@ -12,4 +12,4 @@ print('z')
 dsopt = dsopt.where(dsopt.frac.isin([-0.05, 0]), drop = True)
 
 
-dsopt.to_netcdf(os.path.join('..', 'Results', 'Budel Output','Vlen', 'OptimalOriginal.nc')))
+dsopt.to_netcdf(os.path.join('..', 'Results', 'Budel Output','Vlen', 'OptimalOriginal.nc'))
