@@ -5,7 +5,7 @@ ds = xr.open_dataset(os.path.join('..', 'Results', 'Vlen', 'OriginalBestRealizat
 ds.load()
 print('read')
 ds = ds.assign(k = ds['k'].rename({'dim_0' : 'index'}))
-ds.drop_vars('dim_0')
+ds = ds.drop_vars('dim_0')
 ds.to_netcdf(os.path.join('..', 'Results', 'Budel Output','Vlen', 'SelectedOriginal.nc'))
 print('dropped dim_0')
 dsopt = ds.where(ds.cc == 1.5, drop = True)
