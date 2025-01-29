@@ -2,6 +2,7 @@ import xarray as xr
 import os
 
 ds = xr.open_dataset(os.path.join('..', 'Results', 'Vlen', 'OriginalBestRealizations.nc'))
+ds.load()
 print('read')
 dsopt = ds.where(ds.cc == 1.5, drop = True)
 print('cc')
