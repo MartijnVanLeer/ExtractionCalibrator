@@ -12,7 +12,7 @@ Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
 Best.reset_index(inplace = True, drop = True)
 Best.index.name = 'index'
 Best = Best.sortby('RMSE').head(3)
-print Best.RMSE
+print(Best.RMSE)
 realizations = xr.Dataset.from_dataframe(Best)
 row = Best.iloc[0]
 df = pd.read_hdf(os.path.join('..', 'Results', modelname, 'KfieldsQC',f'xcorlens~{int(row.xcorlen)}', f'zcorlens~{row.zcorlen}', f'fracs~{row.frac}', 'k.h5'), key = 'c')
