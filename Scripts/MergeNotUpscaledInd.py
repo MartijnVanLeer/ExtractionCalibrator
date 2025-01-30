@@ -12,7 +12,7 @@ Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
 
 Best = Best[Best['xcorlen'].isin([700,800,1000,1200])]
 Best = Best[Best['zcorlen'] == 7.5]
-Best = Best[Best['frac'].isin([-0.05,0])]
+Best = Best[Best['frac'].round(2).isin([-0.05,0])]
 Best = Best[Best['cc'] == 1.5]
 Best = Best.sort_values('RMSE').head(3)
 Best.reset_index(inplace = True, drop = True)
