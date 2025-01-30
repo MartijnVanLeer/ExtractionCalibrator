@@ -11,7 +11,7 @@ KGE = cal_results['KGE'].values[-7]
 Best = results.loc[(results.RMSE < RMSE) | (results.KGE > KGE)]
 Best.reset_index(inplace = True, drop = True)
 Best.index.name = 'index'
-Best = Best.sortby('RMSE').head(3)
+Best = Best.sort_values('RMSE').head(3)
 print(Best.RMSE)
 realizations = xr.Dataset.from_dataframe(Best)
 row = Best.iloc[0]
