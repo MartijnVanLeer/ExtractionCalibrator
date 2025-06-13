@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Nov  7 14:08:46 2023
-
-@author: leermdv
+Upscale all generated realizations to MODFLOW model grid
 """
 
 import xarray as xr

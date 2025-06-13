@@ -1,3 +1,4 @@
+#Merge well fitting realizations and results into netCDF
 import pandas as pd
 import os
 import xarray as xr 

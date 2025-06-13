@@ -1,4 +1,5 @@
-
+''' Add cellids of MODFLOW grid to coordinates of heterogeneous realizations. 
+''' 
 import numpy as np
 import flopy 
 import xarray as xr

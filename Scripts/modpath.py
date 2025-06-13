@@ -1,8 +1,11 @@
+'''
+Run Modpath, both forward and backwards from wells to calculate travel time and fraction of water that goes through aquitard. 
+''' 
+
 import os 
 from functions import ModpathFuncs as mf
 import xarray as xr
 import pandas as pd
-import nlmod
 from shutil import copytree
 modelname = snakemake.params.modelname
 layer = snakemake.params.layer

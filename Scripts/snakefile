@@ -104,7 +104,7 @@ rule Forward_Model_SS:
 rule Forward_Model_T:
     input:
         'ForwardModelGen.py',
-        os.path.join('functions', 'Helper.py')
+        os.path.join('functions', 'MFHelper.py')
     output:
         os.path.join('..','Results',modelname, f'{modelname}_t',f'{modelname}_t.nam'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
@@ -168,10 +168,10 @@ rule Calibration_T:
     script:
        'Calibration_t.py'
 
-#Create object based on Dinoloket borehole data   
+#Create object based on Dinoloket borehole data and assign indicators based on lithology   
 rule Prep_Boreholes:
     input:
-        'prep_boringen.py',
+        'prep_boreholes.py',
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
         os.path.join('functions', 'Heterogeniteit.py')
     params:
@@ -181,7 +181,7 @@ rule Prep_Boreholes:
     output:
         os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl')
     script:
-        'prep_boringen.py'
+        'prep_boreholes.py'
 
 #Add modflow grid cellids to conditional simulation grid output list for easier mapping in the upscaling phase
 rule Add_Cellids:

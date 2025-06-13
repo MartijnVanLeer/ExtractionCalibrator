@@ -1,3 +1,4 @@
+'''Script that runs created conditional simulated in the calibraetd transient model ''' 
 import xarray as xr
 import flopy 
 from functions import OptimisationFuncs
