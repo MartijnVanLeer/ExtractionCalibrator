@@ -1,6 +1,6 @@
 import xarray as xr
 import flopy 
-import OptimisationFuncs
+from functions import OptimisationFuncs
 import pandas as pd
 import os
 import nlmod

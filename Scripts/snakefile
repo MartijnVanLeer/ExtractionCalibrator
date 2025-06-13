@@ -2,32 +2,46 @@ import os
 from snakemake.utils import Paramspace
 import pandas as pd
 #Settings steady state
-Name = 'Budel' #puttenveld Budel, Schijf, Vlijmen
+Name = 'Budel' #well field Budel, Schijf, Vlijmen
 modelname ='Vlen'
 
 Range = 3200 #m Distance from grid border to centre of wells 3200
-GHBrange = 5000 
-delr = 800
+GHBrange = 5000 #distance of virtual boundar
+delr = 800 #size of largest cell at boundaries
 refineranges = {1600:1, 800:2, 400:3, 200:4, 100 :5}
-startdate = '2016-04-01 00:00:00'         #eerste is '2014-12-31 00:00:00', '2018-06-01 00:00:00' is grensdatum droogte budel
-enddate = '2016-08-01 00:00:00'         #laatste '2023-12-30 22:00:00'
-warmup = False
-drainC = 1
-DeepestLayer = 'KIz5'
-ss = 0.00001
+startdate = '2016-04-01 00:00:00'         #first is '2014-12-31 00:00:00', 
+enddate = '2016-08-01 00:00:00'         #last is '2023-12-30 22:00:00'
+warmup = False #Long term spinup
+drainC = 1 #drain conductance at surface
+DeepestLayer = 'KIz5' #lowest REGIS layer
+ss = 0.00001 #starting value of specific storage
 
 #Settings calibration
-SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5']
-CorLayers = {'KIz4' : 'KIz5'}
-ghbCal = 'SensLayers' # 'obs', 'Single', None
-KCal = True
-Weighted = False
-BadWells =  ['B57E0081_3','B57E0081_4']
-Lambda = 0.0005
-methodss = 'NM' #'LM' of 'NM' 
+SensLayers = ['KIz2', 'KIk2','KIz3','KIk3','KIz4','KIz5'] #REGIS layers for calibration
+CorLayers = {'KIz4' : 'KIz5'} #REGIS layers that can be combined in calibration
+ghbCal = 'SensLayers' # 'obs', 'Single', None #how to calibrate GHB
+KCal = True #calibrate K
+Weighted = False #weight observations 
+BadWells =  ['B57E0081_3','B57E0081_4'] #wells to skip, close to boundary, multiple within aquifer
+Lambda = 0.0005 #Tikhonov regularization
+methodss = 'NM' #'LM' of 'NM' Levenberg Marquardt or Nelder Mead. NM functions best
 methodt = 'NM'  #'LM' of 'NM' 
 
+#
 def get_paramspace(xcorlens,zcorlens,fracs):
+    """
+    Function to create dataframe with possible values for correlation lengths and sand/clay fractions
+    Parameters
+    ----------
+    xcorlens : list
+    zcorlens : list
+    fracs : list
+
+    Returns
+    -------
+    pd.DataFrame
+        
+    """    
     xl = []
     zl = []
     fl = []
@@ -40,15 +54,15 @@ def get_paramspace(xcorlens,zcorlens,fracs):
     return pd.DataFrame({'xcorlens': xl,'zcorlens' : zl, 'fracs' : fl})
 
 #Settings conditional simulation
-simlayer = 'KIk2'
-xcorlens = [400,500,600,700,800,1000,1200]
-zcorlens = [7.5,10, 12.5]
-fracs = [-0.05,0,0.05]
-CoreCorrection = [0,0.5,1,1.5,2,2.5]
-ens_no = 100
-dx = 25
-df = get_paramspace(xcorlens,zcorlens, fracs)
-paramspace = Paramspace(df)
+simlayer = 'KIk2' #layer where conditional indicator simulation is performed
+xcorlens = [400,500,600,700,800,1000,1200]  # horizontal correlation lengths to simulate
+zcorlens = [7.5,10, 12.5] # vertical correlation lengths to simulate
+fracs = [-0.05,0,0.05] # clay/sand fraction
+CoreCorrection = [0,0.5,1,1.5,2,2.5] #REGIS catalog changes
+ens_no = 100 # size of ensemble
+dx = 25 #Resolution in x direction
+df = get_paramspace(xcorlens,zcorlens, fracs) #get df for values
+paramspace = Paramspace(df) #create snakemake Paramspace for wildcards
 
 rule all: 
     input:
@@ -60,10 +74,11 @@ rule all:
         os.path.join('..','Results',f'{modelname}','flowfrac.csv'),
         os.path.join('..','Results',f'{modelname}','TT_dist.csv')
 
+#Create steady state model
 rule Forward_Model_SS:
     input:
         'ForwardModelGen.py',
-        'Helper.py'
+        os.path.join('functions', 'Helper.py')
     output:
         os.path.join('..','Results',modelname, f'{modelname}_ss',f'{modelname}_ss.hds'),
         directory(os.path.join('..','Results',modelname, f'{modelname}_ss')),
@@ -84,11 +99,12 @@ rule Forward_Model_SS:
         ss = ss,
     script:
        'ForwardModelGen.py'
-       
+
+#Create transient model 
 rule Forward_Model_T:
     input:
         'ForwardModelGen.py',
-        'Helper.py'
+        os.path.join('functions', 'Helper.py')
     output:
         os.path.join('..','Results',modelname, f'{modelname}_t',f'{modelname}_t.nam'),
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
@@ -109,12 +125,12 @@ rule Forward_Model_T:
         ss = ss,
     script:
        'ForwardModelGen.py'
-
+#Calibrate steady state model
 rule Calibration_SS:
     input:
        os.path.join('..','Results',modelname, f'{modelname}_ss',f'{modelname}_ss.hds'),
-       'Sensitivity.py',
-       'OptimisationFuncs.py'
+       'Calibration_ss.py',
+       os.path.join('functions', 'OptimisationFuncs.py')
     params:
         Name = Name,
         modelname = modelname,
@@ -130,14 +146,15 @@ rule Calibration_SS:
        os.path.join('..','Results',f'{modelname}',f'ObsForCalibration_{modelname}_SS.csv'),
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
     script:
-       'Sensitivity.py'
+       'Calibration_ss.py'
 
+#Calibrate transient model using output from steady state calibration
 rule Calibration_T:
     input:
-       'Calibration.py',
+       'Calibration_t.py',
        os.path.join('..','Results',f'{modelname}',f'BestParams_SS_{modelname}.csv'),
        os.path.join('..','Results',modelname, f'{modelname}_t',f'{modelname}_t.nam'),
-       'OptimisationFuncs.py'
+       os.path.join('functions', 'OptimisationFuncs.py')
     params:
         Name = Name,
         modelname = modelname,
@@ -149,13 +166,14 @@ rule Calibration_T:
         os.path.join('..','Results',f'{modelname}',f'Residuals_{modelname}.csv'),
         os.path.join('..','Results',modelname, f'{modelname}_t','Fitter',f'{modelname}_t.nam')
     script:
-       'Calibration.py'
-       
+       'Calibration_t.py'
+
+#Create object based on Dinoloket borehole data   
 rule Prep_Boreholes:
     input:
         'prep_boringen.py',
         os.path.join('..','Results',f'{modelname}',f'{modelname}_t', 'layer_model.nc'),
-        'Heterogeniteit.py'
+        os.path.join('functions', 'Heterogeniteit.py')
     params:
         modelname = modelname,
         Name = Name,
@@ -165,6 +183,7 @@ rule Prep_Boreholes:
     script:
         'prep_boringen.py'
 
+#Add modflow grid cellids to conditional simulation grid output list for easier mapping in the upscaling phase
 rule Add_Cellids:
     input:
         'add_cellids.py',
@@ -177,12 +196,13 @@ rule Add_Cellids:
     script:
         'add_cellids.py'
 
+#conditional simulations
 rule Cond_Simulator:
     input:
         'condsim.py',
         os.path.join('..','Results',f'{modelname}', f'{modelname}_t',f'{modelname}_t.nc'),
         os.path.join('..','Results',f'{modelname}','boreholeindicators.pkl'),
-        'Heterogeniteit.py'
+        os.path.join('functions', 'Heterogeniteit.py')
     params:
         Name = Name,
         modelname = modelname,
@@ -196,12 +216,13 @@ rule Cond_Simulator:
     script:
        'condsim.py'
 
+#Upscale conditonal sims to modflow grid
 rule Upscaler:
     input:
         'Upscaler.py',
         os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', f'{paramspace.wildcard_pattern}','k.h5'),
         os.path.join('..','Results',f'{modelname}','cellids.csv'),
-        'Upscale_funcs.py'
+        os.path.join('functions', 'Upscale_funcs.py')
     params:
         Name = Name,
         modelname = modelname,
@@ -215,6 +236,7 @@ rule Upscaler:
     script:
        'Upscaler.py'
 
+#Run upscaled realizations in calibrated transient model
 rule Runner:
     input:
        'Runner.py',
@@ -232,6 +254,7 @@ rule Runner:
     script:
        'Runner.py'
 
+#Collect all runner results in the different wildcard folders in one file per folder
 rule Collector:
     input:
         expand(os.path.join('..' ,'Results',f'{modelname}','KfieldsQC', '{params}','RMSE.csv'),params = paramspace.instance_patterns),
@@ -240,6 +263,7 @@ rule Collector:
     shell:
         "cat {input} > {output}"
 
+#Merge results of realizations that fit best on heads
 rule Merge_Best:
     input:
        'MergeBest.py',
@@ -252,10 +276,11 @@ rule Merge_Best:
     script:
        'MergeBest.py'
 
+#run Modpath simulations on good fitting realizations
 rule Modpath:
     input:
        'modpath.py',
-       'ModpathFuncs.py',
+       os.path.join('functions', 'ModpathFuncs.py'),
        os.path.join('..', 'Results', modelname, 'BestRealizations.nc')
     params:
         modelname = modelname,

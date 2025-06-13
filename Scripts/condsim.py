@@ -8,12 +8,12 @@ Created on Wed Oct 18 09:53:38 2023
 
 #%%
 
-import SISIM_R
+from functions import SISIM_R
 import os
 import pickle
 import shutil
 import xarray as xr
-import Heterogeniteit
+from functions import Heterogeniteit
 import numpy as np
 import flopy
 import pandas as pd

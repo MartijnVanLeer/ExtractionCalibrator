@@ -1,5 +1,5 @@
 import os 
-import ModpathFuncs as mf
+from functions import ModpathFuncs as mf
 import xarray as xr
 import pandas as pd
 import nlmod

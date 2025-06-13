@@ -4,7 +4,7 @@ Created on Wed Oct 18 09:53:38 2023
 
 @author: leermdv
 """
-import Heterogeniteit as h
+from functions import Heterogeniteit as h
 import xarray as xr
 from os.path import join
 import pickle

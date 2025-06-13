@@ -3,6 +3,9 @@
 Created on Mon May 15 16:02:46 2023
 
 Forward model setup script with pure nlmod
+Creates MODFLOW model given a certain extend around extraction wells based on REGIS
+
+Only well data is based on other files. 
 
 @author: leermdv
 """
@@ -10,7 +13,7 @@ Forward model setup script with pure nlmod
 import nlmod
 import flopy
 import pandas as pd
-import Helper
+from functions import Helper
 import os
 
 #%%

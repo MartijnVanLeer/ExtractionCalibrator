@@ -1,7 +1,12 @@
+'''
+Script that calibrates the MODFLOW model created with ForwardModelGen.py
+Can be used for both steady state and transient calibration
+'''
+
 import xarray as xr
 import flopy 
 import os
-import OptimisationFuncs
+from functions import OptimisationFuncs
 import numpy as np
 import pandas as pd
 from tqdm import tqdm

@@ -9,7 +9,7 @@ import xarray as xr
 import os
 import pandas as pd
 import numpy as np
-import Upscale_funcs as uf
+from functions import Upscale_funcs as uf
 from tqdm import tqdm
 from scipy.stats import hmean
 
