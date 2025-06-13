@@ -13,7 +13,7 @@ Only well data is based on other files.
 import nlmod
 import flopy
 import pandas as pd
-from functions import Helper
+from functions import MFHelper as Helper
 import os
 
 #%%
